@@ -42,8 +42,17 @@ namespace template_tools
 	constexpr std::array<int, 16> add(const std::array<int, 16>& a, const int i)
 	{
 		return std::array<int, 16>{
-			a[0 + 0] + i, a[1 + 0] + i, a[2 + 0] + i, a[3 + 0] + i, a[4 + 0] + i, a[5 + 0] + i, a[6 + 0] + i, a[7 + 0] + i,
-			a[0 + 8] + i, a[1 + 8] + i, a[2 + 8] + i, a[3 + 8] + i, a[4 + 8] + i, a[5 + 8] + i, a[6 + 8] + i, a[7 + 8] + i
+			a[0 + 0 * 8] + i, a[1 + 0 * 8] + i, a[2 + 0 * 8] + i, a[3 + 0 * 8] + i, a[4 + 0 * 8] + i, a[5 + 0 * 8] + i, a[6 + 0 * 8] + i, a[7 + 0 * 8] + i,
+			a[0 + 1 * 8] + i, a[1 + 1 * 8] + i, a[2 + 1 * 8] + i, a[3 + 1 * 8] + i, a[4 + 1 * 8] + i, a[5 + 1 * 8] + i, a[6 + 1 * 8] + i, a[7 + 1 * 8] + i
+		};
+	}
+	constexpr std::array<int, 32> add(const std::array<int, 32>& a, const int i)
+	{
+		return std::array<int, 32>{
+			a[0 + 0 * 8] + i, a[1 + 0 * 8] + i, a[2 + 0 * 8] + i, a[3 + 0 * 8] + i, a[4 + 0 * 8] + i, a[5 + 0 * 8] + i, a[6 + 0 * 8] + i, a[7 + 0 * 8] + i,
+			a[0 + 1 * 8] + i, a[1 + 1 * 8] + i, a[2 + 1 * 8] + i, a[3 + 1 * 8] + i, a[4 + 1 * 8] + i, a[5 + 1 * 8] + i, a[6 + 1 * 8] + i, a[7 + 1 * 8] + i,
+			a[0 + 2 * 8] + i, a[1 + 2 * 8] + i, a[2 + 2 * 8] + i, a[3 + 2 * 8] + i, a[4 + 2 * 8] + i, a[5 + 2 * 8] + i, a[6 + 2 * 8] + i, a[7 + 2 * 8] + i,
+			a[0 + 3 * 8] + i, a[1 + 3 * 8] + i, a[2 + 3 * 8] + i, a[3 + 3 * 8] + i, a[4 + 3 * 8] + i, a[5 + 3 * 8] + i, a[6 + 3 * 8] + i, a[7 + 3 * 8] + i
 		};
 	}
 
@@ -189,10 +198,10 @@ namespace n_cube
 		if (true)
 		{
 			const std::string sep = "_";
-			for (int i = 0; i < c.size(); ++i)
+			for (int i = 0; i < static_cast<int>(c.size()); ++i)
 			{
 				r += std::to_string(c[i]);
-				if (i < (c.size() - 1)) r += sep;
+				if (i < (static_cast<int>(c.size()) - 1)) r += sep;
 			}
 		}
 		return r;
@@ -574,7 +583,7 @@ namespace n_cube
 				return std::array<int, (1 << N)>{ 0, 1 };
 			}
 			static std::array<std::string, N> descriptions() {
-				return { "a" };
+				return { "x0" };
 			}
 		};
 		template <> struct init_cube_struct<2>
@@ -626,6 +635,21 @@ namespace n_cube
 				return { "e", "d", "c", "b", "a" };
 			}
 		};
+		template <> struct init_cube_struct<6>
+		{
+			static constexpr int N = 6;
+			static constexpr CubeI<N> value()
+			{
+				return { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+					16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+					32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
+					48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63 };
+			}
+			static std::array<std::string, N> descriptions()
+			{
+				return { "f", "e", "d", "c", "b", "a" };
+			}
+		};
 		#pragma endregion
 
 		#pragma region concat_cube
@@ -673,6 +697,19 @@ namespace n_cube
 				return CubeI<N + 1>{
 					a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15],
 					b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8], b[9], b[10], b[11], b[12], b[13], b[14], b[15]
+				};
+			}
+		};
+		template <> struct concat_cube_struct<5>
+		{
+			static constexpr int N = 5;
+			static constexpr CubeI<N + 1> value(const CubeI<N>& a, const CubeI<N>& b)
+			{
+				return CubeI<N + 1>{
+					a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15],
+					a[16], a[17], a[18], a[19], a[20], a[21], a[22], a[23], a[24], a[25], a[26], a[27], a[28], a[29], a[30], a[31],
+					b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8], b[9], b[10], b[11], b[12], b[13], b[14], b[15],
+					b[16], b[17], b[18], b[19], b[20], b[21], b[22], b[23], b[24], b[25], b[26], b[27], b[28], b[29], b[30], b[31],
 				};
 			}
 		};
@@ -804,6 +841,81 @@ namespace n_cube
 					&& (a[29] == b[29])
 					&& (a[30] == b[30])
 					&& (a[31] == b[31]);
+			}
+			static void test()
+			{
+				static_assert(value(init_cube_struct<N>::value(), init_cube_struct<N>::value()), "");
+			}
+		};
+		template <> struct equal_struct<6>
+		{
+			static constexpr int N = 6;
+			static constexpr bool value(const CubeI<N>& a, const CubeI<N>&b)
+			{
+				return (a[0] == b[0])
+					&& (a[1] == b[1])
+					&& (a[2] == b[2])
+					&& (a[3] == b[3])
+					&& (a[4] == b[4])
+					&& (a[5] == b[5])
+					&& (a[6] == b[6])
+					&& (a[7] == b[7])
+					&& (a[8] == b[8])
+					&& (a[9] == b[9])
+					&& (a[10] == b[10])
+					&& (a[11] == b[11])
+					&& (a[12] == b[12])
+					&& (a[13] == b[13])
+					&& (a[14] == b[14])
+					&& (a[15] == b[15])
+					&& (a[16] == b[16])
+					&& (a[17] == b[17])
+					&& (a[18] == b[18])
+					&& (a[19] == b[19])
+					&& (a[20] == b[20])
+					&& (a[21] == b[21])
+					&& (a[22] == b[22])
+					&& (a[23] == b[23])
+					&& (a[24] == b[24])
+					&& (a[25] == b[25])
+					&& (a[26] == b[26])
+					&& (a[27] == b[27])
+					&& (a[28] == b[28])
+					&& (a[29] == b[29])
+					&& (a[30] == b[30])
+					&& (a[31] == b[31])
+					&& (a[32] == b[32])
+					&& (a[33] == b[33])
+					&& (a[34] == b[34])
+					&& (a[35] == b[35])
+					&& (a[36] == b[36])
+					&& (a[37] == b[37])
+					&& (a[38] == b[38])
+					&& (a[39] == b[39])
+					&& (a[40] == b[40])
+					&& (a[41] == b[41])
+					&& (a[42] == b[42])
+					&& (a[43] == b[43])
+					&& (a[44] == b[44])
+					&& (a[45] == b[45])
+					&& (a[46] == b[46])
+					&& (a[47] == b[47])
+					&& (a[48] == b[48])
+					&& (a[49] == b[49])
+					&& (a[50] == b[50])
+					&& (a[51] == b[51])
+					&& (a[52] == b[52])
+					&& (a[53] == b[53])
+					&& (a[54] == b[54])
+					&& (a[55] == b[55])
+					&& (a[56] == b[56])
+					&& (a[57] == b[57])
+					&& (a[58] == b[58])
+					&& (a[59] == b[59])
+					&& (a[60] == b[60])
+					&& (a[61] == b[61])
+					&& (a[62] == b[62])
+					&& (a[63] == b[63]);
 			}
 			static void test()
 			{
@@ -1008,6 +1120,37 @@ namespace n_cube
 				};
 			}
 		};
+		template <> struct apply_struct<6>
+		{
+			static constexpr int N = 6;
+			static constexpr CubeI<N> value(const CubeI<N>& c, const CubeI<N>& ci)
+			{
+				return CubeI<N>{
+					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
+						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]],
+						c[ci[16]], c[ci[17]], c[ci[18]], c[ci[19]], c[ci[20]], c[ci[21]], c[ci[22]], c[ci[23]],
+						c[ci[24]], c[ci[25]], c[ci[26]], c[ci[27]], c[ci[28]], c[ci[29]], c[ci[30]], c[ci[31]],
+						c[ci[32]], c[ci[33]], c[ci[34]], c[ci[35]], c[ci[36]], c[ci[37]], c[ci[38]], c[ci[39]],
+						c[ci[40]], c[ci[41]], c[ci[42]], c[ci[43]], c[ci[44]], c[ci[45]], c[ci[46]], c[ci[47]],
+						c[ci[48]], c[ci[49]], c[ci[50]], c[ci[51]], c[ci[52]], c[ci[53]], c[ci[54]], c[ci[55]],
+						c[ci[56]], c[ci[57]], c[ci[58]], c[ci[59]], c[ci[60]], c[ci[61]], c[ci[62]], c[ci[63]]
+
+				};
+			}
+			static constexpr Cube<N> value(const Cube<N>& c, const CubeI<N>& ci)
+			{
+				return Cube<N>{
+					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
+						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]],
+						c[ci[16]], c[ci[17]], c[ci[18]], c[ci[19]], c[ci[20]], c[ci[21]], c[ci[22]], c[ci[23]],
+						c[ci[24]], c[ci[25]], c[ci[26]], c[ci[27]], c[ci[28]], c[ci[29]], c[ci[30]], c[ci[31]],
+						c[ci[32]], c[ci[33]], c[ci[34]], c[ci[35]], c[ci[36]], c[ci[37]], c[ci[38]], c[ci[39]],
+						c[ci[40]], c[ci[41]], c[ci[42]], c[ci[43]], c[ci[44]], c[ci[45]], c[ci[46]], c[ci[47]],
+						c[ci[48]], c[ci[49]], c[ci[50]], c[ci[51]], c[ci[52]], c[ci[53]], c[ci[54]], c[ci[55]],
+						c[ci[56]], c[ci[57]], c[ci[58]], c[ci[59]], c[ci[60]], c[ci[61]], c[ci[62]], c[ci[63]]
+				};
+			}
+		};
 		#pragma endregion
 	
 		#pragma region reflect
@@ -1196,6 +1339,41 @@ namespace n_cube
 				static_assert(equal<N>(function_composition<N>(value(2), value(2)), init_cube_struct<N>::value()), "");
 				static_assert(equal<N>(function_composition<N>(value(3), value(3)), init_cube_struct<N>::value()), "");
 				static_assert(equal<N>(function_composition<N>(value(4), value(4)), init_cube_struct<N>::value()), "");
+			}
+		};
+		template <> struct reflect<6>
+		{
+			static constexpr int N = 6;
+			static constexpr CubeI<N> value(const int dim)
+			{
+				constexpr auto r0 = lift_reflect<N, 0>();
+				constexpr auto r1 = lift_reflect<N, 1>();
+				constexpr auto r2 = lift_reflect<N, 2>();
+				constexpr auto r3 = lift_reflect<N, 3>();
+				constexpr auto r4 = lift_reflect<N, 4>();
+				constexpr auto id = init_cube_struct<(N - 1)>::value();
+				constexpr auto r5 = concat::concat_array(template_tools::add(id, 1 << (N - 1)), id);
+
+				switch (dim)
+				{
+					case 0: return r0;
+					case 1: return r1;
+					case 2: return r2;
+					case 3: return r3;
+					case 4: return r4;
+					case 5: return r5;
+				}
+				std::cout << "ERROR: reflect<" << N << ">: dim=" << dim << " does not exist." << std::endl;
+				return CubeI<N>();
+			}
+			static void test()
+			{
+				static_assert(equal<N>(function_composition<N>(value(0), value(0)), init_cube_struct<N>::value()), "");
+				static_assert(equal<N>(function_composition<N>(value(1), value(1)), init_cube_struct<N>::value()), "");
+				static_assert(equal<N>(function_composition<N>(value(2), value(2)), init_cube_struct<N>::value()), "");
+				static_assert(equal<N>(function_composition<N>(value(3), value(3)), init_cube_struct<N>::value()), "");
+				static_assert(equal<N>(function_composition<N>(value(4), value(4)), init_cube_struct<N>::value()), "");
+				static_assert(equal<N>(function_composition<N>(value(5), value(5)), init_cube_struct<N>::value()), "");
 			}
 		};
 		#pragma endregion
@@ -1567,6 +1745,236 @@ namespace n_cube
 				}
 			}
 		};
+		template <> struct rotate<6>
+		{
+			static constexpr int N = 6;
+
+			static constexpr std::array<int, (N - 2)> fixed_dimensions(const int d1, const int d2)
+			{
+				const int d1a = std::min(d1, d2);
+				const int d2a = std::max(d1, d2);
+
+				if ((d1a == 0) & (d2a == 1)) return { 2, 3, 4, 5 };
+				if ((d1a == 0) & (d2a == 2)) return { 1, 3, 4, 5 };
+				if ((d1a == 0) & (d2a == 3)) return { 1, 2, 4, 5 };
+				if ((d1a == 0) & (d2a == 4)) return { 1, 2, 3, 5 };
+				if ((d1a == 0) & (d2a == 5)) return { 1, 2, 3, 4 };
+				if ((d1a == 1) & (d2a == 2)) return { 0, 3, 4, 5 };
+				if ((d1a == 1) & (d2a == 3)) return { 0, 2, 4, 5 };
+				if ((d1a == 1) & (d2a == 4)) return { 0, 2, 3, 5 };
+				if ((d1a == 1) & (d2a == 5)) return { 0, 2, 3, 4 };
+				if ((d1a == 2) & (d2a == 3)) return { 0, 1, 4, 5 };
+				if ((d1a == 2) & (d2a == 4)) return { 0, 1, 3, 5 };
+				if ((d1a == 2) & (d2a == 5)) return { 0, 1, 3, 4 };
+				if ((d1a == 3) & (d2a == 4)) return { 0, 1, 2, 5 };
+				if ((d1a == 3) & (d2a == 5)) return { 0, 1, 2, 4 };
+				if ((d1a == 4) & (d2a == 5)) return { 0, 1, 2, 3 };
+
+				return { -1, -1, -1, -1 };
+			}
+			static constexpr CubeI<N> cycles_2_cube(const std::array<Cycle, 16>& cycles)
+			{
+				return CubeI<N>{
+					find_next_in_cycle(cycles, 0),
+						find_next_in_cycle(cycles, 1),
+						find_next_in_cycle(cycles, 2),
+						find_next_in_cycle(cycles, 3),
+
+						find_next_in_cycle(cycles, 4),
+						find_next_in_cycle(cycles, 5),
+						find_next_in_cycle(cycles, 6),
+						find_next_in_cycle(cycles, 7),
+
+						find_next_in_cycle(cycles, 8),
+						find_next_in_cycle(cycles, 9),
+						find_next_in_cycle(cycles, 10),
+						find_next_in_cycle(cycles, 11),
+
+						find_next_in_cycle(cycles, 12),
+						find_next_in_cycle(cycles, 13),
+						find_next_in_cycle(cycles, 14),
+						find_next_in_cycle(cycles, 15),
+
+						find_next_in_cycle(cycles, 16),
+						find_next_in_cycle(cycles, 17),
+						find_next_in_cycle(cycles, 18),
+						find_next_in_cycle(cycles, 19),
+
+						find_next_in_cycle(cycles, 20),
+						find_next_in_cycle(cycles, 21),
+						find_next_in_cycle(cycles, 22),
+						find_next_in_cycle(cycles, 23),
+
+						find_next_in_cycle(cycles, 24),
+						find_next_in_cycle(cycles, 25),
+						find_next_in_cycle(cycles, 26),
+						find_next_in_cycle(cycles, 27),
+
+						find_next_in_cycle(cycles, 28),
+						find_next_in_cycle(cycles, 29),
+						find_next_in_cycle(cycles, 30),
+						find_next_in_cycle(cycles, 31),
+
+						find_next_in_cycle(cycles, 32),
+						find_next_in_cycle(cycles, 33),
+						find_next_in_cycle(cycles, 34),
+						find_next_in_cycle(cycles, 35),
+
+						find_next_in_cycle(cycles, 36),
+						find_next_in_cycle(cycles, 37),
+						find_next_in_cycle(cycles, 38),
+						find_next_in_cycle(cycles, 39),
+
+						find_next_in_cycle(cycles, 40),
+						find_next_in_cycle(cycles, 41),
+						find_next_in_cycle(cycles, 42),
+						find_next_in_cycle(cycles, 43),
+
+						find_next_in_cycle(cycles, 44),
+						find_next_in_cycle(cycles, 45),
+						find_next_in_cycle(cycles, 46),
+						find_next_in_cycle(cycles, 47),
+
+						find_next_in_cycle(cycles, 48),
+						find_next_in_cycle(cycles, 49),
+						find_next_in_cycle(cycles, 50),
+						find_next_in_cycle(cycles, 51),
+
+						find_next_in_cycle(cycles, 52),
+						find_next_in_cycle(cycles, 53),
+						find_next_in_cycle(cycles, 54),
+						find_next_in_cycle(cycles, 55),
+
+						find_next_in_cycle(cycles, 56),
+						find_next_in_cycle(cycles, 57),
+						find_next_in_cycle(cycles, 58),
+						find_next_in_cycle(cycles, 59),
+
+						find_next_in_cycle(cycles, 60),
+						find_next_in_cycle(cycles, 61),
+						find_next_in_cycle(cycles, 62),
+						find_next_in_cycle(cycles, 63)
+				};
+			}
+			static constexpr CubeI<N> value(const int d1, const int d2)
+			{
+				const auto cycle = create_cycle(d1, d2);
+				const auto dim_fixed = fixed_dimensions(d1, d2);
+				const auto cycles = std::array<Cycle, 16> {
+					template_tools::add(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2]) | (0 << dim_fixed[3])),
+					template_tools::add(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2]) | (1 << dim_fixed[3])),
+					template_tools::add(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (1 << dim_fixed[2]) | (0 << dim_fixed[3])),
+					template_tools::add(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (1 << dim_fixed[2]) | (1 << dim_fixed[3])),
+					template_tools::add(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1]) | (0 << dim_fixed[2]) | (0 << dim_fixed[3])),
+					template_tools::add(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1]) | (0 << dim_fixed[2]) | (1 << dim_fixed[3])),
+					template_tools::add(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1]) | (1 << dim_fixed[2]) | (0 << dim_fixed[3])),
+					template_tools::add(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1]) | (1 << dim_fixed[2]) | (1 << dim_fixed[3])),
+					template_tools::add(cycle, (1 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2]) | (0 << dim_fixed[3])),
+					template_tools::add(cycle, (1 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2]) | (1 << dim_fixed[3])),
+					template_tools::add(cycle, (1 << dim_fixed[0]) | (0 << dim_fixed[1]) | (1 << dim_fixed[2]) | (0 << dim_fixed[3])),
+					template_tools::add(cycle, (1 << dim_fixed[0]) | (0 << dim_fixed[1]) | (1 << dim_fixed[2]) | (1 << dim_fixed[3])),
+					template_tools::add(cycle, (1 << dim_fixed[0]) | (1 << dim_fixed[1]) | (0 << dim_fixed[2]) | (0 << dim_fixed[3])),
+					template_tools::add(cycle, (1 << dim_fixed[0]) | (1 << dim_fixed[1]) | (0 << dim_fixed[2]) | (1 << dim_fixed[3])),
+					template_tools::add(cycle, (1 << dim_fixed[0]) | (1 << dim_fixed[1]) | (1 << dim_fixed[2]) | (0 << dim_fixed[3])),
+					template_tools::add(cycle, (1 << dim_fixed[0]) | (1 << dim_fixed[1]) | (1 << dim_fixed[2]) | (1 << dim_fixed[3]))
+				};
+				return cycles_2_cube(cycles);
+			}
+			static void test()
+			{
+				constexpr auto id = init_cube_struct<N>::value();
+				{
+					constexpr auto a = value(0, 1); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(1, 0); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+				}
+				{
+					constexpr auto a = value(0, 2); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(2, 0); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+				}
+				{
+					constexpr auto a = value(0, 3); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(3, 0); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+				}
+				{
+					constexpr auto a = value(0, 4); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(4, 0); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+				}
+				{
+					constexpr auto a = value(0, 5); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(5, 0); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+				}
+				{
+					constexpr auto a = value(1, 2); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(2, 1); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+				}
+				{
+					constexpr auto a = value(1, 3); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(3, 1); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+				}
+				{
+					constexpr auto a = value(1, 4); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(4, 1); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+				}
+				{
+					constexpr auto a = value(1, 5); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(5, 1); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+				}
+				{
+					constexpr auto a = value(2, 3); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(3, 2); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+				}
+				{
+					constexpr auto a = value(2, 4); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(4, 2); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+				}
+				{
+					constexpr auto a = value(2, 5); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(5, 2); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+				}
+				{
+					constexpr auto a = value(3, 4); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(4, 3); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+				}
+				{
+					constexpr auto a = value(3, 5); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(5, 3); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+				}
+				{
+					constexpr auto a = value(4, 5); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(5, 4); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, b), id), "");
+					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+				}
+			}
+		};
 		#pragma endregion
 
 		// forward declaration
@@ -1747,6 +2155,71 @@ namespace n_cube
 				return results;
 			}
 		};
+		template <> struct create_transformations_struct<6>
+		{
+			static constexpr int N = 6;
+			static Transformations<N> value(const std::array<std::string, N>& descr)
+			{
+				const std::string d0 = descr[0];
+				const std::string d1 = descr[1];
+				const std::string d2 = descr[2];
+				const std::string d3 = descr[3];
+				const std::string d4 = descr[4];
+				const std::string d5 = descr[5];
+
+				Transformations<N> transformations;
+				transformations.push_back(std::make_pair(reflect<N>::value(0), "Ref[" + d0 + "]"));
+				transformations.push_back(std::make_pair(reflect<N>::value(1), "Ref[" + d1 + "]"));
+				transformations.push_back(std::make_pair(reflect<N>::value(2), "Ref[" + d2 + "]"));
+				transformations.push_back(std::make_pair(reflect<N>::value(3), "Ref[" + d3 + "]"));
+				transformations.push_back(std::make_pair(reflect<N>::value(4), "Ref[" + d4 + "]"));
+				transformations.push_back(std::make_pair(reflect<N>::value(5), "Ref[" + d5 + "]"));
+
+				transformations.push_back(std::make_pair(rotate<N>::value(0, 1), "Rot[" + d0 + "," + d1 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(0, 2), "Rot[" + d0 + "," + d2 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(0, 3), "Rot[" + d0 + "," + d3 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(0, 4), "Rot[" + d0 + "," + d4 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(0, 5), "Rot[" + d0 + "," + d5 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(1, 2), "Rot[" + d1 + "," + d2 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(1, 3), "Rot[" + d1 + "," + d3 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(1, 4), "Rot[" + d1 + "," + d4 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(1, 5), "Rot[" + d1 + "," + d5 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(2, 3), "Rot[" + d2 + "," + d3 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(2, 4), "Rot[" + d2 + "," + d4 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(2, 5), "Rot[" + d2 + "," + d5 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(3, 4), "Rot[" + d3 + "," + d4 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(3, 5), "Rot[" + d3 + "," + d5 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(4, 5), "Rot[" + d4 + "," + d5 + "]"));
+				return transformations;
+			}
+			static constexpr std::array<CubeI<N>, 21> value()
+			{
+				constexpr auto results = std::array<CubeI<N>, 21> {
+					reflect<N>::value(0),
+						reflect<N>::value(1),
+						reflect<N>::value(2),
+						reflect<N>::value(3),
+						reflect<N>::value(4),
+						reflect<N>::value(5),
+						rotate<N>::value(0, 1),
+						rotate<N>::value(0, 2),
+						rotate<N>::value(0, 3),
+						rotate<N>::value(0, 4),
+						rotate<N>::value(0, 5),
+						rotate<N>::value(1, 2),
+						rotate<N>::value(1, 3),
+						rotate<N>::value(1, 4),
+						rotate<N>::value(1, 5),
+						rotate<N>::value(2, 3),
+						rotate<N>::value(2, 4),
+						rotate<N>::value(2, 5),
+						rotate<N>::value(3, 4),
+						rotate<N>::value(3, 5),
+						rotate<N>::value(4, 5)
+				};
+				return results;
+			}
+		};
 		#pragma endregion
 
 		#pragma region transitive closure
@@ -1837,7 +2310,7 @@ namespace n_cube
 		#pragma endregion
 
 		#pragma region greedy rewrite tranformations
-		static std::tuple<Transformations<0>, Transformations<1>, Transformations<2>, Transformations<3>, Transformations<4>, Transformations<5>> transformations_greedy_cache;
+		static std::tuple<Transformations<0>, Transformations<1>, Transformations<2>, Transformations<3>, Transformations<4>, Transformations<5>, Transformations<6>> transformations_greedy_cache;
 		template <int N> struct create_transformations_for_greedy_rewrite_struct
 		{
 			static Transformations<N> value(const std::array<std::string, N>& descr)
@@ -1980,7 +2453,7 @@ namespace n_cube
 		#pragma endregion
 
 		#pragma region all transformations
-		static std::tuple<Transformations<0>, Transformations<1>, Transformations<2>, Transformations<3>, Transformations<4>, Transformations<5>> tranformations_cache;
+		static std::tuple<Transformations<0>, Transformations<1>, Transformations<2>, Transformations<3>, Transformations<4>, Transformations<5>, Transformations<6>> tranformations_cache;
 
 		template <int N> const Transformations<N> all_transformations(const bool add_descriptions)
 		{
@@ -2478,7 +2951,7 @@ namespace n_cube
 	template <int N> void print_all_transformations()
 	{
 		std::cout << "Transformations obtained by transitive closure N=" << N << ":" << std::endl;
-		const auto all_transformations = details::all_transformations<N>(true);
+		const auto all_transformations = details::all_transformations<N>(false);
 
 		// create a map such that the transformations are sorted
 		std::map<CubeI<N>, std::string> trans2;

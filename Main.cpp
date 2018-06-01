@@ -8,18 +8,16 @@ int main(int, char** /*argv[]*/)
 {
 	const auto start = std::chrono::system_clock::now();
 
-	//srand((unsigned int)time(NULL));
-	srand(12345678);
-
 	//n_cube::print_all_transformations<1>();
 	//n_cube::print_all_transformations<2>();
 	//n_cube::print_all_transformations<3>();
 	//n_cube::print_all_transformations<4>();
 	//n_cube::print_all_transformations<5>();
+	n_cube::print_all_transformations<6>(); // takes 128 sec
 	//n_cube::print_all_class_ids<1>();
 	//n_cube::print_all_class_ids<2>();
 	//n_cube::print_all_class_ids<3>();
-	n_cube::print_all_class_ids<4>(); //222 classes; 65536 = 2^16 bfs
+	//n_cube::print_all_class_ids<4>(); //222 classes; 65536 = 2^16 bfs
 	//n_cube::print_all_class_ids<5>(); // takes ? ms: ? classes; 2^32 bfs
 	//n_cube::test_greedy_rewrite_algorithm<3>();
 	//n_cube::test_greedy_rewrite_algorithm<4>(); //takes 8 sec
