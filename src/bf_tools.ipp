@@ -21,8 +21,8 @@ namespace bf_tools
 			const BF bf,
 			const int n_vars)
 		{
-			BF id1 = -1;
-			BF id2 = -1;
+			BF id1 = static_cast<BF>(-1);
+			BF id2 = static_cast<BF>(-1);
 
 			switch (n_vars)
 			{

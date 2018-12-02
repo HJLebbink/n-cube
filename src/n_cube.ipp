@@ -173,7 +173,7 @@ namespace n_cube
 
 		if (false)
 		{
-			if (N == 3)
+			if constexpr (N == 3)
 			{
 				r += "210:\n--------\n";
 
@@ -1181,9 +1181,9 @@ namespace n_cube
 				std::cout << "ERROR: reflect<" << N << ">::value: dim=" << dim << " does not exist." << std::endl;
 				return CubeI<N>();
 			}
-			static constexpr CubeI<N> invalid(const int dim, const int var)
+			static constexpr CubeI<N> invalid(const int /*dim*/, const int /*var*/)
 			{
-				std::cout << "ERROR: reflect<" << N << ">::invalid: dim=" << dim << " does not exist." << std::endl;
+				//std::cout << "ERROR: reflect<" << N << ">::invalid: dim=" << dim << " does not exist." << std::endl;
 				return CubeI<N>();
 			}
 		};
@@ -2413,7 +2413,7 @@ namespace n_cube
 		template <> struct create_transformations_for_greedy_rewrite_struct<4>
 		{
 			static constexpr int N = 4;
-			static Transformations<N> value(const std::array<std::string, N>& descr)
+			static Transformations<N> value(const std::array<std::string, N>& /*descr*/)
 			{
 				if (std::get<N>(transformations_greedy_cache).empty())
 				{
@@ -2433,7 +2433,7 @@ namespace n_cube
 		template <> struct create_transformations_for_greedy_rewrite_struct<5>
 		{
 			static constexpr int N = 5;
-			static Transformations<N> value(const std::array<std::string, N>& descr)
+			static Transformations<N> value(const std::array<std::string, N>& /*descr*/)
 			{
 				if (std::get<N>(transformations_greedy_cache).empty())
 				{
@@ -2838,7 +2838,7 @@ namespace n_cube
 	}
 
 	// find the transformation that when applied to bf1 yields bf2.
-	template <int N> std::vector<std::pair<CubeI<N>, std::string>> find_transformation(const BF bf1, const BF bf2, const std::array<std::string, N>& descr)
+	template <int N> std::vector<std::pair<CubeI<N>, std::string>> find_transformation(const BF bf1, const BF bf2, const std::array<std::string, N>& /*descr*/)
 	{
 		std::vector<std::pair<CubeI<N>, std::string>> results;
 
