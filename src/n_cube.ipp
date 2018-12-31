@@ -154,7 +154,7 @@ namespace n_cube
 	using Cube = std::array<CubeType, (1 << DIM)>;
 
 	template<int DIM>
-	using CubeI = std::array<int, (1 << DIM)>;
+	using CubeI = std::array<int, ((1 << DIM))>;
 
 	template<int DIM>
 	using CubeMap = std::map<CubeI<DIM>, std::string>;
@@ -655,11 +655,11 @@ namespace n_cube
 		#pragma region concat_cube
 		template <int N> struct concat_cube_struct
 		{
-			static constexpr CubeI<N + 1> value(const CubeI<N>& a, const CubeI<N>& b)
+			static constexpr CubeI<(N + 1)> value(const CubeI<N>& a, const CubeI<N>& b)
 			{
 				std::cout << "ERROR: concat_cube: dim=" << N << " not implemented yet" << std::endl;
 				getchar();
-				return CubeI<N + 1>();
+				return CubeI<(N + 1)>();
 			}
 		};
 		template <> struct concat_cube_struct<1>
