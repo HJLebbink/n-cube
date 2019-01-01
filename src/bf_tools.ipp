@@ -169,8 +169,8 @@ namespace bf_tools
 				return 0;
 			}
 
-			const unsigned long long vars1 = bf_used_vars(id1, n_vars - 1);
-			const unsigned long long vars2 = bf_used_vars(id2, n_vars - 1);
+			const unsigned long long vars1 = bf_used_vars_2(id1, n_vars - 1);
+			const unsigned long long vars2 = bf_used_vars_2(id2, n_vars - 1);
 			const unsigned long long result = (id1 == id2) ? (vars1 | vars2) : (vars1 | vars2 | (1ULL << (n_vars - 1)));
 			//std::cout << "bf_used_vars(bf = " << tools::to_string_binary((unsigned int)bf) << ", n_vars=" << n_vars << ")" << std::endl;
 			//std::cout << "id1=" << tools::to_string_binary((unsigned char)id1) << "; id2=" << tools::to_string_binary((unsigned char)id2) << "; vars1=" << tools::to_string_binary((unsigned char)vars1) << "; vars2=" << tools::to_string_binary((unsigned char)vars2) << "; result="<< tools::to_string_binary((unsigned char)result) << std::endl;
@@ -200,7 +200,7 @@ namespace bf_tools
 						descr2.push_back(descr[i]);
 					}
 				}
-				if (true)
+				if (false)
 				{
 					std::cout << "remove_redundant_vars: bf=" << bf << "; n_vars=" << n_vars << "; n_used_vars=" << n_used_vars << std::endl;
 					for (int i = 0; i < n_used_vars; ++i)
@@ -256,46 +256,6 @@ namespace bf_tools
 			}
 		} // details
 
-
-
-		namespace test {
-
-			void remove_redundant_vars_test() {
-				std::vector<std::tuple<const unsigned long long, int>> test_cases = { { {0x00FF, 1}, {0x00FE, 4} } };
-
-				for (const auto c : test_cases) {
-
-				}
-				//const auto tup = remove_redundant_vars(c[i], )
-			}
-			void test_bf_used_vars_1()
-			{
-				for (int i = 0; i < 1000000; ++i) {
-					int r = (std::rand() & 0xFF) + ((std::rand() & 0xFF) << 8) + ((std::rand() & 0xFF) << 16) + ((std::rand() & 0xFF) << 24);
-
-					const unsigned long long result1 = bf_used_vars(r, 5);
-					const unsigned long long result2 = bf_used_vars(std::bitset<32>(r));
-
-					if (result1 != result2) std::cout << "r=" << r << "; result1 = " << std::bitset<32>(result1) << "; result2 = " << std::bitset<32>(result2) << std::endl;
-				}
-			}
-			void test_bf_used_vars_2()
-			{
-				constexpr size_t Nvars = 9;
-
-				for (int i = 0; i < 1000000; ++i) {
-					const auto r = random_bf<Nvars>();
-					const unsigned long long result2 = bf_used_vars(r);
-
-					if (count_bits(result2) < Nvars) {
-						std::cout << "bf=" << r << "; used vars = " << std::bitset<Nvars>(result2) << std::endl;
-					}
-				}
-			}
-		} // test
-
-
-
 	}
 
 	// get a random boolean function for the provided number of variables _Nvars
@@ -321,14 +281,14 @@ namespace bf_tools
 		return details::count_bits(details::bf_used_vars(bf, n_vars));
 	}
 
-	template <size_t _Bits>
-	[[nodiscard]] std::bitset<_Bits> create_truth_table_var(int i)
+	template <size_t S>
+	[[nodiscard]] std::bitset<S> create_truth_table_var(int i)
 	{
-		auto result = std::bitset<_Bits>(); // construct with all false values
+		auto result = std::bitset<S>(); // construct with all false values
 		bool b = false;
 		int p = 0;
 
-		for (int j = 0; j < (_Bits / (1ull << i)); ++j)
+		for (int j = 0; j < (S / (1ull << i)); ++j)
 		{
 			for (int k = 0; k < (1 << i); ++k, ++p) result.set(p, b);
 			b = !b;
@@ -336,17 +296,19 @@ namespace bf_tools
 		return result;
 	}
 
+	// return the number of bits that missmatch, that is, return the number of different bits.
 	template <size_t S>
 	[[nodiscard]] constexpr int missmatch(const std::bitset<S>& bf1, const std::bitset<S>& bf2) {
 		const auto eq = (bf1 ^ bf2);
 		return static_cast<int>(eq.count());
 	}
 
-
+	// return the used variables. A set bit at position p indicates that the variable p is used.
 	[[nodiscard]] constexpr unsigned long long bf_used_vars(const BF bf, const int n_vars) {
 		return details::bf_used_vars(bf, n_vars);
 	}
 
+	// return the used variables. A set bit at position p indicates that the variable p is used.
 	template <size_t S>
 	[[nodiscard]] constexpr unsigned long long bf_used_vars(const std::bitset<S>& bf) {
 		return details::bf_used_vars(bf);
@@ -360,4 +322,77 @@ namespace bf_tools
 	{
 		return details::remove_redundant_vars(bf, content, descr);
 	}
+
+	namespace test
+	{
+		void remove_redundant_vars_bf4_test() 
+		{
+			std::vector<std::string> descr = { "x0", "x1", "x2", "x3" };
+			std::vector<std::bitset<16>> content = {
+				create_truth_table_var<16>(0),
+				create_truth_table_var<16>(1),
+				create_truth_table_var<16>(2),
+				create_truth_table_var<16>(3)
+			};
+			for (int i = 0; i < content.size(); ++i) {
+				std::cout << "i=" << i << ":" << content[i].to_string() << std::endl;
+			}
+			std::cout << "---------------------------------" << std::endl;
+
+
+			if (true)
+			{
+				std::vector<std::tuple<const unsigned long long, int>> test_cases = { { {0x00FF, 1}, {0x00FE, 4} } };
+
+				for (const auto c : test_cases) {
+					const auto bf = std::get<0>(c);
+					const auto tup = remove_redundant_vars(bf, content, descr);
+					const auto c = std::get<0>(tup);
+
+					std::cout << "BF[" << std::bitset<16>(bf).to_string() << "]" << std::endl;
+					for (int j = 0; j < c.size(); ++j) {
+						std::cout << "j=" << j << ": " << c[j].to_string() << std::endl;
+					}
+				}
+			}
+			else 
+			{
+				constexpr int N = 4;
+				constexpr int n_bf = (1 << (1 << N));
+				for (int i = 0; i < n_bf; ++i) {
+					const auto tup = remove_redundant_vars(i, content, descr);
+					const auto c = std::get<0>(tup);
+
+					std::cout << "BF[" << std::bitset<16>(i).to_string() << "]" << std::endl;
+					for (int j = 0; j < c.size(); ++j) {
+						std::cout << "j=" << j << ": " << c[j].to_string() << std::endl;
+					}
+				}
+			}
+		}
+		void test_bf_used_vars_1()
+		{
+			for (int i = 0; i < 1000000; ++i) {
+				int r = (std::rand() & 0xFF) + ((std::rand() & 0xFF) << 8) + ((std::rand() & 0xFF) << 16) + ((std::rand() & 0xFF) << 24);
+
+				const unsigned long long result1 = bf_used_vars(r, 5);
+				const unsigned long long result2 = bf_used_vars(std::bitset<32>(r));
+
+				if (result1 != result2) std::cout << "r=" << r << "; result1 = " << std::bitset<32>(result1) << "; result2 = " << std::bitset<32>(result2) << std::endl;
+			}
+		}
+		void test_bf_used_vars_2()
+		{
+			constexpr size_t Nvars = 9;
+
+			for (int i = 0; i < 1000000; ++i) {
+				const auto r = random_bf<Nvars>();
+				const unsigned long long result2 = bf_used_vars(r);
+
+				if (details::count_bits(result2) < Nvars) {
+					std::cout << "bf=" << r << "; used vars = " << std::bitset<Nvars>(result2) << std::endl;
+				}
+			}
+		}
+	} // test
 }
