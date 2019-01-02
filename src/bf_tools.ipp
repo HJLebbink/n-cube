@@ -344,8 +344,8 @@ namespace bf_tools
 			{
 				std::vector<std::tuple<const unsigned long long, int>> test_cases = { { {0x00FF, 1}, {0x00FE, 4} } };
 
-				for (const auto c : test_cases) {
-					const auto bf = std::get<0>(c);
+				for (const auto test : test_cases) {
+					const auto bf = std::get<0>(test);
 					const auto tup = remove_redundant_vars(bf, content, descr);
 					const auto c = std::get<0>(tup);
 
