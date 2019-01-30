@@ -31,6 +31,6 @@ int main(int, char** /*argv[]*/)
 	std::cout << "DONE: passed time: " << tools::timing::elapsed_time_str(start, end);
 	std::cout << "-------------------" << std::endl;
 	std::cout << "Press RETURN to finish:" << std::endl;
-	getchar();
+	static_cast<void>(getchar());
 	return 0;
 }

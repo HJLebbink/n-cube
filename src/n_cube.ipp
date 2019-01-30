@@ -222,7 +222,7 @@ namespace n_cube
 			case 6: return std::bitset<64>(bf).to_string();
 			default:
 				std::cout << "ERROR: to_string_bin: dim=" << N << " not implemented yet" << std::endl;
-				getchar();
+				static_cast<void>(getchar());
 				return std::to_string(bf);
 		}
 	}
@@ -2862,7 +2862,7 @@ namespace n_cube
 			if (results.empty())
 			{
 				std::cout << "WARNING: could not find transformation" << std::endl;
-				getchar();
+				static_cast<void>(getchar());
 			}
 		}
 		return results;
@@ -2944,7 +2944,7 @@ namespace n_cube
 		}
 
 		std::cout << "WARNING: boolean_expression_transform_3_2: transformation " << to_string<N>(transformation) << " not implemented yet!";
-		getchar();
+		static_cast<void>(getchar());
 		return { params, descr };
 	}
 

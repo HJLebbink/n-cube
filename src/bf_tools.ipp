@@ -31,7 +31,7 @@ namespace bf_tools
 			{
 				for (int j = 0; j < Nbits / 8; ++j) {
 					const int rand = std::rand();
-					for (int k = 0; k < 8; ++k) result.set((j * 8) + k, ((rand >> k) & 1) == 1);
+					for (int k = 0; k < 8; ++k) result.set((static_cast<long long>(j) * 8) + k, ((rand >> k) & 1) == 1);
 				}
 			}
 			return result;
@@ -72,7 +72,7 @@ namespace bf_tools
 					break;
 				default:
 					std::cout << "ERROR: bf_used_vars not implemented yet." << std::endl;
-					getchar();
+					static_cast<void>(getchar());
 					return 0;
 			}
 
@@ -165,7 +165,7 @@ namespace bf_tools
 				break;
 			default:
 				std::cout << "ERROR: bf_used_vars not implemented yet." << std::endl;
-				getchar();
+				static_cast<void>(getchar());
 				return 0;
 			}
 
