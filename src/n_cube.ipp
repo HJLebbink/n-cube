@@ -2645,7 +2645,7 @@ namespace n_cube
 			return std::make_tuple(smallest_bf, transform_string);
 		}
 	}
-	template <int N> BF class_id(const BF bf)
+	template <int N> constexpr BF class_id(const BF bf)
 	{
 		const bool method1 = true;
 		return (method1)
@@ -2656,7 +2656,7 @@ namespace n_cube
 	#pragma endregion 
 
 	// Get the set of BFs that are in the equivalence class of the provided bf.
-	template <int N> std::set<BF> equiv_class(const BF bf)
+	template <int N> constexpr std::set<BF> equiv_class(const BF bf)
 	{
 		const auto all_transformations = details::all_transformations<N>(false);
 
@@ -2676,7 +2676,7 @@ namespace n_cube
 	namespace details
 	{
 		//Naive method: iterates over all bf of cardinality >=N
-		template <int N> std::set<BF> all_class_ids_method0()
+		template <int N> constexpr std::set<BF> all_class_ids_method0()
 		{
 			int counter = 0xFFFF;
 			std::set<BF> results;
@@ -2712,14 +2712,14 @@ namespace n_cube
 			return results;
 		}
 	}
-	template <int N> std::set<BF> all_class_ids()
+	template <int N> constexpr std::set<BF> all_class_ids()
 	{
 		const bool use_method0 = true;
 		return (use_method0)
 			? details::all_class_ids_method0<N>()
 			: details::all_class_ids_method1<N>();
 	}
-	template <int N> std::vector<std::set<BF>> all_class_ids_with_values()
+	template <int N> constexpr std::vector<std::set<BF>> all_class_ids_with_values()
 	{
 		const auto class_ids = all_class_ids<N>();
 
@@ -2984,7 +2984,7 @@ namespace n_cube
 				if (cardinality == c)
 				{
 					std::cout << "class #" << std::dec << class_counter << ": cardinality " << cardinality << ": " << to_string_hex<N>(bf_class_id) << "=" << to_string_bin<N>(bf_class_id) << ": class set size:" << set.size();
-					for (const auto& bf : set)
+					for ([[maybe_unused]] const auto& bf : set)
 					{
 						//std::cout << to_string_bin<N>(bf) << " ";
 						//std::cout << std::uppercase << std::hex << std::setfill('0') << std::setw(2) << bf << " ";
