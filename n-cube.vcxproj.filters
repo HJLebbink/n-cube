@@ -20,6 +20,9 @@
     <ClInclude Include="src\timing.ipp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\array_tools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">

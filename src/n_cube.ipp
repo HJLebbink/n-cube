@@ -1,5 +1,4 @@
 #pragma once
-
 #include <string>
 #include <array>
 #include <set>
@@ -8,139 +7,88 @@
 #include <tuple>
 #include <numeric>
 #include <intrin.h>
+#include <mutex>
+#include <omp.h>
+#include <atomic>
 
+#include <time.h>
 
 #include "bf_tools.ipp"
+#include "array_tools.h"
 
-namespace template_tools
-{
+namespace prime {
 
-	template<typename T, std::size_t N, std::size_t... I>
-	constexpr std::array<T, N> create_array(std::index_sequence<I...>)
-	{
-		return std::array<T, N>{ {I...} };
-	}
+	namespace {
+		constexpr int MAXN = 10000;
+		int spf[MAXN];
+		bool spf_filled = false;
 
-	template<typename T, std::size_t N>
-	constexpr std::array<T, N> create_index_array()
-	{
-		return create_array<T, N>(std::make_index_sequence<N>{});
-	}
-
-	constexpr std::array<int, 2> add(const std::array<int, 2>& a, const int i)
-	{
-		return std::array<int, 2>{ a[0] + i, a[1] + i };
-	}
-	constexpr std::array<int, 4> add(const std::array<int, 4>& a, const int i)
-	{
-		return std::array<int, 4>{ a[0] + i, a[1] + i, a[2] + i, a[3] + i };
-	}
-	constexpr std::array<int, 8> add(const std::array<int, 8>& a, const int i)
-	{
-		return std::array<int, 8>{ a[0] + i, a[1] + i , a[2] + i , a[3] + i , a[4] + i , a[5] + i , a[6] + i , a[7] + i };
-	}
-	constexpr std::array<int, 16> add(const std::array<int, 16>& a, const int i)
-	{
-		return std::array<int, 16>{
-			a[0 + 0 * 8] + i, a[1 + 0 * 8] + i, a[2 + 0 * 8] + i, a[3 + 0 * 8] + i, a[4 + 0 * 8] + i, a[5 + 0 * 8] + i, a[6 + 0 * 8] + i, a[7 + 0 * 8] + i,
-			a[0 + 1 * 8] + i, a[1 + 1 * 8] + i, a[2 + 1 * 8] + i, a[3 + 1 * 8] + i, a[4 + 1 * 8] + i, a[5 + 1 * 8] + i, a[6 + 1 * 8] + i, a[7 + 1 * 8] + i
-		};
-	}
-	constexpr std::array<int, 32> add(const std::array<int, 32>& a, const int i)
-	{
-		return std::array<int, 32>{
-			a[0 + 0 * 8] + i, a[1 + 0 * 8] + i, a[2 + 0 * 8] + i, a[3 + 0 * 8] + i, a[4 + 0 * 8] + i, a[5 + 0 * 8] + i, a[6 + 0 * 8] + i, a[7 + 0 * 8] + i,
-			a[0 + 1 * 8] + i, a[1 + 1 * 8] + i, a[2 + 1 * 8] + i, a[3 + 1 * 8] + i, a[4 + 1 * 8] + i, a[5 + 1 * 8] + i, a[6 + 1 * 8] + i, a[7 + 1 * 8] + i,
-			a[0 + 2 * 8] + i, a[1 + 2 * 8] + i, a[2 + 2 * 8] + i, a[3 + 2 * 8] + i, a[4 + 2 * 8] + i, a[5 + 2 * 8] + i, a[6 + 2 * 8] + i, a[7 + 2 * 8] + i,
-			a[0 + 3 * 8] + i, a[1 + 3 * 8] + i, a[2 + 3 * 8] + i, a[3 + 3 * 8] + i, a[4 + 3 * 8] + i, a[5 + 3 * 8] + i, a[6 + 3 * 8] + i, a[7 + 3 * 8] + i
-		};
-	}
-
-	// insert a zero bit in i at position index
-	constexpr int insert_zero_1(const int i, const int index)
-	{
-		const int m = (1 << index) - 1;
-		const int mask_low = i & m;
-		const int mask_high = (i & ~m) << 1;
-		const int mask = mask_low | mask_high;
-		return mask;
-	}
-	constexpr std::array<int, 2> insert_zero_2(const std::array<int, 2>& m, const int index)
-	{
-		return std::array<int, 2>{insert_zero_1(m[0], index), insert_zero_1(m[1], index)};
-	}
-	constexpr std::array<int, 4> insert_0(const std::array<int, 4>& m, const int index)
-	{
-		return std::array<int, 4>{insert_zero_1(m[0], index), insert_zero_1(m[1], index), insert_zero_1(m[2], index), insert_zero_1(m[3], index)};
-	}
-	constexpr std::array<int, 8> insert_0(const std::array<int, 8>& m, const int index)
-	{
-		return std::array<int, 8>{
-			insert_zero_1(m[0], index), insert_zero_1(m[1], index), insert_zero_1(m[2], index), insert_zero_1(m[3], index),
-			insert_zero_1(m[4], index), insert_zero_1(m[5], index), insert_zero_1(m[6], index), insert_zero_1(m[7], index)
-		};
-	}
-
-	template <int M> constexpr std::array<int, M> insert_0(const std::array<int, M>& m, const int index1, const int index2)
-	{
-		return (index1 < index2)
-			? insert_0(insert_0(m, index2-1), index1)
-			: insert_0(insert_0(m, index1-1), index2);
-	}
-}
-
-namespace concat
-{
-	namespace details
-	{
-		template<size_t... Is>
-		struct seq {};
-		
-		template<size_t N, size_t... Is>
-		struct gen_seq : gen_seq<N - 1, N - 1, Is...> {};
-		
-		template<size_t... Is>
-		struct gen_seq<0, Is...> : seq<Is...> {};
-
-		// Expansion pack
-		template<typename T, size_t N1, size_t... I1, size_t N2, size_t... I2>
-		constexpr std::array<T, N1 + N2> concat_array(
-			const std::array<T, N1>& a1,
-			const std::array<T, N2>& a2,
-			seq<I1...>,
-			seq<I2...>)
+		void sieve()
 		{
-			return std::array<T, N1+N2>{ a1[I1]..., a2[I2]... };
+			spf[1] = 1;
+			for (int i = 2; i < MAXN; i++)
+
+				// marking smallest prime factor for every 
+				// number to be itself. 
+				spf[i] = i;
+
+			// separately marking spf for every even 
+			// number as 2 
+			for (int i = 4; i < MAXN; i += 2) {
+				spf[i] = 2;
+			}
+			for (int i = 3; (i * i) < MAXN; i++)
+			{
+				// checking if i is prime 
+				if (spf[i] == i)
+				{
+					// marking SPF for all numbers divisible by i 
+					for (int j = i * i; j < MAXN; j += i) {
+						// marking spf[j] if it is not  
+						// previously marked 
+						if (spf[j] == j) {
+							spf[j] = i;
+						}
+					}
+				}
+			}
 		}
-	}
 
-	template<typename T, size_t N1, size_t N2>
-	constexpr std::array<T, N1 + N2> concat_array(
-		const std::array<T, N1>& a1,
-		const std::array<T, N2>& a2)
+	}
+	// A O(log n) function returning primefactorization 
+	// by dividing by smallest prime factor at every step 
+	std::vector<int> get_factorization(int x)
 	{
-		return details::concat_array(a1, a2, details::gen_seq<N1>{}, details::gen_seq<N2>{});
+		if (!spf_filled) {
+			sieve();
+			spf_filled = true;
+		}
+		std::vector<int> ret;
+		while (x != 1)
+		{
+			ret.push_back(spf[x]);
+			x = x / spf[x];
+		}
+		return ret;
 	}
 
-	template<typename T, size_t N1, size_t N2, size_t N3>
-	constexpr std::array<T, N1 + N2 + N3> concat_array(
-		const std::array<T, N1>& a1,
-		const std::array<T, N2>& a2,
-		const std::array<T, N3>& a3)
-	{
-		return concat_array(a1, concat_array(a2, a3));
-	}
+	std::string vector_to_string(const std::vector<int>& a) {
+		std::stringstream result;
+		const int size = static_cast<int>(a.size());
 
-	template<typename T, size_t N1, size_t N2, size_t N3, size_t N4>
-	constexpr std::array<T, N1 + N2 + N3 + N4> concat_array(
-		const std::array<T, N1>& a1,
-		const std::array<T, N2>& a2,
-		const std::array<T, N3>& a3,
-		const std::array<T, N4>& a4)
-	{
-		return concat_array(concat_array(a1, a2), concat_array(a3, a4));
+		for (const int p : {2, 3, 5, 7, 11, 13}) {
+			int count = 0;
+			for (int i = 0; i < size; ++i) {
+				if (a[i] == p) {
+					count++;
+				}
+			}
+			if (count > 0) {
+				result << count << "*" << p << " + ";
+			}
+		}
+		return result.str().substr(0, result.str().length() - 3);
 	}
-
 }
 
 namespace n_cube
@@ -149,9 +97,12 @@ namespace n_cube
 	using BF = unsigned long long;
 
 	using CubeType = bool;
-
 	template<int DIM>
 	using Cube = std::array<CubeType, (1 << DIM)>;
+	
+	//template<int DIM>
+	//using Cube = std::bitset<(1 << DIM)>;
+
 
 	template<int DIM>
 	using CubeI = std::array<int, ((1 << DIM))>;
@@ -197,11 +148,13 @@ namespace n_cube
 
 		if (true)
 		{
+			const int size = static_cast<int>(c.size());
+
 			const std::string sep = "_";
-			for (int i = 0; i < static_cast<int>(c.size()); ++i)
+			for (int i = 0; i < size; ++i)
 			{
 				r += std::to_string(c[i]);
-				if (i < (static_cast<int>(c.size()) - 1)) r += sep;
+				if (i < (size - 1)) r += sep;
 			}
 		}
 		return r;
@@ -318,7 +271,7 @@ namespace n_cube
 				constexpr const auto i2 = index_split_1<D, 2>();
 				constexpr const auto i3 = index_split_1<D, 3>();
 
-				const CubeI<3> c = concat::concat_array(c0, c1);
+				const CubeI<3> c = array_tools::concat(c0, c1);
 				return { c[i0[0]], c[i0[1]], c[i1[0]], c[i1[1]], c[i2[0]], c[i2[1]], c[i3[0]], c[i3[1]] };
 			}
 
@@ -334,7 +287,7 @@ namespace n_cube
 				constexpr const auto i6 = index_split_1<D, 6>();
 				constexpr const auto i7 = index_split_1<D, 7>();
 
-				const CubeI<4> c = concat::concat_array(c0, c1);
+				const CubeI<4> c = array_tools::concat(c0, c1);
 				return {
 					c[i0[0]], c[i0[1]], c[i1[0]], c[i1[1]], c[i2[0]], c[i2[1]], c[i3[0]], c[i3[1]] ,
 					c[i4[0]], c[i4[1]], c[i5[0]], c[i5[1]], c[i6[0]], c[i6[1]], c[i7[0]], c[i7[1]]
@@ -580,7 +533,7 @@ namespace n_cube
 			static constexpr int N = 1;
 			static constexpr CubeI<N> value()
 			{
-				return std::array<int, (1 << N)>{ 0, 1 };
+				return array_tools::create_index_array<int, 1<<N>();
 			}
 			static std::array<std::string, N> descriptions() {
 				return { "x0" };
@@ -591,7 +544,7 @@ namespace n_cube
 			static constexpr int N = 2;
 			static constexpr CubeI<N> value()
 			{
-				return std::array<int, (1 << N)>{ 0, 1, 2, 3 };
+				return array_tools::create_index_array<int, 1<<N>();
 			}
 			static std::array<std::string, N> descriptions()
 			{
@@ -603,7 +556,7 @@ namespace n_cube
 			static constexpr int N = 3;
 			static constexpr CubeI<N> value()
 			{
-				return std::array<int, (1 << N)>{ 0, 1, 2, 3, 4, 5, 6, 7 };
+				return array_tools::create_index_array<int, 1<<N>();
 			}
 			static std::array<std::string, N> descriptions()
 			{
@@ -615,7 +568,7 @@ namespace n_cube
 			static constexpr int N = 4;
 			static constexpr CubeI<N> value()
 			{
-				return std::array<int, (1 << N)>{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+				return array_tools::create_index_array<int, 1<<N>();
 			}
 			static std::array<std::string, N> descriptions()
 			{
@@ -627,8 +580,7 @@ namespace n_cube
 			static constexpr int N = 5;
 			static constexpr CubeI<N> value()
 			{
-				return { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-					16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 };
+				return array_tools::create_index_array<int, 1<<N>();
 			}
 			static std::array<std::string, N> descriptions()
 			{
@@ -640,293 +592,27 @@ namespace n_cube
 			static constexpr int N = 6;
 			static constexpr CubeI<N> value()
 			{
-				return { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-					16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
-					32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
-					48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63 };
+				return array_tools::create_index_array<int, 1<<N>();
 			}
 			static std::array<std::string, N> descriptions()
 			{
 				return { "f", "e", "d", "c", "b", "a" };
 			}
 		};
+		template <> struct init_cube_struct<7>
+		{
+			static constexpr int N = 7;
+			static constexpr CubeI<N> value()
+			{
+				return array_tools::create_index_array<int, 1<<N>();
+			}
+			static std::array<std::string, N> descriptions()
+			{
+				return { "g", "f", "e", "d", "c", "b", "a" };
+			}
+		};
 		#pragma endregion
 
-		#pragma region concat_cube
-		template <int N> struct concat_cube_struct
-		{
-			static constexpr CubeI<(N + 1)> value(const CubeI<N>& a, const CubeI<N>& b)
-			{
-				std::cout << "ERROR: concat_cube: dim=" << N << " not implemented yet" << std::endl;
-				getchar();
-				return CubeI<(N + 1)>();
-			}
-		};
-		template <> struct concat_cube_struct<1>
-		{
-			static constexpr int N = 1;
-			static constexpr CubeI<N + 1> value(const CubeI<N>& a, const CubeI<N>& b)
-			{
-				return CubeI<N + 1>{a[0], a[1], b[0], b[1]};
-			}
-		};
-		template <> struct concat_cube_struct<2>
-		{
-			static constexpr int N = 2;
-			static constexpr CubeI<N + 1> value(const CubeI<N>& a, const CubeI<N>& b)
-			{
-				return CubeI<N + 1>{a[0], a[1], a[2], a[3], b[0], b[1], b[2], b[3]};
-			}
-		};
-		template <> struct concat_cube_struct<3>
-		{
-			static constexpr int N = 3;
-			static constexpr CubeI<N + 1> value(const CubeI<N>& a, const CubeI<N>& b)
-			{
-				return CubeI<N + 1>{
-					a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7],
-					b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7]
-				};
-			}
-		};
-		template <> struct concat_cube_struct<4>
-		{
-			static constexpr int N = 4;
-			static constexpr CubeI<N + 1> value(const CubeI<N>& a, const CubeI<N>& b)
-			{
-				return CubeI<N + 1>{
-					a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15],
-					b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8], b[9], b[10], b[11], b[12], b[13], b[14], b[15]
-				};
-			}
-		};
-		template <> struct concat_cube_struct<5>
-		{
-			static constexpr int N = 5;
-			static constexpr CubeI<N + 1> value(const CubeI<N>& a, const CubeI<N>& b)
-			{
-				return CubeI<N + 1>{
-					a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15],
-					a[16], a[17], a[18], a[19], a[20], a[21], a[22], a[23], a[24], a[25], a[26], a[27], a[28], a[29], a[30], a[31],
-					b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8], b[9], b[10], b[11], b[12], b[13], b[14], b[15],
-					b[16], b[17], b[18], b[19], b[20], b[21], b[22], b[23], b[24], b[25], b[26], b[27], b[28], b[29], b[30], b[31],
-				};
-			}
-		};
-
-		template <int N> constexpr CubeI<N + 1> concat_cube(const CubeI<N>& a, const CubeI<N>& b)
-		{
-			return concat_cube_struct<N>::value(a, b);
-		}
-		#pragma endregion
-
-		#pragma region equal
-		template <int N> struct equal_struct
-		{
-			static constexpr bool value(const CubeI<N>& a, const CubeI<N>&b)
-			{
-				std::cout << "ERROR: equal_struct: dim=" << N << " not implemented yet" << std::endl;
-				getchar();
-				return false;
-			}
-		};
-		template <> struct equal_struct<1>
-		{
-			static constexpr int N = 1;
-			static constexpr bool value(const CubeI<N>& a, const CubeI<N>&b)
-			{
-				return (a[0] == b[0]) 
-					&& (a[1] == b[1]);
-			}
-			static void test()
-			{
-				static_assert(value(init_cube_struct<N>::value(), init_cube_struct<N>::value()), "");
-			}
-		};
-		template <> struct equal_struct<2>
-		{
-			static constexpr int N = 2;
-			static constexpr bool value(const CubeI<N>& a, const CubeI<N>&b)
-			{
-				return (a[0] == b[0]) 
-					&& (a[1] == b[1]) 
-					&& (a[2] == b[2]) 
-					&& (a[3] == b[3]);
-			}
-			static void test()
-			{
-				static_assert(value(init_cube_struct<N>::value(), init_cube_struct<N>::value()), "");
-			}
-		};
-		template <> struct equal_struct<3>
-		{
-			static constexpr int N = 3;
-			static constexpr bool value(const CubeI<N>& a, const CubeI<N>&b)
-			{
-				return (a[0] == b[0])
-					&& (a[1] == b[1])
-					&& (a[2] == b[2])
-					&& (a[3] == b[3])
-					&& (a[4] == b[4])
-					&& (a[5] == b[5])
-					&& (a[6] == b[6])
-					&& (a[7] == b[7]);
-			}
-			static void test()
-			{
-				static_assert(value(init_cube_struct<N>::value(), init_cube_struct<N>::value()), "");
-			}
-		};
-		template <> struct equal_struct<4>
-		{
-			static constexpr int N = 4;
-			static constexpr bool value(const CubeI<N>& a, const CubeI<N>&b)
-			{
-				return (a[0] == b[0])
-					&& (a[1] == b[1])
-					&& (a[2] == b[2])
-					&& (a[3] == b[3])
-					&& (a[4] == b[4])
-					&& (a[5] == b[5])
-					&& (a[6] == b[6])
-					&& (a[7] == b[7])
-					&& (a[8] == b[8])
-					&& (a[9] == b[9])
-					&& (a[10] == b[10])
-					&& (a[11] == b[11])
-					&& (a[12] == b[12])
-					&& (a[13] == b[13])
-					&& (a[14] == b[14])
-					&& (a[15] == b[15]);
-			}
-			static void test()
-			{
-				static_assert(value(init_cube_struct<N>::value(), init_cube_struct<N>::value()), "");
-			}
-		};
-		template <> struct equal_struct<5>
-		{
-			static constexpr int N = 5;
-			static constexpr bool value(const CubeI<N>& a, const CubeI<N>&b)
-			{
-				return (a[0] == b[0])
-					&& (a[1] == b[1])
-					&& (a[2] == b[2])
-					&& (a[3] == b[3])
-					&& (a[4] == b[4])
-					&& (a[5] == b[5])
-					&& (a[6] == b[6])
-					&& (a[7] == b[7])
-					&& (a[8] == b[8])
-					&& (a[9] == b[9])
-					&& (a[10] == b[10])
-					&& (a[11] == b[11])
-					&& (a[12] == b[12])
-					&& (a[13] == b[13])
-					&& (a[14] == b[14])
-					&& (a[15] == b[15])
-					&& (a[16] == b[16])
-					&& (a[17] == b[17])
-					&& (a[18] == b[18])
-					&& (a[19] == b[19])
-					&& (a[20] == b[20])
-					&& (a[21] == b[21])
-					&& (a[22] == b[22])
-					&& (a[23] == b[23])
-					&& (a[24] == b[24])
-					&& (a[25] == b[25])
-					&& (a[26] == b[26])
-					&& (a[27] == b[27])
-					&& (a[28] == b[28])
-					&& (a[29] == b[29])
-					&& (a[30] == b[30])
-					&& (a[31] == b[31]);
-			}
-			static void test()
-			{
-				static_assert(value(init_cube_struct<N>::value(), init_cube_struct<N>::value()), "");
-			}
-		};
-		template <> struct equal_struct<6>
-		{
-			static constexpr int N = 6;
-			static constexpr bool value(const CubeI<N>& a, const CubeI<N>&b)
-			{
-				return (a[0] == b[0])
-					&& (a[1] == b[1])
-					&& (a[2] == b[2])
-					&& (a[3] == b[3])
-					&& (a[4] == b[4])
-					&& (a[5] == b[5])
-					&& (a[6] == b[6])
-					&& (a[7] == b[7])
-					&& (a[8] == b[8])
-					&& (a[9] == b[9])
-					&& (a[10] == b[10])
-					&& (a[11] == b[11])
-					&& (a[12] == b[12])
-					&& (a[13] == b[13])
-					&& (a[14] == b[14])
-					&& (a[15] == b[15])
-					&& (a[16] == b[16])
-					&& (a[17] == b[17])
-					&& (a[18] == b[18])
-					&& (a[19] == b[19])
-					&& (a[20] == b[20])
-					&& (a[21] == b[21])
-					&& (a[22] == b[22])
-					&& (a[23] == b[23])
-					&& (a[24] == b[24])
-					&& (a[25] == b[25])
-					&& (a[26] == b[26])
-					&& (a[27] == b[27])
-					&& (a[28] == b[28])
-					&& (a[29] == b[29])
-					&& (a[30] == b[30])
-					&& (a[31] == b[31])
-					&& (a[32] == b[32])
-					&& (a[33] == b[33])
-					&& (a[34] == b[34])
-					&& (a[35] == b[35])
-					&& (a[36] == b[36])
-					&& (a[37] == b[37])
-					&& (a[38] == b[38])
-					&& (a[39] == b[39])
-					&& (a[40] == b[40])
-					&& (a[41] == b[41])
-					&& (a[42] == b[42])
-					&& (a[43] == b[43])
-					&& (a[44] == b[44])
-					&& (a[45] == b[45])
-					&& (a[46] == b[46])
-					&& (a[47] == b[47])
-					&& (a[48] == b[48])
-					&& (a[49] == b[49])
-					&& (a[50] == b[50])
-					&& (a[51] == b[51])
-					&& (a[52] == b[52])
-					&& (a[53] == b[53])
-					&& (a[54] == b[54])
-					&& (a[55] == b[55])
-					&& (a[56] == b[56])
-					&& (a[57] == b[57])
-					&& (a[58] == b[58])
-					&& (a[59] == b[59])
-					&& (a[60] == b[60])
-					&& (a[61] == b[61])
-					&& (a[62] == b[62])
-					&& (a[63] == b[63]);
-			}
-			static void test()
-			{
-				static_assert(value(init_cube_struct<N>::value(), init_cube_struct<N>::value()), "");
-			}
-		};
-		template <int N> constexpr bool equal(const CubeI<N>& a, const CubeI<N>& b)
-		{
-			return equal_struct<N>::value(a, b);
-		}
-		#pragma endregion
 
 		#pragma region functional composition
 		template <int N, int M> struct composition_struct {};
@@ -1026,7 +712,7 @@ namespace n_cube
 		#pragma region transform
 		template <int N> struct apply_struct
 		{
-			static constexpr CubeI<N> value(const CubeI<N>& c, const CubeI<N>& ci)
+			static constexpr CubeI<N> value(const CubeI<N>& c, [[maybe_unused]] const CubeI<N>& ci)
 			{
 				std::cout << "ERROR: apply_struct: dim=" << N << " not implemented yet" << std::endl;
 				getchar();
@@ -1158,7 +844,7 @@ namespace n_cube
 		{
 			static_assert(D < N, "");
 			constexpr auto reflect_embedded_cube = reflect<(N - 1)>::value(D);
-			return details::concat_cube<N - 1>(reflect_embedded_cube, template_tools::add(reflect_embedded_cube, 1 << (N - 1)));
+			return array_tools::concat(reflect_embedded_cube, array_tools::add(reflect_embedded_cube, 1 << (N - 1)));
 		}
 		template <int N> struct reflect
 		{
@@ -1194,7 +880,7 @@ namespace n_cube
 			{
 				constexpr auto r0 = lift_reflect<N, 0>();
 				constexpr auto id = init_cube_struct<(N - 1)>::value();
-				constexpr auto r1 = concat::concat_array(template_tools::add(id, 1 << (N - 1)), id);
+				constexpr auto r1 = array_tools::concat(array_tools::add(id, 1 << (N - 1)), id);
 
 				switch (dim)
 				{
@@ -1224,7 +910,7 @@ namespace n_cube
 				constexpr auto r0 = lift_reflect<N, 0>();
 				constexpr auto r1 = lift_reflect<N, 1>();
 				constexpr auto id = init_cube_struct<(N - 1)>::value();
-				constexpr auto r2 = concat::concat_array(template_tools::add(id, 1 << (N - 1)), id);
+				constexpr auto r2 = array_tools::concat(array_tools::add(id, 1 << (N - 1)), id);
 
 				switch (dim)
 				{
@@ -1256,9 +942,9 @@ namespace n_cube
 			}
 			static void test()
 			{
-				static_assert(equal<N>(function_composition<N>(value(0), value(0)), init_cube_struct<N>::value()), "");
-				static_assert(equal<N>(function_composition<N>(value(1), value(1)), init_cube_struct<N>::value()), "");
-				static_assert(equal<N>(function_composition<N>(value(2), value(2)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(0), value(0)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(1), value(1)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(2), value(2)), init_cube_struct<N>::value()), "");
 			}
 		};
 		template <> struct reflect<4>
@@ -1278,9 +964,9 @@ namespace n_cube
 				constexpr const auto a6 = index_split_1<D, 6>();
 				constexpr const auto a7 = index_split_1<D, 7>();
 
-				constexpr const auto b0 = concat::concat_array(a0, a1, a2, a3);
-				constexpr const auto b1 = concat::concat_array(a4, a5, a6, a7);
-				return concat::concat_array(b0, b1);
+				constexpr const auto b0 = array_tools::concat(a0, a1, a2, a3);
+				constexpr const auto b1 = array_tools::concat(a4, a5, a6, a7);
+				return array_tools::concat(b0, b1);
 			}
 
 			static constexpr CubeI<N> value(const int dim)
@@ -1289,7 +975,7 @@ namespace n_cube
 				constexpr auto r1 = lift_reflect<N, 1>();
 				constexpr auto r2 = lift_reflect<N, 2>();
 				constexpr auto id = init_cube_struct<(N - 1)>::value();
-				constexpr auto r3 = concat::concat_array(template_tools::add(id, 1 << (N - 1)), id);
+				constexpr auto r3 = array_tools::concat(array_tools::add(id, 1 << (N - 1)), id);
 
 				switch (dim)
 				{
@@ -1303,10 +989,10 @@ namespace n_cube
 			}
 			static void test()
 			{
-				static_assert(equal<N>(function_composition<N>(value(0), value(0)), init_cube_struct<N>::value()), "");
-				static_assert(equal<N>(function_composition<N>(value(1), value(1)), init_cube_struct<N>::value()), "");
-				static_assert(equal<N>(function_composition<N>(value(2), value(2)), init_cube_struct<N>::value()), "");
-				static_assert(equal<N>(function_composition<N>(value(3), value(3)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(0), value(0)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(1), value(1)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(2), value(2)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(3), value(3)), init_cube_struct<N>::value()), "");
 			}
 		};
 		template <> struct reflect<5>
@@ -1319,7 +1005,7 @@ namespace n_cube
 				constexpr auto r2 = lift_reflect<N, 2>();
 				constexpr auto r3 = lift_reflect<N, 3>();
 				constexpr auto id = init_cube_struct<(N - 1)>::value();
-				constexpr auto r4 = concat::concat_array(template_tools::add(id, 1 << (N - 1)), id);
+				constexpr auto r4 = array_tools::concat(array_tools::add(id, 1 << (N - 1)), id);
 
 				switch (dim)
 				{
@@ -1334,11 +1020,11 @@ namespace n_cube
 			}
 			static void test()
 			{
-				static_assert(equal<N>(function_composition<N>(value(0), value(0)), init_cube_struct<N>::value()), "");
-				static_assert(equal<N>(function_composition<N>(value(1), value(1)), init_cube_struct<N>::value()), "");
-				static_assert(equal<N>(function_composition<N>(value(2), value(2)), init_cube_struct<N>::value()), "");
-				static_assert(equal<N>(function_composition<N>(value(3), value(3)), init_cube_struct<N>::value()), "");
-				static_assert(equal<N>(function_composition<N>(value(4), value(4)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(0), value(0)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(1), value(1)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(2), value(2)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(3), value(3)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(4), value(4)), init_cube_struct<N>::value()), "");
 			}
 		};
 		template <> struct reflect<6>
@@ -1352,7 +1038,7 @@ namespace n_cube
 				constexpr auto r3 = lift_reflect<N, 3>();
 				constexpr auto r4 = lift_reflect<N, 4>();
 				constexpr auto id = init_cube_struct<(N - 1)>::value();
-				constexpr auto r5 = concat::concat_array(template_tools::add(id, 1 << (N - 1)), id);
+				constexpr auto r5 = array_tools::concat(array_tools::add(id, 1 << (N - 1)), id);
 
 				switch (dim)
 				{
@@ -1368,14 +1054,54 @@ namespace n_cube
 			}
 			static void test()
 			{
-				static_assert(equal<N>(function_composition<N>(value(0), value(0)), init_cube_struct<N>::value()), "");
-				static_assert(equal<N>(function_composition<N>(value(1), value(1)), init_cube_struct<N>::value()), "");
-				static_assert(equal<N>(function_composition<N>(value(2), value(2)), init_cube_struct<N>::value()), "");
-				static_assert(equal<N>(function_composition<N>(value(3), value(3)), init_cube_struct<N>::value()), "");
-				static_assert(equal<N>(function_composition<N>(value(4), value(4)), init_cube_struct<N>::value()), "");
-				static_assert(equal<N>(function_composition<N>(value(5), value(5)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(0), value(0)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(1), value(1)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(2), value(2)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(3), value(3)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(4), value(4)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(5), value(5)), init_cube_struct<N>::value()), "");
 			}
 		};
+		/*
+		template <> struct reflect<7>
+		{
+			static constexpr int N = 7;
+			static constexpr CubeI<N> value(const int dim)
+			{
+				constexpr auto r0 = lift_reflect<N, 0>();
+				constexpr auto r1 = lift_reflect<N, 1>();
+				constexpr auto r2 = lift_reflect<N, 2>();
+				constexpr auto r3 = lift_reflect<N, 3>();
+				constexpr auto r4 = lift_reflect<N, 4>();
+				constexpr auto r5 = lift_reflect<N, 5>();
+				constexpr auto id = init_cube_struct<(N - 1)>::value();
+				constexpr auto r6 = array_tools::concat(array_tools::add(id, 1 << (N - 1)), id);
+
+				switch (dim)
+				{
+					case 0: return r0;
+					case 1: return r1;
+					case 2: return r2;
+					case 3: return r3;
+					case 4: return r4;
+					case 5: return r5;
+					case 6: return r6;
+				}
+				std::cout << "ERROR: reflect<" << N << ">: dim=" << dim << " does not exist." << std::endl;
+				return CubeI<N>();
+			}
+			static void test()
+			{
+				static_assert(array_tools::equal(function_composition<N>(value(0), value(0)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(1), value(1)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(2), value(2)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(3), value(3)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(4), value(4)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(5), value(5)), init_cube_struct<N>::value()), "");
+				static_assert(array_tools::equal(function_composition<N>(value(6), value(6)), init_cube_struct<N>::value()), "");
+			}
+		};
+		*/
 		#pragma endregion
 
 		#pragma region rotate
@@ -1427,10 +1153,10 @@ namespace n_cube
 			static void test()
 			{
 				constexpr auto id = init_cube_struct<N>::value();
-				constexpr auto a = value(0, 1); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-				constexpr auto b = value(1, 0); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-				static_assert(equal<N>(function_composition<N>(a, b), id), "");
-				static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+				constexpr auto a = value(0, 1); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+				constexpr auto b = value(1, 0); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+				static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+				static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 			}
 		};
 		template <> struct rotate<3>
@@ -1466,8 +1192,8 @@ namespace n_cube
 				const auto cycle = create_cycle(d1, d2);
 				const auto dim_fixed = fixed_dimensions(d1, d2);
 				const auto cycles = std::array<Cycle, 2> {
-					template_tools::add(cycle, (0 << dim_fixed[0])),
-					template_tools::add(cycle, (1 << dim_fixed[0]))
+					array_tools::add(cycle, (0 << dim_fixed[0])),
+					array_tools::add(cycle, (1 << dim_fixed[0]))
 				};
 				return cycles_2_cube(cycles);
 			}
@@ -1481,16 +1207,16 @@ namespace n_cube
 				constexpr auto r12 = value(1, 2);
 				constexpr auto r21 = value(2, 1);
 
-				static_assert(equal<N>(function_composition<N>(r01, r01, r01, r01), id), "");
-				static_assert(equal<N>(function_composition<N>(r10, r10, r10, r10), id), "");
-				static_assert(equal<N>(function_composition<N>(r02, r02, r02, r02), id), "");
-				static_assert(equal<N>(function_composition<N>(r20, r20, r20, r20), id), "");
-				static_assert(equal<N>(function_composition<N>(r12, r12, r12, r12), id), "");
-				static_assert(equal<N>(function_composition<N>(r21, r21, r21, r21), id), "");
+				static_assert(array_tools::equal(function_composition<N>(r01, r01, r01, r01), id), "");
+				static_assert(array_tools::equal(function_composition<N>(r10, r10, r10, r10), id), "");
+				static_assert(array_tools::equal(function_composition<N>(r02, r02, r02, r02), id), "");
+				static_assert(array_tools::equal(function_composition<N>(r20, r20, r20, r20), id), "");
+				static_assert(array_tools::equal(function_composition<N>(r12, r12, r12, r12), id), "");
+				static_assert(array_tools::equal(function_composition<N>(r21, r21, r21, r21), id), "");
 
-				static_assert(equal<N>(function_composition<N>(r01, r10), id), "");
-				static_assert(equal<N>(function_composition<N>(r02, r20), id), "");
-				static_assert(equal<N>(function_composition<N>(r12, r21), id), "");
+				static_assert(array_tools::equal(function_composition<N>(r01, r10), id), "");
+				static_assert(array_tools::equal(function_composition<N>(r02, r20), id), "");
+				static_assert(array_tools::equal(function_composition<N>(r12, r21), id), "");
 
 				constexpr auto t01 = function_composition<N>(r01, r01);
 				constexpr auto t10 = function_composition<N>(r10, r10);
@@ -1499,9 +1225,9 @@ namespace n_cube
 				constexpr auto t12 = function_composition<N>(r12, r12);
 				constexpr auto t21 = function_composition<N>(r21, r21);
 
-				static_assert(equal<N>(t01, t10), "");
-				static_assert(equal<N>(t02, t20), "");
-				static_assert(equal<N>(t12, t21), "");
+				static_assert(array_tools::equal(t01, t10), "");
+				static_assert(array_tools::equal(t02, t20), "");
+				static_assert(array_tools::equal(t12, t21), "");
 			}
 		};
 		template <> struct rotate<4>
@@ -1551,10 +1277,10 @@ namespace n_cube
 				const auto cycle = create_cycle(d1, d2);
 				const auto dim_fixed = fixed_dimensions(d1, d2);
 				const auto cycles = std::array<Cycle, 4> {
-					template_tools::add(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1])),
-					template_tools::add(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1])),
-					template_tools::add(cycle, (1 << dim_fixed[0]) | (0 << dim_fixed[1])),
-					template_tools::add(cycle, (1 << dim_fixed[0]) | (1 << dim_fixed[1]))
+					array_tools::add(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1])),
+					array_tools::add(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1])),
+					array_tools::add(cycle, (1 << dim_fixed[0]) | (0 << dim_fixed[1])),
+					array_tools::add(cycle, (1 << dim_fixed[0]) | (1 << dim_fixed[1]))
 				};
 				return cycles_2_cube(cycles);
 			}
@@ -1562,40 +1288,40 @@ namespace n_cube
 			{
 				constexpr auto id = init_cube_struct<N>::value();
 				{
-					constexpr auto a = value(0, 1); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(1, 0); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(0, 1); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(1, 0); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(0, 2); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(2, 0); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(0, 2); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(2, 0); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(0, 3); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(3, 0); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(0, 3); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(3, 0); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(1, 2); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(2, 1); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(1, 2); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(2, 1); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(1, 3); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(3, 1); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(1, 3); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(3, 1); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(2, 3); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(3, 2); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(2, 3); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(3, 2); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 			}
 		};
@@ -1669,14 +1395,14 @@ namespace n_cube
 				const auto cycle = create_cycle(d1, d2);
 				const auto dim_fixed = fixed_dimensions(d1, d2);
 				const auto cycles = std::array<Cycle, 8> {
-					template_tools::add(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2])),
-					template_tools::add(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (1 << dim_fixed[2])), 
-					template_tools::add(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1]) | (0 << dim_fixed[2])),
-					template_tools::add(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1]) | (1 << dim_fixed[2])),
-					template_tools::add(cycle, (1 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2])),
-					template_tools::add(cycle, (1 << dim_fixed[0]) | (0 << dim_fixed[1]) | (1 << dim_fixed[2])),
-					template_tools::add(cycle, (1 << dim_fixed[0]) | (1 << dim_fixed[1]) | (0 << dim_fixed[2])),
-					template_tools::add(cycle, (1 << dim_fixed[0]) | (1 << dim_fixed[1]) | (1 << dim_fixed[2]))
+					array_tools::add(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2])),
+					array_tools::add(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (1 << dim_fixed[2])), 
+					array_tools::add(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1]) | (0 << dim_fixed[2])),
+					array_tools::add(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1]) | (1 << dim_fixed[2])),
+					array_tools::add(cycle, (1 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2])),
+					array_tools::add(cycle, (1 << dim_fixed[0]) | (0 << dim_fixed[1]) | (1 << dim_fixed[2])),
+					array_tools::add(cycle, (1 << dim_fixed[0]) | (1 << dim_fixed[1]) | (0 << dim_fixed[2])),
+					array_tools::add(cycle, (1 << dim_fixed[0]) | (1 << dim_fixed[1]) | (1 << dim_fixed[2]))
 				};
 				return cycles_2_cube(cycles);
 			}
@@ -1684,64 +1410,64 @@ namespace n_cube
 			{
 				constexpr auto id = init_cube_struct<N>::value();
 				{
-					constexpr auto a = value(0, 1); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(1, 0); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(0, 1); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(1, 0); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(0, 2); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(2, 0); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(0, 2); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(2, 0); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(0, 3); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(3, 0); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(0, 3); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(3, 0); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(0, 4); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(4, 0); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(0, 4); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(4, 0); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(1, 2); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(2, 1); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(1, 2); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(2, 1); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(1, 3); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(3, 1); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(1, 3); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(3, 1); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(1, 4); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(4, 1); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(1, 4); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(4, 1); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(2, 3); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(3, 2); static_assert(equal<N>(function_composition<N>(b, b, b, b),id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(2, 3); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(3, 2); static_assert(array_tools::equal(function_composition<N>(b, b, b, b),id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(2, 4); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(4, 2); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(2, 4); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(4, 2); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(3, 4); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(4, 3); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(3, 4); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(4, 3); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 			}
 		};
@@ -1861,22 +1587,22 @@ namespace n_cube
 				const auto cycle = create_cycle(d1, d2);
 				const auto dim_fixed = fixed_dimensions(d1, d2);
 				const auto cycles = std::array<Cycle, 16> {
-					template_tools::add(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2]) | (0 << dim_fixed[3])),
-					template_tools::add(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2]) | (1 << dim_fixed[3])),
-					template_tools::add(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (1 << dim_fixed[2]) | (0 << dim_fixed[3])),
-					template_tools::add(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (1 << dim_fixed[2]) | (1 << dim_fixed[3])),
-					template_tools::add(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1]) | (0 << dim_fixed[2]) | (0 << dim_fixed[3])),
-					template_tools::add(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1]) | (0 << dim_fixed[2]) | (1 << dim_fixed[3])),
-					template_tools::add(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1]) | (1 << dim_fixed[2]) | (0 << dim_fixed[3])),
-					template_tools::add(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1]) | (1 << dim_fixed[2]) | (1 << dim_fixed[3])),
-					template_tools::add(cycle, (1 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2]) | (0 << dim_fixed[3])),
-					template_tools::add(cycle, (1 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2]) | (1 << dim_fixed[3])),
-					template_tools::add(cycle, (1 << dim_fixed[0]) | (0 << dim_fixed[1]) | (1 << dim_fixed[2]) | (0 << dim_fixed[3])),
-					template_tools::add(cycle, (1 << dim_fixed[0]) | (0 << dim_fixed[1]) | (1 << dim_fixed[2]) | (1 << dim_fixed[3])),
-					template_tools::add(cycle, (1 << dim_fixed[0]) | (1 << dim_fixed[1]) | (0 << dim_fixed[2]) | (0 << dim_fixed[3])),
-					template_tools::add(cycle, (1 << dim_fixed[0]) | (1 << dim_fixed[1]) | (0 << dim_fixed[2]) | (1 << dim_fixed[3])),
-					template_tools::add(cycle, (1 << dim_fixed[0]) | (1 << dim_fixed[1]) | (1 << dim_fixed[2]) | (0 << dim_fixed[3])),
-					template_tools::add(cycle, (1 << dim_fixed[0]) | (1 << dim_fixed[1]) | (1 << dim_fixed[2]) | (1 << dim_fixed[3]))
+					array_tools::add(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2]) | (0 << dim_fixed[3])),
+					array_tools::add(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2]) | (1 << dim_fixed[3])),
+					array_tools::add(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (1 << dim_fixed[2]) | (0 << dim_fixed[3])),
+					array_tools::add(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (1 << dim_fixed[2]) | (1 << dim_fixed[3])),
+					array_tools::add(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1]) | (0 << dim_fixed[2]) | (0 << dim_fixed[3])),
+					array_tools::add(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1]) | (0 << dim_fixed[2]) | (1 << dim_fixed[3])),
+					array_tools::add(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1]) | (1 << dim_fixed[2]) | (0 << dim_fixed[3])),
+					array_tools::add(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1]) | (1 << dim_fixed[2]) | (1 << dim_fixed[3])),
+					array_tools::add(cycle, (1 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2]) | (0 << dim_fixed[3])),
+					array_tools::add(cycle, (1 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2]) | (1 << dim_fixed[3])),
+					array_tools::add(cycle, (1 << dim_fixed[0]) | (0 << dim_fixed[1]) | (1 << dim_fixed[2]) | (0 << dim_fixed[3])),
+					array_tools::add(cycle, (1 << dim_fixed[0]) | (0 << dim_fixed[1]) | (1 << dim_fixed[2]) | (1 << dim_fixed[3])),
+					array_tools::add(cycle, (1 << dim_fixed[0]) | (1 << dim_fixed[1]) | (0 << dim_fixed[2]) | (0 << dim_fixed[3])),
+					array_tools::add(cycle, (1 << dim_fixed[0]) | (1 << dim_fixed[1]) | (0 << dim_fixed[2]) | (1 << dim_fixed[3])),
+					array_tools::add(cycle, (1 << dim_fixed[0]) | (1 << dim_fixed[1]) | (1 << dim_fixed[2]) | (0 << dim_fixed[3])),
+					array_tools::add(cycle, (1 << dim_fixed[0]) | (1 << dim_fixed[1]) | (1 << dim_fixed[2]) | (1 << dim_fixed[3]))
 				};
 				return cycles_2_cube(cycles);
 			}
@@ -1884,101 +1610,101 @@ namespace n_cube
 			{
 				constexpr auto id = init_cube_struct<N>::value();
 				{
-					constexpr auto a = value(0, 1); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(1, 0); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(0, 1); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(1, 0); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(0, 2); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(2, 0); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(0, 2); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(2, 0); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(0, 3); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(3, 0); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(0, 3); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(3, 0); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(0, 4); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(4, 0); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(0, 4); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(4, 0); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(0, 5); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(5, 0); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(0, 5); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(5, 0); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(1, 2); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(2, 1); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(1, 2); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(2, 1); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(1, 3); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(3, 1); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(1, 3); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(3, 1); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(1, 4); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(4, 1); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(1, 4); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(4, 1); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(1, 5); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(5, 1); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(1, 5); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(5, 1); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(2, 3); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(3, 2); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(2, 3); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(3, 2); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(2, 4); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(4, 2); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(2, 4); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(4, 2); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(2, 5); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(5, 2); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(2, 5); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(5, 2); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(3, 4); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(4, 3); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(3, 4); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(4, 3); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(3, 5); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(5, 3); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(3, 5); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(5, 3); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 				{
-					constexpr auto a = value(4, 5); static_assert(equal<N>(function_composition<N>(a, a, a, a), id), "");
-					constexpr auto b = value(5, 4); static_assert(equal<N>(function_composition<N>(b, b, b, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, b), id), "");
-					static_assert(equal<N>(function_composition<N>(a, a), function_composition<N>(b, b)), "");
+					constexpr auto a = value(4, 5); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
+					constexpr auto b = value(5, 4); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
+					static_assert(array_tools::equal(function_composition<N>(a, a), function_composition<N>(b, b)), "");
 				}
 			}
 		};
 		#pragma endregion
 
 		// forward declaration
-		template <int N> const Transformations<N> all_transformations(const bool add_descriptions);
+		template <int N> const Transformations<N>& all_transformations(const bool add_descriptions);
 
 		#pragma region create_transformations
 		template <int N> struct create_transformations_struct
@@ -2220,7 +1946,88 @@ namespace n_cube
 				return results;
 			}
 		};
-		#pragma endregion
+/*
+		template <> struct create_transformations_struct<7>
+		{
+			static constexpr int N = 7;
+			static Transformations<N> value(const std::array<std::string, N>& descr)
+			{
+				const std::string d0 = descr[0];
+				const std::string d1 = descr[1];
+				const std::string d2 = descr[2];
+				const std::string d3 = descr[3];
+				const std::string d4 = descr[4];
+				const std::string d5 = descr[5];
+				const std::string d6 = descr[6];
+
+				Transformations<N> transformations;
+				transformations.push_back(std::make_pair(reflect<N>::value(0), "Ref[" + d0 + "]"));
+				transformations.push_back(std::make_pair(reflect<N>::value(1), "Ref[" + d1 + "]"));
+				transformations.push_back(std::make_pair(reflect<N>::value(2), "Ref[" + d2 + "]"));
+				transformations.push_back(std::make_pair(reflect<N>::value(3), "Ref[" + d3 + "]"));
+				transformations.push_back(std::make_pair(reflect<N>::value(4), "Ref[" + d4 + "]"));
+				transformations.push_back(std::make_pair(reflect<N>::value(5), "Ref[" + d5 + "]"));
+				transformations.push_back(std::make_pair(reflect<N>::value(6), "Ref[" + d6 + "]"));
+
+				transformations.push_back(std::make_pair(rotate<N>::value(0, 1), "Rot[" + d0 + "," + d1 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(0, 2), "Rot[" + d0 + "," + d2 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(0, 3), "Rot[" + d0 + "," + d3 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(0, 4), "Rot[" + d0 + "," + d4 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(0, 5), "Rot[" + d0 + "," + d5 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(0, 6), "Rot[" + d0 + "," + d6 + "]"));
+
+				transformations.push_back(std::make_pair(rotate<N>::value(1, 2), "Rot[" + d1 + "," + d2 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(1, 3), "Rot[" + d1 + "," + d3 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(1, 4), "Rot[" + d1 + "," + d4 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(1, 5), "Rot[" + d1 + "," + d5 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(1, 6), "Rot[" + d1 + "," + d6 + "]"));
+
+				transformations.push_back(std::make_pair(rotate<N>::value(2, 3), "Rot[" + d2 + "," + d3 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(2, 4), "Rot[" + d2 + "," + d4 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(2, 5), "Rot[" + d2 + "," + d5 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(2, 6), "Rot[" + d2 + "," + d6 + "]"));
+
+				transformations.push_back(std::make_pair(rotate<N>::value(3, 4), "Rot[" + d3 + "," + d4 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(3, 5), "Rot[" + d3 + "," + d5 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(3, 6), "Rot[" + d3 + "," + d6 + "]"));
+
+				transformations.push_back(std::make_pair(rotate<N>::value(4, 5), "Rot[" + d4 + "," + d5 + "]"));
+				transformations.push_back(std::make_pair(rotate<N>::value(4, 6), "Rot[" + d4 + "," + d6 + "]"));
+
+				transformations.push_back(std::make_pair(rotate<N>::value(5, 6), "Rot[" + d5 + "," + d6 + "]"));
+
+				return transformations;
+			}
+			static constexpr std::array<CubeI<N>, 21> value()
+			{
+				constexpr auto results = std::array<CubeI<N>, 21> {
+					reflect<N>::value(0),
+						reflect<N>::value(1),
+						reflect<N>::value(2),
+						reflect<N>::value(3),
+						reflect<N>::value(4),
+						reflect<N>::value(5),
+						rotate<N>::value(0, 1),
+						rotate<N>::value(0, 2),
+						rotate<N>::value(0, 3),
+						rotate<N>::value(0, 4),
+						rotate<N>::value(0, 5),
+						rotate<N>::value(1, 2),
+						rotate<N>::value(1, 3),
+						rotate<N>::value(1, 4),
+						rotate<N>::value(1, 5),
+						rotate<N>::value(2, 3),
+						rotate<N>::value(2, 4),
+						rotate<N>::value(2, 5),
+						rotate<N>::value(3, 4),
+						rotate<N>::value(3, 5),
+						rotate<N>::value(4, 5)
+				};
+				return results;
+			}
+		};
+*/
+#pragma endregion
 
 		#pragma region transitive closure
 		template <int N, int M> void transitive_closure_recursive_no_descriptions(
@@ -2453,12 +2260,16 @@ namespace n_cube
 		#pragma endregion
 
 		#pragma region all transformations
+		static std::mutex tranformations_cache_mutex;
 		static std::tuple<Transformations<0>, Transformations<1>, Transformations<2>, Transformations<3>, Transformations<4>, Transformations<5>, Transformations<6>> tranformations_cache;
 
-		template <int N> const Transformations<N> all_transformations(const bool add_descriptions)
+
+		template <int N> 
+		const Transformations<N>& all_transformations(const bool add_descriptions)
 		{
 			if (std::get<N>(tranformations_cache).empty())
 			{
+				//auto lock = std::unique_lock(tranformations_cache_mutex);
 				if (add_descriptions)
 				{
 					const auto descr = init_cube_struct<N>::descriptions();
@@ -2499,7 +2310,7 @@ namespace n_cube
 	}
 	template <int N> constexpr BF complement_if_needed(const BF bf)
 	{
-		const int N2 = (1<<N) / 2;
+		constexpr int N2 = (1<<N) / 2;
 		return (details::count_bits(bf) <= N2) ? bf : complement<N>(bf);
 	}
 
@@ -2566,10 +2377,8 @@ namespace n_cube
 	namespace details
 	{
 		//for the set of all transformations find the transformation that yields the smallest bf, which is the bf class id.
-		template <int N> std::tuple<BF, std::string> class_id_method0(const BF bf, const bool add_descriptions)
+		template <int N> std::tuple<BF, std::string> search_class_id_method0(const BF bf, const bool add_descriptions)
 		{
-			const auto all_transformations = details::all_transformations<N>(add_descriptions);
-
 			std::string complement_string = "";
 			BF smallest_bf = bf;
 			if (details::count_bits(bf) > ((1 << N) / 2))
@@ -2581,7 +2390,7 @@ namespace n_cube
 			std::string transform_string = "";
 
 			// find minimum in set
-			for (const auto& pair : all_transformations)
+			for (const auto& pair : details::all_transformations<N>(add_descriptions))
 			{
 				const CubeI<N> cube = std::get<0>(pair);
 				const BF bf_new = transform<N>(bf, cube);
@@ -2603,12 +2412,12 @@ namespace n_cube
 		}
 
 
-		bool overall_decreasing(const BF a, const BF b) { return b < a; }
+		bool overall_decreasing(const BF a, const BF b) noexcept { return b < a; }
 
 
 
 		//for a specific sequence of transformations, reduce the provided bf with in a greedy fashion with the tranformations.
-		template <int N> std::tuple<BF, std::string> class_id_method1(const BF bf, const bool add_descriptions)
+		template <int N> std::tuple<BF, std::string> search_class_id_method1(const BF bf, const bool add_descriptions)
 		{
 			const auto transformations = create_transformations_for_greedy_rewrite<N>(add_descriptions);
 
@@ -2645,12 +2454,12 @@ namespace n_cube
 			return std::make_tuple(smallest_bf, transform_string);
 		}
 	}
-	template <int N> constexpr BF class_id(const BF bf)
+	template <int N> constexpr BF search_class_id(const BF bf)
 	{
 		const bool method1 = true;
 		return (method1)
-			? std::get<0>(details::class_id_method0<N>(bf, false))
-			: std::get<0>(details::class_id_method1<N>(bf, false));
+			? std::get<0>(details::search_class_id_method0<N>(bf, false))
+			: std::get<0>(details::search_class_id_method1<N>(bf, false));
 	}
 
 	#pragma endregion 
@@ -2678,21 +2487,39 @@ namespace n_cube
 		//Naive method: iterates over all bf of cardinality >=N
 		template <int N> constexpr std::set<BF> all_class_ids_method0()
 		{
-			int counter = 0xFFFF;
-			std::set<BF> results;
+			constexpr long long max_bf = 1ll << (1 << N);
+			constexpr long long update_interval = 0x1FFFF;
+			constexpr int n_threads = 12;
 
-			for (BF bf = 0; bf < (1ull << (1 << N)); ++bf)
+			const time_t start_time_sec = time(nullptr);
+
+			std::array<std::set<BF>, n_threads> results_per_thread;
+			long long counter_per_thread = 0;
+			std::atomic<long long> counter = 0;
+
+			#pragma omp parallel for num_threads(12) default(shared) private(counter_per_thread)
+			for (long long bf = 0; bf < max_bf; ++bf)
 			{
-				if ((bf & 0xFFFF) == 0)
-				{
-					std::cout << counter << std::endl;
-					counter--;
+				const int thread_id = omp_get_thread_num();
+				counter_per_thread++;
+
+				if ((counter_per_thread & update_interval) == 0) {
+					counter++;
+					const time_t passed_time_sec = time(nullptr) - start_time_sec;
+					const double percentage_done = (counter * update_interval) / static_cast<double>(max_bf);
+					const int needed_time_sec = static_cast<int>(passed_time_sec / percentage_done);
+					//std::cout << "passed_time : " << passed_time_sec << "; percentage_done : " << percentage_done << "; percentage_todo : " << percentage_todo << "; needed_time : " << needed_time << std::endl;
+
+					std::cout << "percentage done : " << percentage_done << "; needed_time : " << needed_time_sec << " sec = " << needed_time_sec/60 << " min = " << needed_time_sec / (60*60) << " hour " << std::endl;
 				}
-				const BF c = class_id<N>(bf);
-				if (results.find(c) == results.end())
-				{
-					//std::cout << "found a new class id " << to_string_bin<N>(c) << "; total = " << results.size() << std::endl;
-					results.insert(c);
+				const BF c = search_class_id<N>(bf);
+				results_per_thread[thread_id].insert(c);
+			}
+
+			std::set<BF> results;
+			for (int i = 0; i < n_threads; ++i) {
+				for (const BF bf : results_per_thread[i]) {
+					results.insert(bf);
 				}
 			}
 			return results;
@@ -2712,16 +2539,16 @@ namespace n_cube
 			return results;
 		}
 	}
-	template <int N> constexpr std::set<BF> all_class_ids()
+	template <int N> std::set<BF> all_class_ids()
 	{
 		const bool use_method0 = true;
 		return (use_method0)
 			? details::all_class_ids_method0<N>()
 			: details::all_class_ids_method1<N>();
 	}
-	template <int N> constexpr std::vector<std::set<BF>> all_class_ids_with_values()
+	template <int N> std::vector<std::set<BF>> all_class_ids_with_values()
 	{
-		const auto class_ids = all_class_ids<N>();
+		const std::set<BF> class_ids = all_class_ids<N>();
 
 		std::vector<std::set<BF>> class_ids_with_values;
 		for (const BF class_id : class_ids)
@@ -2738,8 +2565,8 @@ namespace n_cube
 
 		for (BF bf = 0; bf < (1ull << (1 << N)); ++bf)
 		{
-			const auto r1 = details::class_id_method0<N>(bf, true);
-			const auto r2 = details::class_id_method1<N>(bf, true);
+			const auto r1 = details::search_class_id_method0<N>(bf, true);
+			const auto r2 = details::search_class_id_method1<N>(bf, true);
 
 			const BF bf1 = std::get<0>(r1);
 			const BF bf2 = std::get<0>(r2);
@@ -2880,11 +2707,11 @@ namespace n_cube
 			std::cout << "bf                  " << to_string_bin<N>(bf1) << std::endl;
 		}
 		{
-			const auto pair = details::class_id_method0<N>(bf1, true);
+			const auto pair = details::search_class_id_method0<N>(bf1, true);
 			std::cout << "transitive closure: " << to_string_bin<N>(std::get<0>(pair)) << "; " << std::get<1>(pair) << std::endl;
 		}
 		{
-			const auto pair = details::class_id_method1<N>(bf1, true);
+			const auto pair = details::search_class_id_method1<N>(bf1, true);
 			std::cout << "greedy rewrite    : " << to_string_bin<N>(std::get<0>(pair)) << "; " << std::get<1>(pair) << std::endl;
 		}
 		{
@@ -2972,6 +2799,10 @@ namespace n_cube
 		int class_counter = 0;
 		std::cout << "All classes for N=" << N <<":" << std::endl;
 
+		// run all_transformations once to fill the transformation cache
+		const auto all_transformations = details::all_transformations<N>(false);
+
+
 		const auto all_class_ids = all_class_ids_with_values<N>();
 
 		for (int c = 0; c <= N; ++c)
@@ -2983,7 +2814,9 @@ namespace n_cube
 
 				if (cardinality == c)
 				{
-					std::cout << "class #" << std::dec << class_counter << ": cardinality " << cardinality << ": " << to_string_hex<N>(bf_class_id) << "=" << to_string_bin<N>(bf_class_id) << ": class set size:" << set.size();
+					const std::string factors = prime::vector_to_string(prime::get_factorization(static_cast<int>(set.size())));
+
+					std::cout << "class #" << std::dec << class_counter << ": cardinality " << cardinality << ": " << to_string_hex<N>(bf_class_id) << "=" << to_string_bin<N>(bf_class_id) << ": class set size:" << set.size() << " = [" << factors << "]";
 					for ([[maybe_unused]] const auto& bf : set)
 					{
 						//std::cout << to_string_bin<N>(bf) << " ";
