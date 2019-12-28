@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClInclude Include="src\array_tools.h" />
     <ClInclude Include="src\bf_tools.ipp" />
+    <ClInclude Include="src\Cube.h" />
     <ClInclude Include="src\n_cube.ipp" />
     <ClInclude Include="src\timing.ipp" />
   </ItemGroup>

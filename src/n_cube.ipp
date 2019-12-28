@@ -13,8 +13,10 @@
 
 #include <time.h>
 
+#include "Cube.h"
 #include "bf_tools.ipp"
 #include "array_tools.h"
+
 
 namespace prime {
 
@@ -93,15 +95,6 @@ namespace prime {
 
 namespace n_cube
 {
-	#pragma region Types
-	using BF = unsigned long long;
-
-	using CubeType = bool;
-	template<int DIM>
-	using Cube = std::array<CubeType, (1 << DIM)>;
-	
-	//template<int DIM>
-	//using Cube = std::bitset<(1 << DIM)>;
 
 
 	template<int DIM>
@@ -295,323 +288,13 @@ namespace n_cube
 			}
 		}
 
-		#pragma region to_BF
-		template <int N> struct to_BF_struct
-		{
-			static constexpr BF value(const Cube<N>& cube)
-			{
-				std::cout << "ERROR: to_BF: dim=" << N << " not implemented yet" << std::endl;
-				getchar();
-				return 0;
-			}
-		};
-		template <> struct to_BF_struct<1>
-		{
-			static constexpr BF value(const Cube<1>& cube)
-			{
-				return
-					(cube[0] << 1) |
-					(cube[1] << 0);
-			}
-		};
-		template <> struct to_BF_struct<2>
-		{
-			static constexpr BF value(const Cube<2>& cube)
-			{
-				return
-					(cube[0] << 3) |
-					(cube[1] << 2) |
-					(cube[2] << 1) |
-					(cube[3] << 0);
-			}
-		};
-		template <> struct to_BF_struct<3>
-		{
-			static constexpr BF value(const Cube<3>& cube)
-			{
-				return
-					(cube[0] << 7) |
-					(cube[1] << 6) |
-					(cube[2] << 5) |
-					(cube[3] << 4) |
-					(cube[4] << 3) |
-					(cube[5] << 2) |
-					(cube[6] << 1) |
-					(cube[7] << 0);
-			}
-		};
-		template <> struct to_BF_struct<4>
-		{
-			static constexpr BF value(const Cube<4>& cube)
-			{
-				return
-					(cube[0] << 15) |
-					(cube[1] << 14) |
-					(cube[2] << 13) |
-					(cube[3] << 12) |
-					(cube[4] << 11) |
-					(cube[5] << 10) |
-					(cube[6] << 9) |
-					(cube[7] << 8) |
-					(cube[8] << 7) |
-					(cube[9] << 6) |
-					(cube[10] << 5) |
-					(cube[11] << 4) |
-					(cube[12] << 3) |
-					(cube[13] << 2) |
-					(cube[14] << 1) |
-					(cube[15] << 0);
-			}
-		};
-		template <> struct to_BF_struct<5>
-		{
-			static constexpr BF value(const Cube<5>& cube)
-			{
-				return
-					(cube[0] << 31) |
-					(cube[1] << 30) |
-					(cube[2] << 29) |
-					(cube[3] << 28) |
-					(cube[4] << 27) |
-					(cube[5] << 26) |
-					(cube[6] << 25) |
-					(cube[7] << 24) |
-					(cube[8] << 23) |
-					(cube[9] << 22) |
-					(cube[10] << 21) |
-					(cube[11] << 20) |
-					(cube[12] << 19) |
-					(cube[13] << 18) |
-					(cube[14] << 17) |
-					(cube[15] << 16) |
-					(cube[16] << 15) |
-					(cube[17] << 14) |
-					(cube[18] << 13) |
-					(cube[19] << 12) |
-					(cube[20] << 11) |
-					(cube[21] << 10) |
-					(cube[22] << 9) |
-					(cube[23] << 8) |
-					(cube[24] << 7) |
-					(cube[25] << 6) |
-					(cube[26] << 5) |
-					(cube[27] << 4) |
-					(cube[28] << 3) |
-					(cube[29] << 2) |
-					(cube[30] << 1) |
-					(cube[31] << 0);
-			}
-		};
-		#pragma endregion
 
-		#pragma region to_cube
-		template <int N> struct to_cube_struct
-		{
-			static constexpr Cube<N> value(const BF bf)
-			{
-				std::cout << "ERROR: to_cube: dim=" << N << " not implemented yet" << std::endl;
-				getchar();
-				return Cube<N>();
-			}
-		};
-		template <> struct to_cube_struct<1>
-		{
-			static constexpr int N = 1;
-			static constexpr Cube<N> value(const BF bf)
-			{
-				return Cube<N>{
-					static_cast<CubeType>((bf >> 1) & 1),
-						static_cast<CubeType>((bf >> 0) & 1)};
-			}
-		};
-		template <> struct to_cube_struct<2>
-		{
-			static constexpr int N = 2;
-			static constexpr Cube<N> value(const BF bf)
-			{
-				return Cube<N>{
-					static_cast<CubeType>((bf >> 3) & 1),
-						static_cast<CubeType>((bf >> 2) & 1),
-						static_cast<CubeType>((bf >> 1) & 1),
-						static_cast<CubeType>((bf >> 0) & 1)};
-			}
-		};
-		template <> struct to_cube_struct<3>
-		{
-			static constexpr int N = 3;
-			static constexpr Cube<N> value(const BF bf)
-			{
-				return Cube<N>{
-					static_cast<CubeType>((bf >> 7) & 1),
-						static_cast<CubeType>((bf >> 6) & 1),
-						static_cast<CubeType>((bf >> 5) & 1),
-						static_cast<CubeType>((bf >> 4) & 1),
-						static_cast<CubeType>((bf >> 3) & 1),
-						static_cast<CubeType>((bf >> 2) & 1),
-						static_cast<CubeType>((bf >> 1) & 1),
-						static_cast<CubeType>((bf >> 0) & 1)};
-			}
-		};
-		template <> struct to_cube_struct<4>
-		{
-			static constexpr int N = 4;
-			static constexpr Cube<N> value(const BF bf)
-			{
-				return Cube<N>{
-					static_cast<CubeType>((bf >> 15) & 1),
-						static_cast<CubeType>((bf >> 14) & 1),
-						static_cast<CubeType>((bf >> 13) & 1),
-						static_cast<CubeType>((bf >> 12) & 1),
-						static_cast<CubeType>((bf >> 11) & 1),
-						static_cast<CubeType>((bf >> 10) & 1),
-						static_cast<CubeType>((bf >> 9) & 1),
-						static_cast<CubeType>((bf >> 8) & 1),
-						static_cast<CubeType>((bf >> 7) & 1),
-						static_cast<CubeType>((bf >> 6) & 1),
-						static_cast<CubeType>((bf >> 5) & 1),
-						static_cast<CubeType>((bf >> 4) & 1),
-						static_cast<CubeType>((bf >> 3) & 1),
-						static_cast<CubeType>((bf >> 2) & 1),
-						static_cast<CubeType>((bf >> 1) & 1),
-						static_cast<CubeType>((bf >> 0) & 1)};
-			}
-		};
-		template <> struct to_cube_struct<5>
-		{
-			static constexpr int N = 5;
-			static constexpr Cube<N> value(const BF bf)
-			{
-				return Cube<N>{
-					static_cast<CubeType>((bf >> 31) & 1),
-						static_cast<CubeType>((bf >> 30) & 1),
-						static_cast<CubeType>((bf >> 29) & 1),
-						static_cast<CubeType>((bf >> 28) & 1),
-						static_cast<CubeType>((bf >> 27) & 1),
-						static_cast<CubeType>((bf >> 26) & 1),
-						static_cast<CubeType>((bf >> 25) & 1),
-						static_cast<CubeType>((bf >> 24) & 1),
-						static_cast<CubeType>((bf >> 23) & 1),
-						static_cast<CubeType>((bf >> 22) & 1),
-						static_cast<CubeType>((bf >> 21) & 1),
-						static_cast<CubeType>((bf >> 20) & 1),
-						static_cast<CubeType>((bf >> 19) & 1),
-						static_cast<CubeType>((bf >> 18) & 1),
-						static_cast<CubeType>((bf >> 17) & 1),
-						static_cast<CubeType>((bf >> 16) & 1),
-						static_cast<CubeType>((bf >> 15) & 1),
-						static_cast<CubeType>((bf >> 14) & 1),
-						static_cast<CubeType>((bf >> 13) & 1),
-						static_cast<CubeType>((bf >> 12) & 1),
-						static_cast<CubeType>((bf >> 11) & 1),
-						static_cast<CubeType>((bf >> 10) & 1),
-						static_cast<CubeType>((bf >> 9) & 1),
-						static_cast<CubeType>((bf >> 8) & 1),
-						static_cast<CubeType>((bf >> 7) & 1),
-						static_cast<CubeType>((bf >> 6) & 1),
-						static_cast<CubeType>((bf >> 5) & 1),
-						static_cast<CubeType>((bf >> 4) & 1),
-						static_cast<CubeType>((bf >> 3) & 1),
-						static_cast<CubeType>((bf >> 2) & 1),
-						static_cast<CubeType>((bf >> 1) & 1),
-						static_cast<CubeType>((bf >> 0) & 1)};
-			}
-		};
-		#pragma endregion
+		template <int N>
+		constexpr CubeI<N> init_cubeI() noexcept {
+			constexpr int S = 1 << N;
+			return array_tools::create_index_array<int, S>();
+		}
 
-		#pragma region init_cube
-		template <int N> struct init_cube_struct
-		{
-			static constexpr CubeI<N> value()
-			{
-				std::cout << "ERROR: init_cube: dim=" << N << " not implemented yet" << std::endl;
-				getchar();
-				return CubeI<N>();
-			}
-		};
-		template <> struct init_cube_struct<1>
-		{
-			static constexpr int N = 1;
-			static constexpr CubeI<N> value()
-			{
-				return array_tools::create_index_array<int, 1<<N>();
-			}
-			static std::array<std::string, N> descriptions() {
-				return { "x0" };
-			}
-		};
-		template <> struct init_cube_struct<2>
-		{
-			static constexpr int N = 2;
-			static constexpr CubeI<N> value()
-			{
-				return array_tools::create_index_array<int, 1<<N>();
-			}
-			static std::array<std::string, N> descriptions()
-			{
-				return { "b", "a" };
-			}
-		};
-		template <> struct init_cube_struct<3>
-		{
-			static constexpr int N = 3;
-			static constexpr CubeI<N> value()
-			{
-				return array_tools::create_index_array<int, 1<<N>();
-			}
-			static std::array<std::string, N> descriptions()
-			{
-				return { "c", "b", "a" };
-			}
-		};
-		template <> struct init_cube_struct<4>
-		{
-			static constexpr int N = 4;
-			static constexpr CubeI<N> value()
-			{
-				return array_tools::create_index_array<int, 1<<N>();
-			}
-			static std::array<std::string, N> descriptions()
-			{
-				return { "d", "c", "b", "a" };
-			}
-		};
-		template <> struct init_cube_struct<5>
-		{
-			static constexpr int N = 5;
-			static constexpr CubeI<N> value()
-			{
-				return array_tools::create_index_array<int, 1<<N>();
-			}
-			static std::array<std::string, N> descriptions()
-			{
-				return { "e", "d", "c", "b", "a" };
-			}
-		};
-		template <> struct init_cube_struct<6>
-		{
-			static constexpr int N = 6;
-			static constexpr CubeI<N> value()
-			{
-				return array_tools::create_index_array<int, 1<<N>();
-			}
-			static std::array<std::string, N> descriptions()
-			{
-				return { "f", "e", "d", "c", "b", "a" };
-			}
-		};
-		template <> struct init_cube_struct<7>
-		{
-			static constexpr int N = 7;
-			static constexpr CubeI<N> value()
-			{
-				return array_tools::create_index_array<int, 1<<N>();
-			}
-			static std::array<std::string, N> descriptions()
-			{
-				return { "g", "f", "e", "d", "c", "b", "a" };
-			}
-		};
-		#pragma endregion
 
 
 		#pragma region functional composition
@@ -734,7 +417,7 @@ namespace n_cube
 			}
 			static constexpr Cube<N> value(const Cube<N>& c, const CubeI<N>& ci)
 			{
-				return Cube<N>{ c[ci[0]], c[ci[1]] };
+				return Cube<N>{  std::array<bool, (1 << N)>{c[ci[0]], c[ci[1]] }};
 			}
 		};
 		template <> struct apply_struct<2>
@@ -746,7 +429,7 @@ namespace n_cube
 			}
 			static constexpr Cube<N> value(const Cube<N>& c, const CubeI<N>& ci)
 			{
-				return Cube<N>{ c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]] };
+				return Cube<N>{ std::array<bool, (1<<N)>{c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]] }};
 			}
 		};
 		template <> struct apply_struct<3>
@@ -758,7 +441,7 @@ namespace n_cube
 			}
 			static constexpr Cube<N> value(const Cube<N>& c, const CubeI<N>& ci)
 			{
-				return Cube<N>{ c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]] };
+				return Cube<N>{ std::array<bool, (1 << N)>{c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]] }};
 			}
 		};
 		template <> struct apply_struct<4>
@@ -773,10 +456,10 @@ namespace n_cube
 			}
 			static constexpr Cube<N> value(const Cube<N>& c, const CubeI<N>& ci)
 			{
-				return Cube<N>{
+				return Cube<N>{ std::array<bool, (1 << N)>{
 					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
-					c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]]
-				};
+						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]]
+				}};
 			}
 			static __m128i value_opt(const __m128i c, const __m128i ci)
 			{
@@ -798,12 +481,12 @@ namespace n_cube
 			}
 			static constexpr Cube<N> value(const Cube<N>& c, const CubeI<N>& ci)
 			{
-				return Cube<N>{
+				return Cube<N>{ std::array<bool, (1 << N)>{
 					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
-					c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]],
-					c[ci[16]], c[ci[17]], c[ci[18]], c[ci[19]], c[ci[20]], c[ci[21]], c[ci[22]], c[ci[23]],
-					c[ci[24]], c[ci[25]], c[ci[26]], c[ci[27]], c[ci[28]], c[ci[29]], c[ci[30]], c[ci[31]]
-				};
+						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]],
+						c[ci[16]], c[ci[17]], c[ci[18]], c[ci[19]], c[ci[20]], c[ci[21]], c[ci[22]], c[ci[23]],
+						c[ci[24]], c[ci[25]], c[ci[26]], c[ci[27]], c[ci[28]], c[ci[29]], c[ci[30]], c[ci[31]]
+				}};
 			}
 		};
 		template <> struct apply_struct<6>
@@ -811,7 +494,7 @@ namespace n_cube
 			static constexpr int N = 6;
 			static constexpr CubeI<N> value(const CubeI<N>& c, const CubeI<N>& ci)
 			{
-				return CubeI<N>{
+				return CubeI<N>{ 
 					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
 						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]],
 						c[ci[16]], c[ci[17]], c[ci[18]], c[ci[19]], c[ci[20]], c[ci[21]], c[ci[22]], c[ci[23]],
@@ -820,12 +503,11 @@ namespace n_cube
 						c[ci[40]], c[ci[41]], c[ci[42]], c[ci[43]], c[ci[44]], c[ci[45]], c[ci[46]], c[ci[47]],
 						c[ci[48]], c[ci[49]], c[ci[50]], c[ci[51]], c[ci[52]], c[ci[53]], c[ci[54]], c[ci[55]],
 						c[ci[56]], c[ci[57]], c[ci[58]], c[ci[59]], c[ci[60]], c[ci[61]], c[ci[62]], c[ci[63]]
-
 				};
 			}
 			static constexpr Cube<N> value(const Cube<N>& c, const CubeI<N>& ci)
 			{
-				return Cube<N>{
+				return Cube<N>{ std::array<bool, (1 << N)>{
 					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
 						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]],
 						c[ci[16]], c[ci[17]], c[ci[18]], c[ci[19]], c[ci[20]], c[ci[21]], c[ci[22]], c[ci[23]],
@@ -834,7 +516,7 @@ namespace n_cube
 						c[ci[40]], c[ci[41]], c[ci[42]], c[ci[43]], c[ci[44]], c[ci[45]], c[ci[46]], c[ci[47]],
 						c[ci[48]], c[ci[49]], c[ci[50]], c[ci[51]], c[ci[52]], c[ci[53]], c[ci[54]], c[ci[55]],
 						c[ci[56]], c[ci[57]], c[ci[58]], c[ci[59]], c[ci[60]], c[ci[61]], c[ci[62]], c[ci[63]]
-				};
+				}};
 			}
 		};
 		#pragma endregion
@@ -879,7 +561,7 @@ namespace n_cube
 			static constexpr CubeI<N> value(const int dim)
 			{
 				constexpr auto r0 = lift_reflect<N, 0>();
-				constexpr auto id = init_cube_struct<(N - 1)>::value();
+				constexpr auto id = init_cubeI<(N - 1)>();
 				constexpr auto r1 = array_tools::concat(array_tools::add(id, 1 << (N - 1)), id);
 
 				switch (dim)
@@ -909,7 +591,7 @@ namespace n_cube
 			{
 				constexpr auto r0 = lift_reflect<N, 0>();
 				constexpr auto r1 = lift_reflect<N, 1>();
-				constexpr auto id = init_cube_struct<(N - 1)>::value();
+				constexpr auto id = init_cubeI<(N - 1)>();
 				constexpr auto r2 = array_tools::concat(array_tools::add(id, 1 << (N - 1)), id);
 
 				switch (dim)
@@ -942,9 +624,10 @@ namespace n_cube
 			}
 			static void test()
 			{
-				static_assert(array_tools::equal(function_composition<N>(value(0), value(0)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(1), value(1)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(2), value(2)), init_cube_struct<N>::value()), "");
+				constexpr auto id = init_cubeI<(N)>();
+				static_assert(array_tools::equal(function_composition<N>(value(0), value(0)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(1), value(1)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(2), value(2)), id), "");
 			}
 		};
 		template <> struct reflect<4>
@@ -974,7 +657,7 @@ namespace n_cube
 				constexpr auto r0 = lift_reflect<N, 0>();
 				constexpr auto r1 = lift_reflect<N, 1>();
 				constexpr auto r2 = lift_reflect<N, 2>();
-				constexpr auto id = init_cube_struct<(N - 1)>::value();
+				constexpr auto id = init_cubeI<(N - 1)>();
 				constexpr auto r3 = array_tools::concat(array_tools::add(id, 1 << (N - 1)), id);
 
 				switch (dim)
@@ -989,10 +672,11 @@ namespace n_cube
 			}
 			static void test()
 			{
-				static_assert(array_tools::equal(function_composition<N>(value(0), value(0)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(1), value(1)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(2), value(2)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(3), value(3)), init_cube_struct<N>::value()), "");
+				constexpr auto id = init_cubeI<(N)>();
+				static_assert(array_tools::equal(function_composition<N>(value(0), value(0)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(1), value(1)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(2), value(2)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(3), value(3)), id), "");
 			}
 		};
 		template <> struct reflect<5>
@@ -1004,7 +688,7 @@ namespace n_cube
 				constexpr auto r1 = lift_reflect<N, 1>();
 				constexpr auto r2 = lift_reflect<N, 2>();
 				constexpr auto r3 = lift_reflect<N, 3>();
-				constexpr auto id = init_cube_struct<(N - 1)>::value();
+				constexpr auto id = init_cubeI<(N - 1)>();
 				constexpr auto r4 = array_tools::concat(array_tools::add(id, 1 << (N - 1)), id);
 
 				switch (dim)
@@ -1020,11 +704,12 @@ namespace n_cube
 			}
 			static void test()
 			{
-				static_assert(array_tools::equal(function_composition<N>(value(0), value(0)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(1), value(1)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(2), value(2)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(3), value(3)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(4), value(4)), init_cube_struct<N>::value()), "");
+				constexpr auto id = init_cubeI<(N)>();
+				static_assert(array_tools::equal(function_composition<N>(value(0), value(0)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(1), value(1)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(2), value(2)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(3), value(3)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(4), value(4)), id), "");
 			}
 		};
 		template <> struct reflect<6>
@@ -1037,7 +722,7 @@ namespace n_cube
 				constexpr auto r2 = lift_reflect<N, 2>();
 				constexpr auto r3 = lift_reflect<N, 3>();
 				constexpr auto r4 = lift_reflect<N, 4>();
-				constexpr auto id = init_cube_struct<(N - 1)>::value();
+				constexpr auto id = init_cubeI<(N - 1)>();
 				constexpr auto r5 = array_tools::concat(array_tools::add(id, 1 << (N - 1)), id);
 
 				switch (dim)
@@ -1054,12 +739,13 @@ namespace n_cube
 			}
 			static void test()
 			{
-				static_assert(array_tools::equal(function_composition<N>(value(0), value(0)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(1), value(1)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(2), value(2)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(3), value(3)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(4), value(4)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(5), value(5)), init_cube_struct<N>::value()), "");
+				constexpr auto id = init_cubeI<(N)>();
+				static_assert(array_tools::equal(function_composition<N>(value(0), value(0)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(1), value(1)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(2), value(2)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(3), value(3)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(4), value(4)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(5), value(5)), id), "");
 			}
 		};
 		/*
@@ -1074,7 +760,7 @@ namespace n_cube
 				constexpr auto r3 = lift_reflect<N, 3>();
 				constexpr auto r4 = lift_reflect<N, 4>();
 				constexpr auto r5 = lift_reflect<N, 5>();
-				constexpr auto id = init_cube_struct<(N - 1)>::value();
+				constexpr auto id = init_cubeI<(N - 1)>();
 				constexpr auto r6 = array_tools::concat(array_tools::add(id, 1 << (N - 1)), id);
 
 				switch (dim)
@@ -1092,13 +778,14 @@ namespace n_cube
 			}
 			static void test()
 			{
-				static_assert(array_tools::equal(function_composition<N>(value(0), value(0)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(1), value(1)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(2), value(2)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(3), value(3)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(4), value(4)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(5), value(5)), init_cube_struct<N>::value()), "");
-				static_assert(array_tools::equal(function_composition<N>(value(6), value(6)), init_cube_struct<N>::value()), "");
+				constexpr auto id = init_cubeI<(N)>();
+				static_assert(array_tools::equal(function_composition<N>(value(0), value(0)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(1), value(1)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(2), value(2)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(3), value(3)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(4), value(4)), id), "");
+				static_assert(array_tools::equal(function_composition<N>(value(5), value(5)), id, "");
+				static_assert(array_tools::equal(function_composition<N>(value(6), value(6)), id), "");
 			}
 		};
 		*/
@@ -1152,7 +839,7 @@ namespace n_cube
 			}
 			static void test()
 			{
-				constexpr auto id = init_cube_struct<N>::value();
+				constexpr auto id = init_cubeI<N>();
 				constexpr auto a = value(0, 1); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
 				constexpr auto b = value(1, 0); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
 				static_assert(array_tools::equal(function_composition<N>(a, b), id), "");
@@ -1199,7 +886,7 @@ namespace n_cube
 			}
 			static void test()
 			{
-				constexpr auto id = init_cube_struct<N>::value();
+				constexpr auto id = init_cubeI<N>();
 				constexpr auto r01 = value(0, 1);
 				constexpr auto r10 = value(1, 0);
 				constexpr auto r02 = value(0, 2);
@@ -1286,7 +973,7 @@ namespace n_cube
 			}
 			static void test()
 			{
-				constexpr auto id = init_cube_struct<N>::value();
+				constexpr auto id = init_cubeI<N>();
 				{
 					constexpr auto a = value(0, 1); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
 					constexpr auto b = value(1, 0); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
@@ -1408,7 +1095,7 @@ namespace n_cube
 			}
 			static void test()
 			{
-				constexpr auto id = init_cube_struct<N>::value();
+				constexpr auto id = init_cubeI<N>();
 				{
 					constexpr auto a = value(0, 1); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
 					constexpr auto b = value(1, 0); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
@@ -1608,7 +1295,7 @@ namespace n_cube
 			}
 			static void test()
 			{
-				constexpr auto id = init_cube_struct<N>::value();
+				constexpr auto id = init_cubeI<N>();
 				{
 					constexpr auto a = value(0, 1); static_assert(array_tools::equal(function_composition<N>(a, a, a, a), id), "");
 					constexpr auto b = value(1, 0); static_assert(array_tools::equal(function_composition<N>(b, b, b, b), id), "");
@@ -2272,7 +1959,7 @@ namespace n_cube
 				//auto lock = std::unique_lock(tranformations_cache_mutex);
 				if (add_descriptions)
 				{
-					const auto descr = init_cube_struct<N>::descriptions();
+					const auto descr = create_descriptions<N>();
 					const auto transformations = details::create_transformations_struct<N>::value(descr);
 					std::get<N>(tranformations_cache) = details::transitive_closure<N>(transformations);
 				}
@@ -2288,21 +1975,31 @@ namespace n_cube
 
 	} // end namespace details
 
-	template <int N> constexpr Cube<N> to_cube(const BF bf)
-	{
-		return details::to_cube_struct<N>::value(bf);
-	}
-	template <int N> constexpr BF to_BF(const Cube<N>& cube)
-	{
-		return details::to_BF_struct<N>::value(cube);
-	}
-	template <int N> constexpr CubeI<N> init_cubeI()
-	{
-		return details::init_cube_struct<N>::value();
-	}
+
 	template <int N> std::array<std::string, N> create_descriptions()
 	{
-		return details::init_cube_struct<N>::descriptions();
+		if constexpr (N == 1) {
+			return { "x0" };
+		}
+		if constexpr (N == 2) {
+			return { "b", "a" };
+		}
+		if constexpr (N == 3) {
+			return { "c", "b", "a" };
+		}
+		if constexpr (N == 4) {
+			return { "d", "c", "b", "a" };
+		}
+		if constexpr (N == 5) {
+			return { "e", "d", "c", "b", "a" };
+		}
+		if constexpr (N == 6) {
+			return { "f", "e", "d", "c", "b", "a" };
+		}
+		if constexpr (N == 7) {
+			return { "g", "f", "e", "d", "c", "b", "a" };
+		}
+		return std::array<std::string, N>();
 	}
 	template <int N> constexpr BF complement(const BF bf)
 	{
@@ -2328,7 +2025,7 @@ namespace n_cube
 	// Transform (shuffle) Boolean function bf according to the change as provided by cube
 	template <int N> constexpr BF transform(const BF bf, const CubeI<N>& cube)
 	{
-		return to_BF<N>(transform<N>(to_cube<N>(bf), cube));
+		return transform<N>(Cube<N>(bf), cube).get_bf();
 	}
 	#pragma endregion
 
@@ -2339,7 +2036,7 @@ namespace n_cube
 	}
 	template <int N> constexpr BF reflect(const BF bf, const int dim)
 	{
-		return to_BF<N>(transform<N>(to_cube<N>(bf), reflect<N>(dim)));
+		return transform<N>(Cube<N>(bf), reflect<N>(dim)).get_bf();
 	}
 	#pragma endregion
 
@@ -2672,12 +2369,12 @@ namespace n_cube
 		const BF bf1b = complement_if_needed<N>(bf1);
 		const BF bf2b = complement_if_needed<N>(bf2);
 
-		const Cube<N> cube1 = to_cube<N>(bf1b);
-		const Cube<N> cube2 = to_cube<N>(bf2b);
+		const Cube<N> cube1 = Cube<N>(bf1b);
+		const Cube<N> cube2 = Cube<N>(bf2b);
 
 		const auto transformations = details::all_transformations<N>(true);
 		{
-			if (cube1 == cube2) results.push_back(std::make_pair(init_cubeI<N>(), "Identity"));
+			if (bf1b == bf2b) results.push_back(std::make_pair(details::init_cubeI<N>(), "Identity"));
 
 			for (const auto& pair : transformations)
 			{
