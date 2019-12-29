@@ -32,4 +32,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="data\npn4.txt" />
+    <Text Include="data\npn5.txt" />
+    <Text Include="data\npn3.txt" />
+  </ItemGroup>
 </Project>

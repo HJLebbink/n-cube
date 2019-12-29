@@ -12,6 +12,8 @@
 #include <atomic>
 #include <fstream>
 #include <time.h>
+#include <filesystem>
+
 
 #include "Cube.h"
 #include "bf_tools.ipp"
@@ -19,7 +21,7 @@
 
 
 namespace bf {
-	constexpr long long cardinality_npn_class(int n) {
+	constexpr unsigned long long cardinality_npn_class(int n) {
 		switch (n) {
 		case 1: return 2;
 		case 2: return 4;
@@ -101,7 +103,7 @@ namespace prime {
 				}
 			}
 			if (count > 0) {
-				result << count << "*" << p << " + ";
+				result << p << "^" << count << " + ";
 			}
 		}
 		return result.str().substr(0, result.str().length() - 3);
@@ -2100,6 +2102,31 @@ namespace n_cube
 		//Naive method: iterates over all bf of cardinality >=N
 		template <int N> constexpr std::set<BF> all_class_ids_method0(const std::string& filename)
 		{
+			constexpr unsigned long long total_number_npn_classes = bf::cardinality_npn_class(N);
+			std::set<BF> global_results;
+
+
+			if (std::filesystem::exists(filename)) {
+				std::cout << "NPN class file exists " << filename << std::endl;
+				std::fstream myfile(filename, std::ios_base::in);
+				BF bf;
+
+				while (myfile >> bf)
+				{
+					global_results.insert(bf);
+				}
+				if (global_results.size() == total_number_npn_classes) {
+					return global_results;
+				}
+				else {
+					std::cout << "WARNING: the file " << filename << " does has " << global_results.size() << " classes with is not the expected number of NPN classes " << total_number_npn_classes << std::endl;
+					static_cast<void>(getchar());
+					global_results.clear();
+				}
+			}
+			
+			init_n_cube<N>();
+
 			constexpr long long max_bf = 1ll << (1 << N);
 			constexpr long long update_interval = 0x3FFFF;
 			constexpr int n_threads = 12;
@@ -2112,9 +2139,6 @@ namespace n_cube
 
 			std::atomic<long long> global_counter = 0;
 			std::mutex global_results_mutex;
-			std::set<BF> global_results;
-
-			constexpr long long total_number_npn_classes = bf::cardinality_npn_class(N);
 
 			#pragma omp parallel for num_threads(12) default(shared)
 			for (long long bf = 0; bf < max_bf; ++bf)
@@ -2141,8 +2165,8 @@ namespace n_cube
 					}
 					results.clear();
 					const long long number_npn_classes = global_results.size();
-					std::cout << "percentage done : " << percentage_done << "; NPN classes not found : " << (total_number_npn_classes-number_npn_classes) << "; needed_time : " << needed_time_sec << " sec = " << needed_time_sec / 60 << " min = " << needed_time_sec / (60 * 60) << " hour " << std::endl;
-					
+					std::cout << "percentage done : " << percentage_done << "; NPN classes not found : " << (total_number_npn_classes - number_npn_classes) << "; needed_time : " << needed_time_sec << " sec = " << needed_time_sec / 60 << " min = " << needed_time_sec / (60 * 60) << " hour " << std::endl;
+
 					if (number_npn_classes == total_number_npn_classes) {
 						break;
 					}
@@ -2418,15 +2442,13 @@ namespace n_cube
 		}
 		std::cout << "number of transformations: " << all_transformations.size() << std::endl;
 	}
-	template <int N> void print_all_class_ids_with_values()
+	template <int N> void print_all_class_ids_with_values(const std::string& filename = "")
 	{
 		int bf_counter = 0;
 		int class_counter = 0;
 		std::cout << "All classes (with values) for N=" << N <<":" << std::endl;
-
-		init_n_cube<N>();
 		
-		const auto class_ids = all_class_ids<N>();
+		const auto class_ids = all_class_ids<N>(filename);
 
 		for (int c = 0; c <= N; ++c)
 		{
@@ -2459,8 +2481,6 @@ namespace n_cube
 		long long bf_counter = 0;
 		int class_counter = 0;
 		std::cout << "All NPN classes for N=" << N <<":" << std::endl;
-
-		init_n_cube<N>();
 
 		const auto class_ids = all_class_ids<N>(filename);
 

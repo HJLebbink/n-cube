@@ -20,6 +20,11 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="data\npn3.txt" />
+    <Text Include="data\npn4.txt" />
+    <Text Include="data\npn5.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{5EDB122A-4DD6-48D3-8270-76F3FF6E9C0E}</ProjectGuid>
