@@ -1807,7 +1807,7 @@ namespace n_cube
 		static std::tuple<Transformations<0>, Transformations<1>, Transformations<2>, Transformations<3>, Transformations<4>, Transformations<5>, Transformations<6>> transformations_greedy_cache;
 		template <int N> struct create_transformations_for_greedy_rewrite_struct
 		{
-			static Transformations<N> value(const std::array<std::string, N>& descr)
+			static Transformations<N> value([[maybe_unused]] const std::array<std::string, N>& descr)
 			{
 				std::cout << "ERROR: create_transformations_for_greedy_rewrite: dim=" << N << " not implemented yet" << std::endl;
 				getchar();
@@ -1949,7 +1949,6 @@ namespace n_cube
 		#pragma region all transformations
 		static std::mutex tranformations_cache_mutex;
 		static std::tuple<Transformations<0>, Transformations<1>, Transformations<2>, Transformations<3>, Transformations<4>, Transformations<5>, Transformations<6>> tranformations_cache;
-
 
 		template <int N> 
 		const Transformations<N>& all_transformations(const bool add_descriptions)
@@ -2185,7 +2184,7 @@ namespace n_cube
 		template <int N> constexpr std::set<BF> all_class_ids_method0()
 		{
 			constexpr long long max_bf = 1ll << (1 << N);
-			constexpr long long update_interval = 0x1FFFF;
+			constexpr long long update_interval = 0x3FFFF;
 			constexpr int n_threads = 12;
 
 			const time_t start_time_sec = time(nullptr);
@@ -2204,7 +2203,7 @@ namespace n_cube
 					counter++;
 					const time_t passed_time_sec = time(nullptr) - start_time_sec;
 					const double percentage_done = (counter * update_interval) / static_cast<double>(max_bf);
-					const int needed_time_sec = static_cast<int>(passed_time_sec / percentage_done);
+					const int needed_time_sec = static_cast<int>((passed_time_sec / percentage_done) - passed_time_sec);
 					//std::cout << "passed_time : " << passed_time_sec << "; percentage_done : " << percentage_done << "; percentage_todo : " << percentage_todo << "; needed_time : " << needed_time << std::endl;
 
 					std::cout << "percentage done : " << percentage_done << "; needed_time : " << needed_time_sec << " sec = " << needed_time_sec/60 << " min = " << needed_time_sec / (60*60) << " hour " << std::endl;
@@ -2243,17 +2242,6 @@ namespace n_cube
 			? details::all_class_ids_method0<N>()
 			: details::all_class_ids_method1<N>();
 	}
-	template <int N> std::vector<std::set<BF>> all_class_ids_with_values()
-	{
-		const std::set<BF> class_ids = all_class_ids<N>();
-
-		std::vector<std::set<BF>> class_ids_with_values;
-		for (const BF class_id : class_ids)
-		{
-			class_ids_with_values.push_back(equiv_class<N>(class_id));
-		}
-		return class_ids_with_values;
-	}
 	#pragma endregion
 
 	template <int N> void test_greedy_rewrite_algorithm()
@@ -2283,9 +2271,6 @@ namespace n_cube
 		}
 		if (!found_error) std::cout << std::endl << "test_greedy_rewrite_algorithm<" << N << ">: found no errors" << std::endl;
 	}
-
-
-
 
 	template <int N> void find_greedy_rewrite_algorithms()
 	{
@@ -2490,36 +2475,63 @@ namespace n_cube
 		}
 		std::cout << "number of transformations: " << all_transformations.size() << std::endl;
 	}
-	template <int N> void print_all_class_ids()
+	template <int N> void print_all_class_ids_with_values()
 	{
 		int bf_counter = 0;
+		int class_counter = 0;
+		std::cout << "All classes (with values) for N=" << N <<":" << std::endl;
+
+		// run all_transformations once to fill the transformation cache
+		const auto all_transformations = details::all_transformations<N>(false);
+		
+		const auto class_ids = all_class_ids<N>();
+
+		for (int c = 0; c <= N; ++c)
+		{
+			for (const auto bf_class_id : class_ids)
+			{
+				const auto cardinality = bf_tools::bf_cardinality(bf_class_id, N);
+
+				if (cardinality == c)
+				{
+					const auto set = equiv_class<N>(bf_class_id);
+					const std::string factors = prime::vector_to_string(prime::get_factorization(static_cast<int>(set.size())));
+
+					std::cout << "class #" << std::dec << class_counter << ": cardinality " << cardinality << ": " << to_string_hex<N>(bf_class_id) << "=" << to_string_bin<N>(bf_class_id) << ": class set size:" << set.size() << " = [" << factors << "]";
+					for (const auto& bf : set)
+					{
+						//std::cout << to_string_bin<N>(bf) << " ";
+						//std::cout << std::uppercase << std::hex << std::setfill('0') << std::setw(2) << bf << " ";
+						bf_counter++;
+					}
+					std::cout << std::endl;
+					class_counter++;
+				}
+			}
+		}
+		std::cout << "total number of bf:" << std::dec << bf_counter << std::endl;
+	}
+
+	template <int N> void print_all_class_ids()
+	{
+		long long bf_counter = 0;
 		int class_counter = 0;
 		std::cout << "All classes for N=" << N <<":" << std::endl;
 
 		// run all_transformations once to fill the transformation cache
 		const auto all_transformations = details::all_transformations<N>(false);
 
-
-		const auto all_class_ids = all_class_ids_with_values<N>();
+		const auto class_ids = all_class_ids<N>();
 
 		for (int c = 0; c <= N; ++c)
 		{
-			for (const auto& set : all_class_ids)
+			for (const auto bf_class_id : class_ids)
 			{
-				const auto bf_class_id = *set.begin();
 				const auto cardinality = bf_tools::bf_cardinality(bf_class_id, N);
 
 				if (cardinality == c)
 				{
-					const std::string factors = prime::vector_to_string(prime::get_factorization(static_cast<int>(set.size())));
-
-					std::cout << "class #" << std::dec << class_counter << ": cardinality " << cardinality << ": " << to_string_hex<N>(bf_class_id) << "=" << to_string_bin<N>(bf_class_id) << ": class set size:" << set.size() << " = [" << factors << "]";
-					for ([[maybe_unused]] const auto& bf : set)
-					{
-						//std::cout << to_string_bin<N>(bf) << " ";
-						//std::cout << std::uppercase << std::hex << std::setfill('0') << std::setw(2) << bf << " ";
-						bf_counter++;
-					}
+					std::cout << "class #" << std::dec << class_counter << ": cardinality " << cardinality << ": " << to_string_hex<N>(bf_class_id) << "=" << to_string_bin<N>(bf_class_id);
 					std::cout << std::endl;
 					class_counter++;
 				}

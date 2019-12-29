@@ -12,14 +12,42 @@ namespace n_cube {
 	public:
 		constexpr static int DIM = D;
 
-		constexpr explicit Cube(BF bf) : bf_(bf) {
+		constexpr explicit Cube(BF bf) : 
+			bf_(bf)
+			//data_(to_array(bf)) 
+		{};
+
+		constexpr explicit Cube(const std::array<bool, (1 << D)>& d) : 
+			bf_(to_bf(d))
+			//data_(d) 
+		{};
+
+		constexpr bool operator[](int index) const noexcept
+		{
+			return (this->bf_ >> index) & 1; 
+			//return this->data_[index];
+		}
+
+		constexpr bool operator==(const Cube<D>& other) const noexcept
+		{
+			return this->bf_ == other.bf_;
+		}
+		constexpr BF get_bf() const noexcept
+		{
+			return this->bf_;
+		}
+
+	private:
+		using CubeType = bool;
+
+		static std::array<bool, (1 << D)> to_array(BF bf) {
 			if constexpr (D == 1) {
-				this->data_ = std::array<bool, (1 << D)> {
+				return std::array<bool, (1 << D)> {
 					static_cast<CubeType>((bf >> 1) & 1),
 						static_cast<CubeType>((bf >> 0) & 1)};
 			}
 			if constexpr (D == 2) {
-				this->data_ = std::array<bool, (1 << D)> {
+				return std::array<bool, (1 << D)> {
 					static_cast<CubeType>((bf >> 3) & 1),
 						static_cast<CubeType>((bf >> 2) & 1),
 						static_cast<CubeType>((bf >> 1) & 1),
@@ -27,7 +55,7 @@ namespace n_cube {
 
 			}
 			if constexpr (D == 3) {
-				this->data_ = std::array<bool, (1 << D)> {
+				return std::array<bool, (1 << D)> {
 					static_cast<CubeType>((bf >> 7) & 1),
 						static_cast<CubeType>((bf >> 6) & 1),
 						static_cast<CubeType>((bf >> 5) & 1),
@@ -39,7 +67,7 @@ namespace n_cube {
 
 			}
 			if constexpr (D == 4) {
-				this->data_ = std::array<bool, (1 << D)> {
+				return std::array<bool, (1 << D)> {
 					static_cast<CubeType>((bf >> 15) & 1),
 						static_cast<CubeType>((bf >> 14) & 1),
 						static_cast<CubeType>((bf >> 13) & 1),
@@ -59,7 +87,7 @@ namespace n_cube {
 
 			}
 			if constexpr (D == 5) {
-				this->data_ = std::array<bool, (1 << D)> {
+				return std::array<bool, (1 << D)> {
 					static_cast<CubeType>((bf >> 31) & 1),
 						static_cast<CubeType>((bf >> 30) & 1),
 						static_cast<CubeType>((bf >> 29) & 1),
@@ -94,22 +122,23 @@ namespace n_cube {
 						static_cast<CubeType>((bf >> 0) & 1)};
 
 			}
-		};
-		constexpr explicit Cube(const std::array<bool, (1 << D)>& d) : data_(d) {
+		}
+
+		static BF to_bf([[maybe_unused]] const std::array<bool, (1 << D)>& d) {
 			if constexpr (D == 1) {
-				this->bf_ =
+				return
 					(d[0] << 1) |
 					(d[1] << 0);
 			}
 			if constexpr (D == 2) {
-				this->bf_ =
+				return
 					(d[0] << 3) |
 					(d[1] << 2) |
 					(d[2] << 1) |
 					(d[3] << 0);
 			}
 			if constexpr (D == 3) {
-				this->bf_ =
+				return
 					(d[0] << 7) |
 					(d[1] << 6) |
 					(d[2] << 5) |
@@ -120,7 +149,7 @@ namespace n_cube {
 					(d[7] << 0);
 			}
 			if constexpr (D == 4) {
-				this->bf_ =
+				return
 					(d[0] << 15) |
 					(d[1] << 14) |
 					(d[2] << 13) |
@@ -137,66 +166,45 @@ namespace n_cube {
 					(d[13] << 2) |
 					(d[14] << 1) |
 					(d[15] << 0);
-				if constexpr (D == 5) {
-					this->bf_ =
-						(d[0] << 31) |
-						(d[1] << 30) |
-						(d[2] << 29) |
-						(d[3] << 28) |
-						(d[4] << 27) |
-						(d[5] << 26) |
-						(d[6] << 25) |
-						(d[7] << 24) |
-						(d[8] << 23) |
-						(d[9] << 22) |
-						(d[10] << 21) |
-						(d[11] << 20) |
-						(d[12] << 19) |
-						(d[13] << 18) |
-						(d[14] << 17) |
-						(d[15] << 16) |
-						(d[16] << 15) |
-						(d[17] << 14) |
-						(d[18] << 13) |
-						(d[19] << 12) |
-						(d[20] << 11) |
-						(d[21] << 10) |
-						(d[22] << 9) |
-						(d[23] << 8) |
-						(d[24] << 7) |
-						(d[25] << 6) |
-						(d[26] << 5) |
-						(d[27] << 4) |
-						(d[28] << 3) |
-						(d[29] << 2) |
-						(d[30] << 1) |
-						(d[31] << 0);
-				}
+			}
+			if constexpr (D == 5) {
+				return
+					(d[0] << 31) |
+					(d[1] << 30) |
+					(d[2] << 29) |
+					(d[3] << 28) |
+					(d[4] << 27) |
+					(d[5] << 26) |
+					(d[6] << 25) |
+					(d[7] << 24) |
+					(d[8] << 23) |
+					(d[9] << 22) |
+					(d[10] << 21) |
+					(d[11] << 20) |
+					(d[12] << 19) |
+					(d[13] << 18) |
+					(d[14] << 17) |
+					(d[15] << 16) |
+					(d[16] << 15) |
+					(d[17] << 14) |
+					(d[18] << 13) |
+					(d[19] << 12) |
+					(d[20] << 11) |
+					(d[21] << 10) |
+					(d[22] << 9) |
+					(d[23] << 8) |
+					(d[24] << 7) |
+					(d[25] << 6) |
+					(d[26] << 5) |
+					(d[27] << 4) |
+					(d[28] << 3) |
+					(d[29] << 2) |
+					(d[30] << 1) |
+					(d[31] << 0);
 			}
 		}
 
-		//constexpr bool operator[](int index) const noexcept
-		//{ 
-		//	return (this->bf_ > index) & 1; 
-		//} 
-		constexpr bool operator[](int index) const noexcept
-		{
-			return this->data_[index];
-		}
-
-		constexpr bool operator==(const Cube<D>& other) const noexcept
-		{
-			return this->data_ == other.data_;
-		}
-		constexpr BF get_bf() const noexcept
-		{
-			return this->bf_;
-		}
-
-	private:
-		using CubeType = bool;
-
 		BF bf_;
-		std::array<bool, (1 << D)> data_;
+		//std::array<bool, (1 << D)> data_;
 	};
 }
