@@ -1854,17 +1854,13 @@ namespace n_cube
 		{
 			if (std::get<N>(tranformations_cache).empty())
 			{
-				//auto lock = std::unique_lock(tranformations_cache_mutex);
 				if constexpr (DESCR)
 				{
-					const auto descr = create_descriptions<N>();
-					const auto transformations = details::create_transformations_struct<N>::value(descr);
-					std::get<N>(tranformations_cache) = details::transitive_closure<N>(transformations);
+					std::get<N>(tranformations_cache) = details::transitive_closure<N>(details::create_transformations_struct<N>::value(create_descriptions<N>()));
 				}
 				else
 				{
-					constexpr auto transformations = details::create_transformations_struct<N>::value();
-					std::get<N>(tranformations_cache) = details::transitive_closure<N>(transformations);
+					std::get<N>(tranformations_cache) = details::transitive_closure<N>(details::create_transformations_struct<N>::value());
 				}
 			}
 			return std::get<N>(tranformations_cache);
@@ -1872,6 +1868,13 @@ namespace n_cube
 		#pragma endregion
 
 	} // end namespace details
+
+
+	template <int N> 
+	void init_n_cube() {
+		// run all_transformations once to fill the transformation cache
+		const auto all_transformations = details::all_transformations<N, false>();
+	}
 
 
 	template <int N> std::array<std::string, N> create_descriptions()
@@ -2380,8 +2383,7 @@ namespace n_cube
 		int class_counter = 0;
 		std::cout << "All classes (with values) for N=" << N <<":" << std::endl;
 
-		// run all_transformations once to fill the transformation cache
-		const auto all_transformations = details::all_transformations<N, false>();
+		init_n_cube<N>();
 		
 		const auto class_ids = all_class_ids<N>();
 
@@ -2417,8 +2419,7 @@ namespace n_cube
 		int class_counter = 0;
 		std::cout << "All classes for N=" << N <<":" << std::endl;
 
-		// run all_transformations once to fill the transformation cache
-		const auto all_transformations = details::all_transformations<N, false>();
+		init_n_cube<N>();
 
 		const auto class_ids = all_class_ids<N>();
 
