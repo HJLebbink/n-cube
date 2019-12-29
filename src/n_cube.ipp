@@ -18,6 +18,21 @@
 #include "array_tools.h"
 
 
+namespace bf {
+	constexpr long long cardinality_npn_class(int n) {
+		switch (n) {
+		case 1: return 2;
+		case 2: return 4;
+		case 3: return 14;
+		case 4: return 222;
+		case 5: return 616126;
+		case 6: return 200254952537184;
+		default: return 0;
+		}
+	}
+}
+
+
 namespace prime {
 
 	namespace {
@@ -2083,7 +2098,7 @@ namespace n_cube
 	namespace details
 	{
 		//Naive method: iterates over all bf of cardinality >=N
-		template <int N> constexpr std::set<BF> all_class_ids_method0()
+		template <int N> constexpr std::set<BF> all_class_ids_method0(const std::string& filename = "")
 		{
 			constexpr long long max_bf = 1ll << (1 << N);
 			constexpr long long update_interval = 0x3FFFF;
@@ -2092,35 +2107,54 @@ namespace n_cube
 			const time_t start_time_sec = time(nullptr);
 
 			std::array<std::set<BF>, n_threads> results_per_thread;
-			long long counter_per_thread = 0;
-			std::atomic<long long> counter = 0;
+			std::array<long long, n_threads> counter_per_thread;
+			counter_per_thread.fill(0);
 
-			#pragma omp parallel for num_threads(12) default(shared) private(counter_per_thread)
+			std::atomic<long long> global_counter = 0;
+			std::mutex global_results_mutex;
+			std::set<BF> global_results;
+
+			constexpr long long total_number_npn_classes = bf::cardinality_npn_class(N);
+
+			#pragma omp parallel for num_threads(12) default(shared)
 			for (long long bf = 0; bf < max_bf; ++bf)
 			{
-				const int thread_id = omp_get_thread_num();
-				counter_per_thread++;
-
-				if ((counter_per_thread & update_interval) == 0) {
-					counter++;
-					const time_t passed_time_sec = time(nullptr) - start_time_sec;
-					const double percentage_done = (counter * update_interval) / static_cast<double>(max_bf);
-					const int needed_time_sec = static_cast<int>((passed_time_sec / percentage_done) - passed_time_sec);
-					//std::cout << "passed_time : " << passed_time_sec << "; percentage_done : " << percentage_done << "; percentage_todo : " << percentage_todo << "; needed_time : " << needed_time << std::endl;
-
-					std::cout << "percentage done : " << percentage_done << "; needed_time : " << needed_time_sec << " sec = " << needed_time_sec/60 << " min = " << needed_time_sec / (60*60) << " hour " << std::endl;
-				}
 				const BF c = search_class_id<N>(bf);
+				const int thread_id = omp_get_thread_num();
+
+				counter_per_thread[thread_id]++;
 				results_per_thread[thread_id].insert(c);
+
+				if ((counter_per_thread[thread_id] & update_interval) == 0)
+				{
+					global_counter++;
+					const time_t passed_time_sec = time(nullptr) - start_time_sec;
+					const double percentage_done = (global_counter * update_interval) / static_cast<double>(max_bf);
+					const int needed_time_sec = static_cast<int>((passed_time_sec / percentage_done) - passed_time_sec);
+
+					auto& results = results_per_thread[thread_id];
+					{
+						const auto lock = std::unique_lock(global_results_mutex);
+						for (const BF bf2 : results) {
+							global_results.insert(bf2);
+						}
+					}
+					results.clear();
+					const long long number_npn_classes = global_results.size();
+					std::cout << "percentage done : " << percentage_done << "; NPN classes not found : " << (total_number_npn_classes-number_npn_classes) << "; needed_time : " << needed_time_sec << " sec = " << needed_time_sec / 60 << " min = " << needed_time_sec / (60 * 60) << " hour " << std::endl;
+					
+					if (number_npn_classes == total_number_npn_classes) {
+						break;
+					}
+				}
 			}
 
-			std::set<BF> results;
 			for (int i = 0; i < n_threads; ++i) {
 				for (const BF bf : results_per_thread[i]) {
-					results.insert(bf);
+					global_results.insert(bf);
 				}
 			}
-			return results;
+			return global_results;
 		}
 		template <int N> std::set<BF> all_class_ids_method1()
 		{
