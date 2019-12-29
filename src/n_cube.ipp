@@ -10,7 +10,7 @@
 #include <mutex>
 #include <omp.h>
 #include <atomic>
-
+#include <fstream>
 #include <time.h>
 
 #include "Cube.h"
@@ -2098,7 +2098,7 @@ namespace n_cube
 	namespace details
 	{
 		//Naive method: iterates over all bf of cardinality >=N
-		template <int N> constexpr std::set<BF> all_class_ids_method0(const std::string& filename = "")
+		template <int N> constexpr std::set<BF> all_class_ids_method0(const std::string& filename)
 		{
 			constexpr long long max_bf = 1ll << (1 << N);
 			constexpr long long update_interval = 0x3FFFF;
@@ -2154,6 +2154,13 @@ namespace n_cube
 					global_results.insert(bf);
 				}
 			}
+
+			if (filename != "") {
+				std::ofstream myfile(filename);
+				for (const BF bf : global_results) {
+					myfile << bf << std::endl;
+				}
+			}
 			return global_results;
 		}
 		template <int N> std::set<BF> all_class_ids_method1()
@@ -2171,11 +2178,11 @@ namespace n_cube
 			return results;
 		}
 	}
-	template <int N> std::set<BF> all_class_ids()
+	template <int N> std::set<BF> all_class_ids(const std::string& filename = "")
 	{
 		const bool use_method0 = true;
 		return (use_method0)
-			? details::all_class_ids_method0<N>()
+			? details::all_class_ids_method0<N>(filename)
 			: details::all_class_ids_method1<N>();
 	}
 	#pragma endregion
@@ -2447,15 +2454,15 @@ namespace n_cube
 		std::cout << "total number of bf:" << std::dec << bf_counter << std::endl;
 	}
 
-	template <int N> void print_all_class_ids()
+	template <int N> void print_all_class_ids(const std::string& filename = "")
 	{
 		long long bf_counter = 0;
 		int class_counter = 0;
-		std::cout << "All classes for N=" << N <<":" << std::endl;
+		std::cout << "All NPN classes for N=" << N <<":" << std::endl;
 
 		init_n_cube<N>();
 
-		const auto class_ids = all_class_ids<N>();
+		const auto class_ids = all_class_ids<N>(filename);
 
 		for (int c = 0; c <= N; ++c)
 		{
