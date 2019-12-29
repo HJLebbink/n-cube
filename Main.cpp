@@ -19,17 +19,17 @@ int main(int, char** /*argv[]*/)
 	//n_cube::print_all_transformations<6>(); // 46080 = 2^10 * 3^2 * 5^1 transformations takes 4 sec
 	//n_cube::print_all_transformations<7>(); //
 
-	//n_cube::print_all_class_ids_with_values<1>();
-	//n_cube::print_all_class_ids_with_values<2>();
-	//n_cube::print_all_class_ids_with_values<3>();
-	//n_cube::print_all_class_ids_with_values<4>(".\\data\\npn4.txt");   //222 classes; 65536 = 2^16 bfs; 220 ms
-	n_cube::print_all_class_ids_with_values<5>(".\\data\\npn5.txt");
+	//n_cube::print_all_class_ids_with_values<1>(".\\data\\npn1.txt");
+	//n_cube::print_all_class_ids_with_values<2>(".\\data\\npn2.txt");
+	//n_cube::print_all_class_ids_with_values<3>(".\\data\\npn3.txt");
+	n_cube::print_all_class_ids_with_values<4>(".\\data\\npn4.txt");   //222 classes; 65536 = 2^16 bfs; 220 ms
+	//n_cube::print_all_class_ids_with_values<5>(".\\data\\npn5.txt");
 
-	//n_cube::print_all_class_ids<1>();
-	//n_cube::print_all_class_ids<2>();
-	//n_cube::print_all_class_ids<3>(".\\data\\npn3.txt");
-	//n_cube::print_all_class_ids<4>(".\\data\\npn4.txt");              //222 classes; 65536 = 2^16 bfs; 180 ms
-	//n_cube::print_all_class_ids<5>(".\\data\\npn5.txt");              // takes ? ms: ? classes; 2^32 bfs
+	//n_cube::save_all_npn_classes<1>(".\\data\\npn1.txt");
+	//n_cube::save_all_npn_classes<2>(".\\data\\npn2.txt");
+	//n_cube::save_all_npn_classes<3>(".\\data\\npn3.txt");
+	//n_cube::save_all_npn_classes<4>(".\\data\\npn4.txt"); //222 classes; 65536 = 2^16 bfs; 180 ms
+	//n_cube::save_all_npn_classes<5>(".\\data\\npn5.txt"); // takes ? ms: ? classes; 2^32 bfs
 
 	//n_cube::test_greedy_rewrite_algorithm<3>();
 	//n_cube::test_greedy_rewrite_algorithm<4>(); //takes 8 sec

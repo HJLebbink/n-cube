@@ -2100,43 +2100,21 @@ namespace n_cube
 	namespace details
 	{
 		//Naive method: iterates over all bf of cardinality >=N
-		template <int N> constexpr std::set<BF> all_class_ids_method0(const std::string& filename)
+		template <int N> std::set<BF> generate_all_npn_classes_method0()
 		{
 			constexpr unsigned long long total_number_npn_classes = bf::cardinality_npn_class(N);
-			std::set<BF> global_results;
-
-
-			if (std::filesystem::exists(filename)) {
-				std::cout << "NPN class file exists " << filename << std::endl;
-				std::fstream myfile(filename, std::ios_base::in);
-				BF bf;
-
-				while (myfile >> bf)
-				{
-					global_results.insert(bf);
-				}
-				if (global_results.size() == total_number_npn_classes) {
-					return global_results;
-				}
-				else {
-					std::cout << "WARNING: the file " << filename << " does has " << global_results.size() << " classes with is not the expected number of NPN classes " << total_number_npn_classes << std::endl;
-					static_cast<void>(getchar());
-					global_results.clear();
-				}
-			}
-			
-			init_n_cube<N>();
-
 			constexpr long long max_bf = 1ll << (1 << N);
 			constexpr long long update_interval = 0x3FFFF;
 			constexpr int n_threads = 12;
+			
+			init_n_cube<N>();
 
 			const time_t start_time_sec = time(nullptr);
 
 			std::array<std::set<BF>, n_threads> results_per_thread;
 			std::array<long long, n_threads> counter_per_thread;
 			counter_per_thread.fill(0);
-
+			std::set<BF> global_results;
 			std::atomic<long long> global_counter = 0;
 			std::mutex global_results_mutex;
 
@@ -2178,16 +2156,9 @@ namespace n_cube
 					global_results.insert(bf);
 				}
 			}
-
-			if (filename != "") {
-				std::ofstream myfile(filename);
-				for (const BF bf : global_results) {
-					myfile << bf << std::endl;
-				}
-			}
 			return global_results;
 		}
-		template <int N> std::set<BF> all_class_ids_method1()
+		template <int N> std::set<BF> generate_all_npn_classes_method1()
 		{
 			std::set<BF> results;
 			// start with the number of bits set in lowest bit positions, perform a not allowed transformations, and reduce to smallest form
@@ -2202,12 +2173,12 @@ namespace n_cube
 			return results;
 		}
 	}
-	template <int N> std::set<BF> all_class_ids(const std::string& filename = "")
+	template <int N> std::set<BF> generate_all_npn_classes()
 	{
 		const bool use_method0 = true;
 		return (use_method0)
-			? details::all_class_ids_method0<N>(filename)
-			: details::all_class_ids_method1<N>();
+			? details::generate_all_npn_classes_method0<N>()
+			: details::generate_all_npn_classes_method1<N>();
 	}
 	#pragma endregion
 
@@ -2424,6 +2395,57 @@ namespace n_cube
 		return { params, descr };
 	}
 
+	template <int N> std::set<BF> load_all_npn_classes(const std::string& filename) 
+	{
+		std::set<BF> results;
+		std::fstream myfile(filename, std::ios_base::in);
+		BF bf;
+		while (myfile >> bf)
+		{
+			results.insert(bf);
+		}
+		constexpr unsigned long long total_number_npn_classes = bf::cardinality_npn_class(N);
+		if (results.size() != total_number_npn_classes) {
+			std::cout << "WARNING: load_all_npn_classes the file " << filename << " has " << results.size() << " classes witch is not equal to the expected number of NPN classes " << total_number_npn_classes << std::endl;
+			static_cast<void>(getchar());
+		}
+		return results;
+	}
+
+	template <int N> std::set<BF> load_all_npn_classes() 
+	{
+		if constexpr (N == 1) {
+			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn1.txt");
+		}
+		if constexpr (N == 2) {
+			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn2.txt");
+		}
+		if constexpr (N == 3) {
+			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn3.txt");
+		}
+		if constexpr (N == 4) {
+			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn4.txt");
+		}
+		if constexpr (N == 5) {
+			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn5.txt");
+		}
+		std::cout << "WARNING: load_all_npn_classes provided N " << N << " is not supported" << std::endl;
+		return std::set<BF>();
+	}
+
+	template <int N> void save_all_npn_classes(const std::string& filename)
+	{
+		const std::set<BF> all_npn_classes = generate_all_npn_classes<N>(); // this may take a while...
+
+		if (!std::filesystem::exists(filename)) {
+			std::cout << "Creating new NPN class file " << filename << std::endl;
+			std::fstream myfile(filename, std::ios::trunc); // replace existing file
+			for (const BF bf : all_npn_classes) {
+				myfile << bf << std::endl;
+			}
+		}
+	}
+
 	template <int N> void print_all_transformations()
 	{
 		std::cout << "Transformations obtained by transitive closure N=" << N << ":" << std::endl;
@@ -2442,13 +2464,13 @@ namespace n_cube
 		}
 		std::cout << "number of transformations: " << all_transformations.size() << std::endl;
 	}
-	template <int N> void print_all_class_ids_with_values(const std::string& filename = "")
+	template <int N> void print_all_class_ids_with_values(const std::string& filename)
 	{
 		int bf_counter = 0;
 		int class_counter = 0;
 		std::cout << "All classes (with values) for N=" << N <<":" << std::endl;
 		
-		const auto class_ids = all_class_ids<N>(filename);
+		const auto class_ids = load_all_npn_classes<N>(filename);
 
 		for (int c = 0; c <= N; ++c)
 		{
@@ -2476,28 +2498,4 @@ namespace n_cube
 		std::cout << "total number of bf:" << std::dec << bf_counter << std::endl;
 	}
 
-	template <int N> void print_all_class_ids(const std::string& filename = "")
-	{
-		long long bf_counter = 0;
-		int class_counter = 0;
-		std::cout << "All NPN classes for N=" << N <<":" << std::endl;
-
-		const auto class_ids = all_class_ids<N>(filename);
-
-		for (int c = 0; c <= N; ++c)
-		{
-			for (const auto bf_class_id : class_ids)
-			{
-				const auto cardinality = bf_tools::bf_cardinality(bf_class_id, N);
-
-				if (cardinality == c)
-				{
-					std::cout << "class #" << std::dec << class_counter << ": cardinality " << cardinality << ": " << to_string_hex<N>(bf_class_id) << "=" << to_string_bin<N>(bf_class_id);
-					std::cout << std::endl;
-					class_counter++;
-				}
-			}
-		}
-		std::cout << "total number of bf:" << std::dec << bf_counter << std::endl;
-	}
 }
