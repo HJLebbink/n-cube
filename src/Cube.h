@@ -2,7 +2,6 @@
 #include <array>
 
 
-
 namespace n_cube {
 
 	using BF = unsigned long long;
@@ -22,17 +21,17 @@ namespace n_cube {
 			//data_(d) 
 		{};
 
-		constexpr bool operator[](int index) const noexcept
+		[[nodiscard]] constexpr bool operator[](int index) const noexcept
 		{
 			return (this->bf_ >> index) & 1; 
 			//return this->data_[index];
 		}
 
-		constexpr bool operator==(const Cube<D>& other) const noexcept
+		[[nodiscard]] constexpr bool operator==(const Cube<D>& other) const noexcept
 		{
 			return this->bf_ == other.bf_;
 		}
-		constexpr BF get_bf() const noexcept
+		[[nodiscard]] constexpr BF get_bf() const noexcept
 		{
 			return this->bf_;
 		}

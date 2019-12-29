@@ -39,7 +39,7 @@ namespace bf_tools
 
 		constexpr BF bf_used_vars(
 			const BF bf,
-			const int n_vars)
+			const int n_vars) noexcept
 		{
 			BF id1 = static_cast<BF>(-1);
 			BF id2 = static_cast<BF>(-1);
@@ -85,7 +85,7 @@ namespace bf_tools
 		}
 
 		// count the number of bits set to one.
-		constexpr int count_bits(const BF v)
+		constexpr int count_bits(const BF v) noexcept
 		{
 			int r = 0;
 			for (int i = 0; i < 64; ++i) if (((v >> i) & 1) == 1) r++;
@@ -109,7 +109,7 @@ namespace bf_tools
 
 		template<size_t S>
 		constexpr unsigned long long bf_used_vars(
-			const std::bitset<S>& bf)
+			const std::bitset<S>& bf) noexcept
 		{
 			if constexpr (S == 2)
 			{
@@ -132,7 +132,7 @@ namespace bf_tools
 
 		constexpr unsigned long long bf_used_vars_2(
 			const BF bf,
-			const int n_vars)
+			const int n_vars) noexcept
 		{
 			BF id1 = static_cast<BF>(-1);
 			BF id2 = static_cast<BF>(-1);
@@ -267,7 +267,7 @@ namespace bf_tools
 	// get the Boolean Function cardinality.
 	[[nodiscard]] constexpr int bf_cardinality(
 		const BF bf,
-		const int n_vars)
+		const int n_vars) noexcept
 	{
 		return details::count_bits(details::bf_used_vars(bf, n_vars));
 	}
@@ -276,7 +276,7 @@ namespace bf_tools
 	template<size_t S>
 	[[nodiscard]] constexpr int bf_cardinality(
 		const std::bitset<S> bf,
-		const int n_vars)
+		const int n_vars) noexcept
 	{
 		return details::count_bits(details::bf_used_vars(bf, n_vars));
 	}
@@ -298,19 +298,19 @@ namespace bf_tools
 
 	// return the number of bits that missmatch, that is, return the number of different bits.
 	template <size_t S>
-	[[nodiscard]] constexpr int missmatch(const std::bitset<S>& bf1, const std::bitset<S>& bf2) {
+	[[nodiscard]] constexpr int missmatch(const std::bitset<S>& bf1, const std::bitset<S>& bf2) noexcept {
 		const auto eq = (bf1 ^ bf2);
 		return static_cast<int>(eq.count());
 	}
 
 	// return the used variables. A set bit at position p indicates that the variable p is used.
-	[[nodiscard]] constexpr unsigned long long bf_used_vars(const BF bf, const int n_vars) {
+	[[nodiscard]] constexpr unsigned long long bf_used_vars(const BF bf, const int n_vars) noexcept {
 		return details::bf_used_vars(bf, n_vars);
 	}
 
 	// return the used variables. A set bit at position p indicates that the variable p is used.
 	template <size_t S>
-	[[nodiscard]] constexpr unsigned long long bf_used_vars(const std::bitset<S>& bf) {
+	[[nodiscard]] constexpr unsigned long long bf_used_vars(const std::bitset<S>& bf) noexcept {
 		return details::bf_used_vars(bf);
 	}
 

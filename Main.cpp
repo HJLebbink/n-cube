@@ -22,13 +22,13 @@ int main(int, char** /*argv[]*/)
 	//n_cube::print_all_class_ids_with_values<1>();
 	//n_cube::print_all_class_ids_with_values<2>();
 	//n_cube::print_all_class_ids_with_values<3>();
-	//n_cube::print_all_class_ids_with_values<4>();   //222 classes; 65536 = 2^16 bfs; 220 ms
-	n_cube::print_all_class_ids_with_values<5>();
+	n_cube::print_all_class_ids_with_values<4>();   //222 classes; 65536 = 2^16 bfs; 220 ms
+	//n_cube::print_all_class_ids_with_values<5>();
 
 	//n_cube::print_all_class_ids<1>();
 	//n_cube::print_all_class_ids<2>();
 	//n_cube::print_all_class_ids<3>();
-	//n_cube::print_all_class_ids<4>();              //222 classes; 65536 = 2^16 bfs; 300 ms
+	//n_cube::print_all_class_ids<4>();              //222 classes; 65536 = 2^16 bfs; 180 ms
 	//n_cube::print_all_class_ids<5>();              // takes ? ms: ? classes; 2^32 bfs
 
 	//n_cube::test_greedy_rewrite_algorithm<3>();
