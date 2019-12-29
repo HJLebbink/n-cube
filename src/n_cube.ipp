@@ -26,7 +26,7 @@ namespace bf {
 		case 3: return 14;
 		case 4: return 222;
 		case 5: return 616126;
-		case 6: return 200254952537184;
+		case 6: return 200253952537184;
 		default: return 0;
 		}
 	}
