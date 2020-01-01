@@ -9,6 +9,9 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{67ba4749-7c10-4df9-95a2-2f8f6e8b484e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\n_cube.ipp">
@@ -33,8 +36,20 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="data\npn4.txt" />
-    <Text Include="data\npn5.txt" />
-    <Text Include="data\npn3.txt" />
+    <Text Include="data\npn1.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\npn2.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\npn3.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\npn4.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\npn5.txt">
+      <Filter>Data</Filter>
+    </Text>
   </ItemGroup>
 </Project>
