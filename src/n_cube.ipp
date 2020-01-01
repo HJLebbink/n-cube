@@ -2398,16 +2398,21 @@ namespace n_cube
 	template <int N> std::set<BF> load_all_npn_classes(const std::string& filename) 
 	{
 		std::set<BF> results;
-		std::fstream myfile(filename, std::ios_base::in);
-		BF bf;
-		while (myfile >> bf)
-		{
-			results.insert(bf);
+		if (std::filesystem::exists(filename)) {
+			std::fstream myfile(filename, std::ios_base::in);
+			BF bf;
+			while (myfile >> bf)
+			{
+				results.insert(bf);
+			}
+			constexpr unsigned long long total_number_npn_classes = bf::cardinality_npn_class(N);
+			if (results.size() != total_number_npn_classes) {
+				std::cout << "WARNING: load_all_npn_classes the file " << filename << " has " << results.size() << " classes witch is not equal to the expected number of NPN classes " << total_number_npn_classes << std::endl;
+				static_cast<void>(getchar());
+			}
 		}
-		constexpr unsigned long long total_number_npn_classes = bf::cardinality_npn_class(N);
-		if (results.size() != total_number_npn_classes) {
-			std::cout << "WARNING: load_all_npn_classes the file " << filename << " has " << results.size() << " classes witch is not equal to the expected number of NPN classes " << total_number_npn_classes << std::endl;
-			static_cast<void>(getchar());
+		else {
+			std::cout << "WARNING: load_all_npn_classes: filename " << filename << " does not exist" << std::endl;
 		}
 		return results;
 	}
@@ -2438,11 +2443,22 @@ namespace n_cube
 		const std::set<BF> all_npn_classes = generate_all_npn_classes<N>(); // this may take a while...
 
 		if (!std::filesystem::exists(filename)) {
-			std::cout << "Creating new NPN class file " << filename << std::endl;
-			std::fstream myfile(filename, std::ios::trunc); // replace existing file
-			for (const BF bf : all_npn_classes) {
-				myfile << bf << std::endl;
+			std::cout << "INFO: Creating new NPN class file " << filename << " with " << all_npn_classes.size() << " clasess in " << std::filesystem::current_path() << std::endl;
+			std::fstream myfile(filename, std::fstream::out); // replace existing file
+			if (myfile.good()) {
+				for (const BF bf : all_npn_classes) {
+					std::cout << bf << std::endl;
+					myfile << bf << std::endl;
+				}
+
 			}
+			else {
+				std::cout << "WARNING not good" << std::endl;
+			}
+			myfile.close();
+		}
+		else {
+			std::cout << "WARNING: NPN class file " << filename << " already exists in " << std::filesystem::current_path() << std::endl;
 		}
 	}
 
