@@ -19,8 +19,8 @@ int main(int, char** /*argv[]*/)
 	//n_cube::print_all_transformations<7, false>(); //
 
 	//n_cube::print_all_class_ids_with_values<1>(".\\data\\npn1.txt");
-	n_cube::print_all_class_ids_with_values<2>(".\\data\\npn2.txt");
-	//n_cube::print_all_class_ids_with_values<3>(".\\data\\npn3.txt");
+	//n_cube::print_all_class_ids_with_values<2>(".\\data\\npn2.txt");
+	n_cube::print_all_class_ids_with_values<3>(".\\data\\npn3.txt");
 	//n_cube::print_all_class_ids_with_values<4>(".\\data\\npn4.txt");   //222 classes; 65536 = 2^16 bfs; 220 ms
 	//n_cube::print_all_class_ids_with_values<5>(".\\data\\npn5.txt");
 

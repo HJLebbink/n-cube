@@ -207,196 +207,69 @@ namespace n_cube
 		}
 
 		template <int N>
-		constexpr CubeI<N> init_cubeI() noexcept 
+		constexpr CubeI<N> init_cubeI() noexcept
 		{
 			constexpr int S = 1 << N;
 			return array_tools::create_index_array<int, S>();
 		}
 
-		#pragma region functional composition
-		template <int N, int M> struct composition_struct {};
-		template <int N> struct composition_struct<N, 1>
-		{
-			static constexpr CubeI<N> value(const std::array<CubeI<N>, 1>& a) noexcept
-			{
-				return a[0];
-			}
-		};
-		template <int N> struct composition_struct<N, 2>
-		{
-			static constexpr CubeI<N> value(const CubeI<N>& c0, const CubeI<N>& c1) noexcept
-			{
-				return details::apply_struct<N>::value(c0, c1);
-			}
-			static constexpr CubeI<N> value(const std::array<CubeI<N>, 2>& a) noexcept
-			{
-				return value(a[0], a[1]);
-			}
-		};
-		template <int N> struct composition_struct<N, 3>
-		{
-			static constexpr CubeI<N> value(const std::array<CubeI<N>, 3>& a) noexcept
-			{
-				return composition_struct<N, 2>::value(a[0], composition_struct<N, 2>::value(a[1], a[2]));
-			}
-		};
-		template <int N> struct composition_struct<N, 4>
-		{
-			static constexpr CubeI<N> value(const std::array<CubeI<N>, 4>& a) noexcept
-			{
-				return composition_struct<N, 2>::value(composition_struct<N, 2>::value(a[0], a[1]), composition_struct<N, 2>::value(a[2], a[3]));
-			}
-		};
-
-		template <int N, int M> constexpr CubeI<N> function_composition(const std::array<CubeI<N>, M>& a) noexcept
-		{
-			return composition_struct<N, M>::value(a);
-		}
-		template <int N> constexpr CubeI<N> function_composition(const CubeI<N>& c1, const CubeI<N>&c2) noexcept
-		{
-			return function_composition<N>(std::array<CubeI<N>, 2>{ c1, c2 });
-		}
-		template <int N> constexpr CubeI<N> function_composition(const CubeI<N>& c1, const CubeI<N>&c2, const CubeI<N>&c3) noexcept
-		{
-			return function_composition<N>(std::array<CubeI<N>, 3>{ c1, c2, c3 });
-		}
-		template <int N> constexpr CubeI<N> function_composition(const CubeI<N>& c1, const CubeI<N>&c2, const CubeI<N>&c3, const CubeI<N>&c4) noexcept
-		{
-			return function_composition<N>(std::array<CubeI<N>, 4>{ c1, c2, c3, c4 });
-		}
-		#pragma endregion
-
-		#pragma region complement
-		template <int N> struct complement_struct
-		{
-			static constexpr BF value(const BF bf)
-			{
-				std::cout << "ERROR: complement: dim=" << N << " not implemented yet" << std::endl;
-				getchar();
-				return ~bf;
-			}
-			static constexpr BF make_cannonical(const BF bf)
-			{
-				std::cout << "ERROR: make_cannonical: dim=" << N << " not implemented yet" << std::endl;
-				getchar();
-				return ~bf;
-			}
-		};
-		template <> struct complement_struct<1>
-		{
-			static constexpr BF value(const BF bf) noexcept { return ~bf & 0b11; }
-		};
-		template <> struct complement_struct<2>
-		{
-			static constexpr BF value(const BF bf) noexcept { return ~bf & 0xF; }
-		};
-		template <> struct complement_struct<3>
-		{
-			static constexpr BF value(const BF bf) noexcept { return ~bf & 0xFF; }
-		};
-		template <> struct complement_struct<4>
-		{
-			static constexpr BF value(const BF bf) noexcept { return ~bf & 0xFFFF; }
-		};
-		template <> struct complement_struct<5>
-		{
-			static constexpr BF value(const BF bf) noexcept { return ~bf & 0xFFFFFFFF; }
-		};
-		template <> struct complement_struct<6>
-		{
-			static constexpr BF value(const BF bf) noexcept { return ~bf; }
-		};
-		#pragma endregion
-
-		#pragma region transform
-		template <int N> struct apply_struct
-		{
-			static constexpr CubeI<N> value(const CubeI<N>& c, [[maybe_unused]] const CubeI<N>& ci)
-			{
-				std::cout << "ERROR: apply_struct: dim=" << N << " not implemented yet" << std::endl;
-				getchar();
-				return c;
-			}
-			static constexpr CubeI<N> value(const Cube<N>& c, const CubeI<N>& ci)
-			{
-				std::cout << "ERROR: apply_struct: dim=" << N << " not implemented yet" << std::endl;
-				getchar();
-				return c;
-			}
-		};
-		template <> struct apply_struct<1>
-		{
-			static constexpr int N = 1;
-			static constexpr CubeI<N> value(const CubeI<N>& c, const CubeI<N>& ci) noexcept
-			{
+#pragma region apply
+		template <int N> constexpr CubeI<N> apply(const CubeI<N>& c, const CubeI<N>& ci) {
+			if constexpr (N == 1) {
 				return CubeI<N>{ c[ci[0]], c[ci[1]] };
 			}
-			static constexpr Cube<N> value(const Cube<N>& c, const CubeI<N>& ci) noexcept
-			{
-				return Cube<N>{  std::array<bool, (1 << N)>{c[ci[0]], c[ci[1]] }};
-			}
-		};
-		template <> struct apply_struct<2>
-		{
-			static constexpr int N = 2;
-			static constexpr CubeI<N> value(const CubeI<N>& c, const CubeI<N>& ci) noexcept
-			{
+			if constexpr (N == 2) {
 				return CubeI<N>{ c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]] };
 			}
-			static constexpr Cube<N> value(const Cube<N>& c, const CubeI<N>& ci) noexcept
-			{
-				return Cube<N>{ std::array<bool, (1<<N)>{c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]] }};
-			}
-		};
-		template <> struct apply_struct<3>
-		{
-			static constexpr int N = 3;
-			static constexpr CubeI<N> value(const CubeI<N>& c, const CubeI<N>& ci) noexcept
-			{
+			if constexpr (N == 3) {
 				return CubeI<N>{ c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]] };
 			}
-			static constexpr Cube<N> value(const Cube<N>& c, const CubeI<N>& ci) noexcept
-			{
-				return Cube<N>{ std::array<bool, (1 << N)>{c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]] }};
-			}
-		};
-		template <> struct apply_struct<4>
-		{
-			static constexpr int N = 4;
-			static constexpr CubeI<N> value(const CubeI<N>& c, const CubeI<N>& ci) noexcept
-			{
+			if constexpr (N == 4) {
 				return CubeI<N>{
 					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
-					c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]]
+						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]]
 				};
 			}
-			static constexpr Cube<N> value(const Cube<N>& c, const CubeI<N>& ci) noexcept
-			{
+			if constexpr (N == 5) {
+				return CubeI<N>{
+					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
+						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]],
+						c[ci[16]], c[ci[17]], c[ci[18]], c[ci[19]], c[ci[20]], c[ci[21]], c[ci[22]], c[ci[23]],
+						c[ci[24]], c[ci[25]], c[ci[26]], c[ci[27]], c[ci[28]], c[ci[29]], c[ci[30]], c[ci[31]]
+				};
+			}
+			if constexpr (N == 6) {
+				return CubeI<N>{
+					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
+						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]],
+						c[ci[16]], c[ci[17]], c[ci[18]], c[ci[19]], c[ci[20]], c[ci[21]], c[ci[22]], c[ci[23]],
+						c[ci[24]], c[ci[25]], c[ci[26]], c[ci[27]], c[ci[28]], c[ci[29]], c[ci[30]], c[ci[31]],
+						c[ci[32]], c[ci[33]], c[ci[34]], c[ci[35]], c[ci[36]], c[ci[37]], c[ci[38]], c[ci[39]],
+						c[ci[40]], c[ci[41]], c[ci[42]], c[ci[43]], c[ci[44]], c[ci[45]], c[ci[46]], c[ci[47]],
+						c[ci[48]], c[ci[49]], c[ci[50]], c[ci[51]], c[ci[52]], c[ci[53]], c[ci[54]], c[ci[55]],
+						c[ci[56]], c[ci[57]], c[ci[58]], c[ci[59]], c[ci[60]], c[ci[61]], c[ci[62]], c[ci[63]]
+				};
+			}
+			return CubeI<N>();
+		}
+
+		template <int N> constexpr Cube<N> apply(const Cube<N>& c, const CubeI<N>& ci) {
+			if constexpr (N == 1) {
+				return Cube<N>{ std::array<bool, (1 << N)>{c[ci[0]], c[ci[1]] }};
+			}
+			if constexpr (N == 2) {
+				return Cube<N>{ std::array<bool, (1 << N)>{c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]] }};
+			}
+			if constexpr (N == 3) {
+				return Cube<N>{ std::array<bool, (1 << N)>{c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]] }};
+			}
+			if constexpr (N == 4) {
 				return Cube<N>{ std::array<bool, (1 << N)>{
 					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
 						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]]
 				}};
 			}
-			static __m128i value_opt(const __m128i c, const __m128i ci) noexcept
-			{
-				const __m128i shuff = _mm_shuffle_epi8(c, ci);
-				return shuff;
-			}
-		};
-		template <> struct apply_struct<5>
-		{
-			static constexpr int N = 5;
-			static constexpr CubeI<N> value(const CubeI<N>& c, const CubeI<N>& ci) noexcept
-			{
-				return CubeI<N>{
-					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
-					c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]],
-					c[ci[16]], c[ci[17]], c[ci[18]], c[ci[19]], c[ci[20]], c[ci[21]], c[ci[22]], c[ci[23]],
-					c[ci[24]], c[ci[25]], c[ci[26]], c[ci[27]], c[ci[28]], c[ci[29]], c[ci[30]], c[ci[31]]
-				};
-			}
-			static constexpr Cube<N> value(const Cube<N>& c, const CubeI<N>& ci) noexcept
-			{
+			if constexpr (N == 5) {
 				return Cube<N>{ std::array<bool, (1 << N)>{
 					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
 						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]],
@@ -404,25 +277,7 @@ namespace n_cube
 						c[ci[24]], c[ci[25]], c[ci[26]], c[ci[27]], c[ci[28]], c[ci[29]], c[ci[30]], c[ci[31]]
 				}};
 			}
-		};
-		template <> struct apply_struct<6>
-		{
-			static constexpr int N = 6;
-			static constexpr CubeI<N> value(const CubeI<N>& c, const CubeI<N>& ci) noexcept
-			{
-				return CubeI<N>{ 
-					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
-						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]],
-						c[ci[16]], c[ci[17]], c[ci[18]], c[ci[19]], c[ci[20]], c[ci[21]], c[ci[22]], c[ci[23]],
-						c[ci[24]], c[ci[25]], c[ci[26]], c[ci[27]], c[ci[28]], c[ci[29]], c[ci[30]], c[ci[31]],
-						c[ci[32]], c[ci[33]], c[ci[34]], c[ci[35]], c[ci[36]], c[ci[37]], c[ci[38]], c[ci[39]],
-						c[ci[40]], c[ci[41]], c[ci[42]], c[ci[43]], c[ci[44]], c[ci[45]], c[ci[46]], c[ci[47]],
-						c[ci[48]], c[ci[49]], c[ci[50]], c[ci[51]], c[ci[52]], c[ci[53]], c[ci[54]], c[ci[55]],
-						c[ci[56]], c[ci[57]], c[ci[58]], c[ci[59]], c[ci[60]], c[ci[61]], c[ci[62]], c[ci[63]]
-				};
-			}
-			static constexpr Cube<N> value(const Cube<N>& c, const CubeI<N>& ci) noexcept
-			{
+			if constexpr (N == 6) {
 				return Cube<N>{ std::array<bool, (1 << N)>{
 					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
 						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]],
@@ -434,8 +289,52 @@ namespace n_cube
 						c[ci[56]], c[ci[57]], c[ci[58]], c[ci[59]], c[ci[60]], c[ci[61]], c[ci[62]], c[ci[63]]
 				}};
 			}
-		};
+		}
+#pragma endregion
+
+
+#pragma region functional composition
+
+		template <int N> constexpr CubeI<N> function_composition(const CubeI<N>& a) noexcept {
+			return a;
+		}
+		template <int N> constexpr CubeI<N> function_composition(const CubeI<N>& a0, const CubeI<N>& a1) noexcept {
+			return apply<N>(a0, a1);
+		}
+		template <int N> constexpr CubeI<N> function_composition(const CubeI<N>& a0, const CubeI<N>& a1, const CubeI<N>& a2) noexcept {
+			return apply<N>(a0, apply<N>(a1, a2));
+		}
+		template <int N> constexpr CubeI<N> function_composition(const CubeI<N>& a0, const CubeI<N>& a1, const CubeI<N>& a2, const CubeI<N>& a3) noexcept {
+			return apply<N>(apply<N>(a0, a1), apply<N>(a2, a3));
+		}
+
+		template <int N, int M> constexpr CubeI<N> function_composition(const std::array<CubeI<N>, M>& a) noexcept {
+			if constexpr (M == 1) {
+				return function_composition(a[0]);
+			}
+			if constexpr (M == 2) {
+				return function_composition(a[0], a[1]);
+			}
+			if constexpr (M == 3) {
+				return function_composition(a[0], a[1], a[2]);
+			}
+			if constexpr (M == 4) {
+				return function_composition(a[0], a[1], a[2], a[3]);
+			}
+			static_assert(fail);
+		}
+
+		static void test_function_composition() {
+
+			constexpr int N = 2;
+
+			constexpr auto id = init_cubeI<(N)>();
+			static_assert(array_tools::equal(function_composition<N>(id, id), id), "");
+			//static_assert(array_tools::equal(function_composition<N>(value(1), value(1)), id), "");
+			//static_assert(array_tools::equal(function_composition<N>(value(2), value(2)), id), "");
+		}
 		#pragma endregion
+
 	
 		#pragma region reflect
 		template <int N, int D> constexpr CubeI<N> lift_reflect() noexcept
@@ -706,6 +605,7 @@ namespace n_cube
 		};
 		*/
 		#pragma endregion
+
 
 		#pragma region rotate
 		constexpr Cycle create_cycle(const int d1, const int d2) noexcept
@@ -1307,9 +1207,10 @@ namespace n_cube
 		#pragma endregion
 
 		// forward declaration
-		template <int N, bool DESCR> const Transformations<N>& all_transformations();
+		template <int N, bool DESCR> const Transformations<N>& get_transformations_from_cache();
 
 		#pragma region create_transformations
+
 		template <int N> struct create_transformations_struct
 		{
 			static Transformations<N> value(const std::array<std::string, 2>& descr)
@@ -1682,6 +1583,7 @@ namespace n_cube
 			for (const auto& e : results) transformations_out.push_back(std::make_pair(e, "?"));
 			return transformations_out;
 		}
+
 		template <int N, int M> static std::set<CubeI<N>> transitive_closure_x(
 			const std::array<CubeI<N>, M>& transformations_in)
 		{
@@ -1814,7 +1716,7 @@ namespace n_cube
 					}
 					else
 					{
-						std::get<N>(transformations_greedy_cache) = details::all_transformations<N, false>();
+						std::get<N>(transformations_greedy_cache) = details::get_transformations_from_cache<N, false>();
 					}
 				}
 				return std::get<N>(transformations_greedy_cache);
@@ -1834,7 +1736,7 @@ namespace n_cube
 					}
 					else
 					{
-						std::get<N>(transformations_greedy_cache) = details::all_transformations<N, false>();
+						std::get<N>(transformations_greedy_cache) = details::get_transformations_from_cache<N, false>();
 					}
 				}
 				return std::get<N>(transformations_greedy_cache);
@@ -1854,7 +1756,7 @@ namespace n_cube
 					}
 					else
 					{
-						std::get<N>(transformations_greedy_cache) = details::all_transformations<N, false>();
+						std::get<N>(transformations_greedy_cache) = details::get_transformations_from_cache<N, false>();
 					}
 				}
 				return std::get<N>(transformations_greedy_cache);
@@ -1863,34 +1765,40 @@ namespace n_cube
 		#pragma endregion
 
 		#pragma region all transformations
-		static std::mutex tranformations_cache_mutex;
+
+		template <int N, bool DESCR> 
+		const Transformations<N> create_transformations()
+		{
+			if constexpr (DESCR)
+			{
+				return details::transitive_closure<N>(details::create_transformations_struct<N>::value(create_descriptions<N>()));
+			}
+			else
+			{
+				return details::transitive_closure<N>(details::create_transformations_struct<N>::value());
+			}
+		}
+
 		static std::tuple<Transformations<0>, Transformations<1>, Transformations<2>, Transformations<3>, Transformations<4>, Transformations<5>, Transformations<6>> tranformations_cache;
 
 		template <int N, bool DESCR> 
-		const Transformations<N>& all_transformations()
+		const Transformations<N>& get_transformations_from_cache()
 		{
 			if (std::get<N>(tranformations_cache).empty())
 			{
-				if constexpr (DESCR)
-				{
-					std::get<N>(tranformations_cache) = details::transitive_closure<N>(details::create_transformations_struct<N>::value(create_descriptions<N>()));
-				}
-				else
-				{
-					std::get<N>(tranformations_cache) = details::transitive_closure<N>(details::create_transformations_struct<N>::value());
-				}
+				std::get<N>(tranformations_cache) = create_transformations<N, DESCR>();
 			}
 			return std::get<N>(tranformations_cache);
 		}
-		#pragma endregion
 
+		#pragma endregion
 	} // end namespace details
 
 
 	template <int N> 
 	void init_n_cube() {
 		// run all_transformations once to fill the transformation cache
-		const auto all_transformations = details::all_transformations<N, false>();
+		const auto get_transformations_from_cache = details::get_transformations_from_cache<N, false>();
 	}
 
 
@@ -1919,11 +1827,29 @@ namespace n_cube
 		}
 		return std::array<std::string, N>();
 	}
-	template <int N> constexpr BF complement(const BF bf)
+	template <int N> constexpr BF complement(const BF bf) noexcept
 	{
-		return details::complement_struct<N>::value(bf);
+		if constexpr (N == 1) {
+			return ~bf & 0b11;
+		}
+		if constexpr (N == 2) {
+			return ~bf & 0xF;
+		}
+		if constexpr (N == 3) {
+			return ~bf & 0xFF;
+		}
+		if constexpr (N == 4) {
+			return ~bf & 0xFFFF;
+		}
+		if constexpr (N == 5) {
+			return ~bf & 0xFFFFFFFF;
+		}
+		if constexpr (N == 6) {
+			return ~bf;
+		}
+		return 0;
 	}
-	template <int N> constexpr BF complement_if_needed(const BF bf)
+	template <int N> constexpr BF complement_if_needed(const BF bf) noexcept
 	{
 		constexpr int N2 = (1<<N) / 2;
 		return (details::count_bits(bf) <= N2) ? bf : complement<N>(bf);
@@ -1933,12 +1859,12 @@ namespace n_cube
 	// Transform (shuffle) cube c according to the change as provided by cube ci
 	template <int N> constexpr Cube<N> transform(const Cube<N>& c, const CubeI<N>& ci)
 	{
-		return details::apply_struct<N>::value(c, ci);
+		return details::apply<N>(c, ci);
 	}
 	// Transform (shuffle) cube c according to the change as provided by cube ci
 	template <int N> constexpr CubeI<N> transform(const CubeI<N>& c, const CubeI<N>& ci)
 	{
-		return details::apply_struct<N>::value(c, ci);
+		return details::apply<N>(c, ci);
 	}
 	// Transform (shuffle) Boolean function bf according to the change as provided by cube
 	template <int N> constexpr BF transform(const BF bf, const CubeI<N>& cube)
@@ -2005,7 +1931,7 @@ namespace n_cube
 			std::string transform_string = "";
 
 			// find minimum in set
-			for (const auto& pair : details::all_transformations<N, DESCR>())
+			for (const auto& pair : details::get_transformations_from_cache<N, DESCR>())
 			{
 				const CubeI<N> cube = std::get<0>(pair);
 				const BF bf_new = transform<N>(bf, cube);
@@ -2068,7 +1994,9 @@ namespace n_cube
 			}
 			return std::make_tuple(smallest_bf, transform_string);
 		}
+
 	}
+
 	template <int N> constexpr BF search_class_id(const BF bf)
 	{
 		const bool method1 = true;
@@ -2080,18 +2008,260 @@ namespace n_cube
 	#pragma endregion 
 
 	// Get the set of BFs that are in the equivalence class of the provided bf.
-	template <int N> constexpr std::set<BF> equiv_class(const BF bf)
+	template <int N> std::set<BF> equiv_class(const BF bf)
 	{
-		const auto all_transformations = details::all_transformations<N, false>();
+		const Transformations<N>& get_transformations_from_cache = details::get_transformations_from_cache<N, false>();
 
 		std::set<BF> result;
-		for (const auto& pair : all_transformations)
+		result.insert(complement<N>(bf));
+
+		for (const auto& pair : get_transformations_from_cache)
 		{
-			const CubeI<N> cube = std::get<0>(pair);
+			const CubeI<N>& cube = std::get<0>(pair);
 			const BF bf_new = transform<N>(bf, cube);
 
 			result.insert(bf_new);
 			result.insert(complement<N>(bf_new));
+		}
+		return result;
+	}
+
+	#pragma region reachable
+	namespace {
+
+		template <int N>
+		bool constexpr reachable_private_A(const BF from, const BF to, const CubeI<N>& transformation)
+		{
+			const BF bf_new = transform<N>(from, transformation);
+			return (bf_new == to) ? true : ((complement<N>(bf_new) == to) ? true : false);
+		}
+
+		template <int N, int M, int ... S>
+		bool constexpr reachable_private_X1(const BF from, const BF to, const std::array<CubeI<N>, M>& transformations, std::index_sequence<S...>)
+		{
+			return (complement<N>(to) == from) ? true : (... || reachable_private_A<N>(from, to, transformations[S]));
+		}
+
+		template <int N, int Q, int ... S>
+		bool constexpr reachable_private_X2(const BF from, const std::array<BF, Q>& to, const CubeI<N>& transformation, std::index_sequence<S...>)
+		{
+			return (complement<N>(to) == from) ? true : (... || reachable_private_A<N>(from, to[S], transformation));
+		}
+
+		template <int N, int M, int Q, int ... S>
+		bool constexpr reachable_private_Y(const BF from, const std::array<BF, Q>& to, const std::array<CubeI<N>, M>& transformations, std::index_sequence<S...>)
+		{
+			return (... && reachable_private_X1<N>(from, to[S], transformations, std::make_index_sequence<N>()));
+		}
+	}
+	
+	template <int N>
+	bool constexpr reachable(const BF from, const BF to, const CubeI<N>& transformation)
+	{
+		return reachable_private_A<N>(from, to, transformation);
+	}
+
+	template <int N, int M>
+	bool constexpr reachable(const BF from, const BF to, const std::array<CubeI<N>, M>& transformations)
+	{
+		return reachable_private_X1<N, M>(from, to, transformations, std::make_index_sequence<N>());
+	}
+
+	template <int N, int Q>
+	bool constexpr reachable(const BF from, const std::array<BF, Q>& to, const CubeI<N>& transformation) 
+	{
+		return reachable_private_X2<N, Q>(from, to, transformation, std::make_index_sequence<Q>());
+	}
+
+	template <int N, int Q, int M>
+	bool constexpr reachable(const BF from, const std::array<BF, Q>& to, const std::array<CubeI<N>, M>& transformations)
+	{
+		return reachable_private_Y<N, M, Q>(from, to, transformations, std::make_index_sequence<N>());
+	}
+
+
+	static void test_reachability_bf2() {
+		constexpr int N = 2;
+		constexpr CubeI<N> ref0 = details::reflect<N>::value(0);
+		constexpr CubeI<N> ref1 = details::reflect<N>::value(1);
+		constexpr CubeI<N> ref01 = details::function_composition<N>(ref0, ref1);
+		
+		constexpr CubeI<N> rot01 = details::rotate<N>::value(0, 1);
+		constexpr auto empty = std::array<CubeI<N>, 0>{};
+
+		{	// npn class 0: 0b0000
+			// Neither ref0 and ref1, nor rot01 are needed find the other bf in the npn class
+			static_assert(reachable<N>(0b0000, 0b1111, empty));
+		}
+		{	// npn class 1: 0b0011
+			// ref0 and ref1 cannot be used to find other bf ub the npn class; rot01 is only needed
+			static_assert(!reachable<N>(0b0011, 0b0101, ref0));
+			static_assert(!reachable<N>(0b0011, 0b0101, ref1));
+			static_assert(reachable<N>(0b0011, 0b0101, rot01));
+		}
+		{	// npn class 2: 0b0001
+			// ref0 and ref1 (and their composition) are needed to to find the other bf ub the npn class; rot01 is not needed
+
+			static_assert(reachable<N>(0b0001, 0b0010, ref0));
+			static_assert(reachable<N>(0b0001, 0b0100, ref1));
+
+			static_assert(reachable<N>(0b0001, 0b1000, ref01));
+
+			static_assert(!reachable<N>(0b0001, 0b0010, rot01));
+			static_assert(reachable<N>(0b0001, 0b0100, rot01));
+			static_assert(!reachable<N>(0b0001, 0b1000, rot01));
+		}
+		{	// npn class 3: 0b0110
+			// Neither ref0 and ref1, nor rot01 are needed find the other bf in the npn class
+			static_assert(reachable<N>(0b0110, 0b1001, empty));
+		}
+	}
+
+	static void test_reachability_bf3() {
+
+		constexpr int N = 3;
+		constexpr CubeI<N> id = details::init_cubeI<N>();
+
+		constexpr int npn_0 = 0b0000'0000;
+		constexpr int npn_1 = 0b0000'0001;
+		constexpr int npn_3 = 0b0000'0011;
+		constexpr int npn_6 = 0b0000'0110;
+		constexpr int npn_7 = 0b0000'0111;
+		constexpr int npn_15 = 0b0000'1111;
+		constexpr int npn_22 = 0b0001'0110;
+		constexpr int npn_23 = 0b0001'0111;
+		constexpr int npn_24 = 0b0001'1000;
+		constexpr int npn_25 = 0b0001'1001;
+		constexpr int npn_27 = 0b0001'1010;
+		constexpr int npn_30 = 0b0001'1110;
+		constexpr int npn_60 = 0b0011'1100;
+		constexpr int npn_105 = 0b0110'1001;
+		
+		constexpr CubeI<N> ref0 = details::reflect<N>::value(0);
+		constexpr CubeI<N> ref1 = details::reflect<N>::value(1);
+		constexpr CubeI<N> ref2 = details::reflect<N>::value(2);
+
+		constexpr CubeI<N> ref0_1 = details::function_composition<N>(ref0, ref1);
+		constexpr CubeI<N> ref0_2 = details::function_composition<N>(ref0, ref2);
+		constexpr CubeI<N> ref1_2 = details::function_composition<N>(ref1, ref2);
+
+		constexpr CubeI<N> rot01 = details::rotate<N>::value(0, 1);
+		constexpr CubeI<N> rot02 = details::rotate<N>::value(0, 2);
+		constexpr CubeI<N> rot12 = details::rotate<N>::value(1, 2);
+
+		constexpr CubeI<N> rot01_02 = details::function_composition<N>(rot01, rot02);
+		constexpr CubeI<N> rot01_12 = details::function_composition<N>(rot01, rot12);
+		constexpr CubeI<N> rot02_12 = details::function_composition<N>(rot02, rot12);
+
+		constexpr CubeI<N> rot02_01 = details::function_composition<N>(rot02, rot01);
+		constexpr CubeI<N> rot12_01 = details::function_composition<N>(rot12, rot01);
+		constexpr CubeI<N> rot12_02 = details::function_composition<N>(rot12, rot02);
+
+		constexpr auto empty = std::array<CubeI<N>, 0>{};
+
+		//npn class #0; cardinality=0: 00=00000000; class size=2=(2^1)
+		//equivalent BF: 00000000 11111111
+		static_assert(reachable<N>(0b0000'0000, 0b1111'1111, empty));
+
+		//===========================
+		//npn class #1; cardinality=1: 0F=00001111; class size=6=(2^1 + 3^1)
+		//equivalent BF: 00001111 00110011 01010101 10101010 11001100 11110000
+		constexpr auto c1 = std::array<BF, 3>{0b0000'1111, 0b0011'0011, 0b0101'0101};
+		static_assert(reachable<N>(c1[0], c1[1], rot12));
+		static_assert(reachable<N>(c1[0], c1[2], rot02_12));
+
+		//===========================
+		//npn class #2; cardinality=2: 03=00000011; class size=24=(2^3 + 3^1)
+		//equivalent BF: 00000011 00000101 00001010 00001100 00010001 00100010 00110000 00111111 01000100 01010000 01011111 01110111 10001000 10100000 10101111 10111011 11000000 11001111 11011101 11101110 11110011 11110101 11111010 11111100
+		constexpr auto c2 = std::array<BF, 12>{
+			0b0000'0011, 0b0000'0101, 0b0000'1010, 0b0000'1100, 0b0001'0001, 0b0010'0010,
+			0b0011'0000, 0b0100'0100, 0b0101'0000, 0b1000'1000, 0b1010'0000, 0b1100'0000};
+		//both ref and rotation leads to 24 (number of permutations / 2)
+		//static_assert(reachable<N>(c2[0], c2[1], rot12_02));
+
+		//===========================
+		//npn class #3; cardinality=2: 3C=00111100; class size=6=(2^1 + 3^1)
+		//equivalent BF: 00111100 01011010 01100110 10011001 10100101 11000011
+		constexpr auto c3 = std::array<BF, 3>{0b00111100, 0b01011010, 0b01100110};
+		static_assert(reachable<N>(c3[0], c3[1], rot01));
+		static_assert(reachable<N>(c3[0], c3[2], rot02));
+
+
+		//===========================
+		//npn class #4; cardinality=3: 01=00000001; class size=16=(2^4)
+		//equivalent BF: 00000001 00000010 00000100 00001000 00010000 00100000 01000000 01111111 10000000 10111111 11011111 11101111 11110111 11111011 11111101 11111110
+		constexpr auto c4 = std::array<BF, 8>{0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00100000, 0b01000000, 0b100000000};
+		static_assert(reachable<N>(c4[0], c4[1], ref0));
+
+
+		//===========================
+		//npn class #5; cardinality=3: 06=00000110; class size=24=(2^3 + 3^1)
+		//equivalent BF: 00000110 00001001 00010010 00010100 00100001 00101000 01000001 01001000 01100000 01101111 01111011 01111101 10000010 10000100 10010000 10011111 10110111 10111110 11010111 11011110 11101011 11101101 11110110 11111001
+		//transformation not possible:
+		//
+		//===========================
+		//npn class #6; cardinality=3: 07=00000111; class size=48=(2^4 + 3^1)
+		//equivalent BF: 00000111 00001011 00001101 00001110 00010011 00010101 00011111 00100011 00101010 00101111 00110001 00110010 00110111 00111011 01000101 01001100 01001111 01010001 01010100 01010111 01011101 01110000 01110011 01110101 10001010 10001100 10001111 10100010 10101000 10101011 10101110 10110000 10110011 10111010 11000100 11001000 11001101 11001110 11010000 11010101 11011100 11100000 11101010 11101100 11110001 11110010 11110100 11111000
+		//transformation not possible:
+		//
+		//===========================
+		//npn class #7; cardinality=3: 16=00010110; class size=16=(2^4)
+		//equivalent BF: 00010110 00101001 01001001 01100001 01101000 01101011 01101101 01111001 10000110 10010010 10010100 10010111 10011110 10110110 11010110 11101001
+		//transformation not possible:
+		//
+		//===========================
+		//npn class #8; cardinality=3: 17=00010111; class size=8=(2^3)
+		//equivalent BF: 00010111 00101011 01001101 01110001 10001110 10110010 11010100 11101000
+		//transformation not possible:
+		//
+		//===========================
+		//npn class #9; cardinality=3: 18=00011000; class size=8=(2^3)
+		//equivalent BF: 00011000 00100100 01000010 01111110 10000001 10111101 11011011 11100111
+		//transformation not possible:
+		//
+		//===========================
+		//npn class #10; cardinality=3: 19=00011001; class size=48=(2^4 + 3^1)
+		//equivalent BF: 00011001 00011010 00011100 00100101 00100110 00101100 00110100 00111000 00111101 00111110 01000011 01000110 01001010 01010010 01011000 01011011 01011110 01100010 01100100 01100111 01101110 01110110 01111010 01111100 10000011 10000101 10001001 10010001 10011000 10011011 10011101 10100001 10100100 10100111 10101101 10110101 10111001 10111100 11000001 11000010 11000111 11001011 11010011 11011001 11011010 11100011 11100101 11100110
+		//transformation not possible:
+		//
+		//===========================
+		//npn class #11; cardinality=3: 1B=00011011; class size=24=(2^3 + 3^1)
+		//equivalent BF: 00011011 00011101 00100111 00101110 00110101 00111010 01000111 01001110 01010011 01011100 01110010 01110100 10001011 10001101 10100011 10101100 10110001 10111000 11000101 11001010 11010001 11011000 11100010 11100100
+		//transformation not possible:
+		//
+		//===========================
+		//npn class #12; cardinality=3: 1E=00011110; class size=24=(2^3 + 3^1)
+		//equivalent BF: 00011110 00101101 00110110 00111001 01001011 01010110 01011001 01100011 01100101 01101010 01101100 01111000 10000111 10010011 10010101 10011010 10011100 10100110 10101001 10110100 11000110 11001001 11010010 11100001
+		//transformation not possible:
+		//
+		//===========================
+		//npn class #13; cardinality=3: 69=01101001; class size=2=(2^1)
+		//equivalent BF: 01101001 10010110
+		//transformation not possible:
+
+		{	// npn class 0: 0b0000
+			// Neither ref0 and ref1, nor rot01 are needed find the other bf in the npn class
+		}
+	}
+	#pragma endregion
+
+
+	template <int N> std::vector<std::string> impossible_transformations(const BF bf, const std::set<BF>& npn_set)
+	{
+		std::vector<std::string> result;
+		if constexpr (N == 2) 
+		{
+			//constexpr auto translations_reflection = details::transitive_closure<N>({ reflect<N>::value(0), reflect<N>::value(1) });
+			//constexpr auto translations_rotate = details::transitive_closure<N>(rotate<N>::value(0, 1));
+
+			const Transformations<N>& get_transformations_from_cache = details::get_transformations_from_cache<N, false>();
+
+			for (const BF other : npn_set) {
+				if (other != bf) {
+
+				}
+			}
+			return result;
 		}
 		return result;
 	}
@@ -2214,7 +2384,7 @@ namespace n_cube
 	{
 		std::vector<CubeI<N>> all_tranformations_vector;
 		int counter = 0;
-		for (const auto& t : details::all_transformations<N, false>())
+		for (const auto& t : details::get_transformations_from_cache<N, false>())
 		{
 			all_tranformations_vector.push_back(std::get<0>(t));
 			std::cout << counter << ":" << to_string<N>(t) << std::endl;
@@ -2295,7 +2465,7 @@ namespace n_cube
 		const Cube<N> cube1 = Cube<N>(bf1b);
 		const Cube<N> cube2 = Cube<N>(bf2b);
 
-		const auto transformations = details::all_transformations<N, true>();
+		const auto transformations = details::get_transformations_from_cache<N, true>();
 		{
 			if (bf1b == bf2b) results.push_back(std::make_pair(details::init_cubeI<N>(), "Identity"));
 
@@ -2420,19 +2590,19 @@ namespace n_cube
 	template <int N> std::set<BF> load_all_npn_classes() 
 	{
 		if constexpr (N == 1) {
-			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn1.txt");
+			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-transformation//data//npn1.txt");
 		}
 		if constexpr (N == 2) {
-			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn2.txt");
+			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-transformation//data//npn2.txt");
 		}
 		if constexpr (N == 3) {
-			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn3.txt");
+			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-transformation//data//npn3.txt");
 		}
 		if constexpr (N == 4) {
-			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn4.txt");
+			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-transformation//data//npn4.txt");
 		}
 		if constexpr (N == 5) {
-			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn5.txt");
+			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-transformation//data//npn5.txt");
 		}
 		std::cout << "WARNING: load_all_npn_classes provided N " << N << " is not supported" << std::endl;
 		return std::set<BF>();
@@ -2447,13 +2617,11 @@ namespace n_cube
 			std::fstream myfile(filename, std::fstream::out); // replace existing file
 			if (myfile.good()) {
 				for (const BF bf : all_npn_classes) {
-					std::cout << bf << std::endl;
 					myfile << bf << std::endl;
 				}
-
 			}
 			else {
-				std::cout << "WARNING not good" << std::endl;
+				std::cout << "WARNING NPN class file " << filename << " not good" << std::endl;
 			}
 			myfile.close();
 		}
@@ -2462,56 +2630,74 @@ namespace n_cube
 		}
 	}
 
-	template <int N> void print_all_transformations()
+	template <int N, bool DESCR> void print_all_transformations()
 	{
 		std::cout << "Transformations obtained by transitive closure N=" << N << ":" << std::endl;
-		const auto all_transformations = details::all_transformations<N, false>();
+		const Transformations<N>& get_transformations_from_cache = details::get_transformations_from_cache<N, DESCR>();
+		std::cout << "number of transformations: " << get_transformations_from_cache.size() << std::endl;
 
 		// create a map such that the transformations are sorted
 		std::map<CubeI<N>, std::string> trans2;
-		for (const auto& pair : all_transformations)
+		for (const auto& pair : get_transformations_from_cache)
 		{
 			trans2.insert(pair);
 		}
-
 		for (const auto& pair : trans2)
 		{
 			std::cout << to_string<N>(pair) << std::endl;
 		}
-		std::cout << "number of transformations: " << all_transformations.size() << std::endl;
 	}
+
 	template <int N> void print_all_class_ids_with_values(const std::string& filename)
 	{
-		int bf_counter = 0;
 		int class_counter = 0;
 		std::cout << "All classes (with values) for N=" << N <<":" << std::endl;
 		
-		const auto class_ids = load_all_npn_classes<N>(filename);
+		const std::set<BF> class_ids = load_all_npn_classes<N>(filename);
 
 		for (int c = 0; c <= N; ++c)
 		{
-			for (const auto bf_class_id : class_ids)
+			for (const BF bf_class_id : class_ids)
 			{
-				const auto cardinality = bf_tools::bf_cardinality(bf_class_id, N);
+				const int cardinality = bf_tools::bf_cardinality(bf_class_id, N);
 
 				if (cardinality == c)
 				{
-					const auto set = equiv_class<N>(bf_class_id);
+					const std::set<BF> set = equiv_class<N>(bf_class_id);
 					const std::string factors = prime::vector_to_string(prime::get_factorization(static_cast<int>(set.size())));
 
-					std::cout << "class #" << std::dec << class_counter << ": cardinality " << cardinality << ": " << to_string_hex<N>(bf_class_id) << "=" << to_string_bin<N>(bf_class_id) << ": class set size:" << set.size() << " = [" << factors << "]";
-					for ([[maybe_unused]] const auto& bf : set)
-					{
-						//std::cout << to_string_bin<N>(bf) << " ";
-						//std::cout << std::uppercase << std::hex << std::setfill('0') << std::setw(2) << bf << " ";
-						bf_counter++;
-					}
+					std::cout << "npn class #" << std::dec << class_counter;
+					std::cout << "; cardinality=" << cardinality;
+					std::cout << ": " << to_string_hex<N>(bf_class_id) << "=" << to_string_bin<N>(bf_class_id);
+					std::cout << "; class size=" << set.size() << "=(" << factors << ")";
 					std::cout << std::endl;
+
+					constexpr bool show_npn_class_content = true;
+					if (show_npn_class_content) 
+					{
+						std::cout << "equivalent BF: ";
+						for (const BF equivalent_bf : set)
+						{
+							std::cout << to_string_bin<N>(equivalent_bf) << " ";
+						}
+						std::cout << std::endl;
+					}
+
+					constexpr bool show_transfomation_analysis = true;
+					if (show_transfomation_analysis) 
+					{
+						std::cout << "transformation not possible: ";
+						for (const std::string& str : impossible_transformations<N>(bf_class_id, set)) {
+							std::cout << str << " ";
+						}
+						std::cout << std::endl;
+					}
+
+					std::cout << std::endl;
+					std::cout << "===========================" << std::endl;
 					class_counter++;
 				}
 			}
 		}
-		std::cout << "total number of bf:" << std::dec << bf_counter << std::endl;
 	}
-
 }
