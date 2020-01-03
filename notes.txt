@@ -1,0 +1,20 @@
+#0; 0000; class size=2=(2^1)
+#1; 0011; class size=4=(2^2)					rot
+#2; 0001; class size=8=(2^3)					ref
+#3; 0110; class size=2=(2^1)
+		
+
+#0; 00000000; class size=2=(2^1)
+#1; 00001111; class size=6=(2^1 + 3^1)			rot
+#2; 00000011; class size=24=(2^3 + 3^1)			rot
+#3; 00111100; class size=6=(2^1 + 3^1)			rot
+#4; 00000001; class size=16=(2^4)				rot || ref
+#5; 00000110; class size=24=(2^3 + 3^1)			rot 
+#6; 00000111; class size=48=(2^4 + 3^1)			rot && ref
+#7; 00010110; class size=16=(2^4)				rot || ref
+#8; 00010111; class size=8=(2^3)				rot || ref
+#9; 00011000; class size=8=(2^3)				rot || ref
+#10; 00011001; class size=48=(2^4 + 3^1)		rot && ref
+#11; 00011011; class size=24=(2^3 + 3^1)		rot && ref with closure!
+#12; 00011110; class size=24=(2^3 + 3^1)		rot && ref
+#13; 01101001; class size=2=(2^1)

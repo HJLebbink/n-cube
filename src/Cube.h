@@ -39,7 +39,7 @@ namespace n_cube {
 	private:
 		using CubeType = bool;
 
-		static std::array<bool, (1 << D)> to_array(BF bf) {
+		static constexpr std::array<bool, (1 << D)> to_array(BF bf) {
 			if constexpr (D == 1) {
 				return std::array<bool, (1 << D)> {
 					static_cast<CubeType>((bf >> 1) & 1),

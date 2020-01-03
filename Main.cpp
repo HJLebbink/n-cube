@@ -20,9 +20,12 @@ int main(int, char** /*argv[]*/)
 
 	//n_cube::print_all_class_ids_with_values<1>(".\\data\\npn1.txt");
 	//n_cube::print_all_class_ids_with_values<2>(".\\data\\npn2.txt");
-	n_cube::print_all_class_ids_with_values<3>(".\\data\\npn3.txt");
+	//n_cube::print_all_class_ids_with_values<3>(".\\data\\npn3.txt");
 	//n_cube::print_all_class_ids_with_values<4>(".\\data\\npn4.txt");   //222 classes; 65536 = 2^16 bfs; 220 ms
 	//n_cube::print_all_class_ids_with_values<5>(".\\data\\npn5.txt");
+
+	n_cube::test_reachability_bf2();
+	//n_cube::test_reachability_bf3();
 
 	//n_cube::save_all_npn_classes<1>(".\\data\\npn1.txt");
 	//n_cube::save_all_npn_classes<2>(".\\data\\npn2.txt");
