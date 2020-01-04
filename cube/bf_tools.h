@@ -14,7 +14,7 @@
 
 #include "BF.h"
 
-namespace n_cube
+namespace cube
 {
 
 	namespace details
@@ -178,8 +178,8 @@ namespace n_cube
 			const std::vector<T2>& descr)
 		{
 			const int n_vars = static_cast<int>(content.size());
-			const unsigned long long used_vars = n_cube::details::bf_used_vars(bf, n_vars);
-			const int n_used_vars = n_cube::details::count_bits(used_vars);
+			const unsigned long long used_vars = cube::details::bf_used_vars(bf, n_vars);
+			const int n_used_vars = cube::details::count_bits(used_vars);
 
 			if (n_used_vars < n_vars)
 			{
@@ -218,8 +218,8 @@ namespace n_cube
 		{
 			const int n_vars = static_cast<int>(content.size());
 
-			const unsigned long long used_vars = n_cube::details::bf_used_vars(bf, n_vars);
-			const int n_used_vars = n_cube::details::count_bits(used_vars);
+			const unsigned long long used_vars = cube::details::bf_used_vars(bf, n_vars);
+			const int n_used_vars = cube::details::count_bits(used_vars);
 
 			if (n_used_vars < n_vars)
 			{

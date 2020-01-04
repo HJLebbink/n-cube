@@ -2,7 +2,7 @@
 
 #define INOUT
 
-namespace n_cube {
+namespace cube {
 	constexpr unsigned long long cardinality_npn_class(int n) {
 		switch (n) {
 		case 1: return 2;

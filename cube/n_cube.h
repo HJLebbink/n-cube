@@ -23,7 +23,7 @@
 #include "BF.h"
 
 
-namespace n_cube
+namespace cube
 {
 	template<int DIM>
 	using CubeMap = std::map<CubeI<DIM>, std::string>;
@@ -2170,7 +2170,7 @@ namespace n_cube
 		{
 			for (const BF bf_class_id : class_ids)
 			{
-				const int cardinality = n_cube::bf_cardinality(bf_class_id, N);
+				const int cardinality = cube::bf_cardinality(bf_class_id, N);
 
 				if (cardinality == c)
 				{

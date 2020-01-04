@@ -1,6 +1,6 @@
 #pragma once
 
-namespace n_cube {
+namespace cube {
 	template<int DIM>
 	using CubeI = std::array<int, ((1 << DIM))>;
 

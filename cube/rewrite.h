@@ -2,7 +2,7 @@
 #include "n_cube.h"
 
 
-namespace n_cube {
+namespace cube {
 
 	namespace rewrite {
 

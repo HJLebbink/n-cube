@@ -3,7 +3,7 @@
 #include <bitset>
 #include <iostream>		// std::cout
 
-namespace n_cube {
+namespace cube {
 	using BF = unsigned long long;
 	
 	template <int N> 

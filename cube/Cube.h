@@ -2,7 +2,7 @@
 #include <array>
 
 
-namespace n_cube {
+namespace cube {
 
 	using BF = unsigned long long;
 
