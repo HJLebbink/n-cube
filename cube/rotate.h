@@ -1,7 +1,6 @@
 #pragma once
 #include <array>
 
-#include "Cube.h"
 #include "CubeI.h"
 #include "array_tools.h"
 #include "transform.h"

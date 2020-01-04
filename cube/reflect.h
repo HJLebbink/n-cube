@@ -1,5 +1,4 @@
 #pragma once
-#include "Cube.h"
 #include "CubeI.h"
 #include "array_tools.h"
 #include "transform.h"
@@ -17,13 +16,8 @@ namespace cube {
 		}
 		template <int N> struct reflect
 		{
-			static constexpr CubeI<N> value(const Cube<N>& cube) noexcept
-			{
-				std::cout << "ERROR: reflect<N>: dim=" << N << " not implemented yet" << std::endl;
-				getchar();
-				return CubeI<N>();
-			}
 		};
+
 		template <> struct reflect<1>
 		{
 			static constexpr int N = 1;

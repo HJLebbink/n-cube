@@ -306,16 +306,13 @@ namespace cube {
 			const BF bf1b = complement_if_needed<N>(bf1);
 			const BF bf2b = complement_if_needed<N>(bf2);
 
-			const Cube<N> cube1 = Cube<N>(bf1b);
-			const Cube<N> cube2 = Cube<N>(bf2b);
-
 			const auto transformations = get_transformations_from_cache<N, true>();
 			{
 				if (bf1b == bf2b) results.push_back(std::make_pair(init_cubeI<N>(), "Identity"));
 
 				for (const auto& pair : transformations)
 				{
-					if (transform<N>(cube1, std::get<0>(pair)) == cube2)
+					if (transform<N>(bf1b, std::get<0>(pair)) == bf2b)
 					{
 						results.push_back(pair);
 					}

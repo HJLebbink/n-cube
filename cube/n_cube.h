@@ -14,7 +14,6 @@
 #include <time.h>
 #include <filesystem>
 
-#include "Cube.h"
 #include "CubeI.h"
 #include "bf_tools.h"
 #include "array_tools.h"
@@ -145,7 +144,7 @@ namespace cube
 	template <int N> 
 	void init_n_cube() {
 		// run all_transformations once to fill the transformation cache
-		const auto get_transformations_from_cache = details::get_transformations_from_cache<N, false>();
+		const auto transformations_from_cache = get_transformations_from_cache<N, false>();
 	}
 
 
@@ -185,7 +184,7 @@ namespace cube
 	}
 	template <int N> constexpr BF reflect(const BF bf, const int dim)
 	{
-		return transform<N>(Cube<N>(bf), reflect<N>(dim)).get_bf();
+		return transform<N>(bf, reflect<N>(dim));
 	}
 	#pragma endregion
 
@@ -224,7 +223,7 @@ namespace cube
 			std::string transform_string = "";
 
 			// find minimum in set
-			for (const auto& pair : details::get_transformations_from_cache<N, DESCR>())
+			for (const auto& pair : get_transformations_from_cache<N, DESCR>())
 			{
 				const CubeI<N> cube = std::get<0>(pair);
 				const BF bf_new = transform<N>(bf, cube);
@@ -253,7 +252,7 @@ namespace cube
 		//for a specific sequence of transformations, reduce the provided bf with in a greedy fashion with the tranformations.
 		template <int N, bool DESCR = false> std::tuple<BF, std::string> search_class_id_method1(const BF bf)
 		{
-			const auto transformations = create_transformations_for_greedy_rewrite<N, DESCR>();
+			const auto transformations = cube::rewrite::create_transformations_for_greedy_rewrite<N, DESCR>();
 
 			std::string transform_string = "";
 			BF smallest_bf = bf;

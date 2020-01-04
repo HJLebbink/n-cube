@@ -23,7 +23,6 @@
     <ClInclude Include="cube\BF.h" />
     <ClInclude Include="cube\bf_tools.h" />
     <ClInclude Include="cube\constants.h" />
-    <ClInclude Include="cube\Cube.h" />
     <ClInclude Include="cube\CubeI.h" />
     <ClInclude Include="cube\n_cube.h" />
     <ClInclude Include="cube\prime.h" />

@@ -26,8 +26,6 @@ namespace cube {
 
 	namespace details {
 
-#pragma region create_transformations
-
 		template <int N> struct create_transformations_struct
 		{
 			static Transformations<N> value(const std::array<std::string, 2>& descr)
@@ -348,10 +346,7 @@ namespace cube {
 					}
 				};
 		*/
-#pragma endregion
 	}
-
-#pragma region all transformations
 
 	template <int N, bool DESCR>
 	const Transformations<N> create_transformations()
@@ -366,8 +361,9 @@ namespace cube {
 		}
 	}
 
-	static std::tuple<Transformations<0>, Transformations<1>, Transformations<2>, Transformations<3>, Transformations<4>, Transformations<5>, Transformations<6>> tranformations_cache;
-
+	namespace {
+		static std::tuple<Transformations<0>, Transformations<1>, Transformations<2>, Transformations<3>, Transformations<4>, Transformations<5>, Transformations<6>> tranformations_cache;
+	}
 	template <int N, bool DESCR>
 	const Transformations<N>& get_transformations_from_cache()
 	{
@@ -377,7 +373,4 @@ namespace cube {
 		}
 		return std::get<N>(tranformations_cache);
 	}
-
-#pragma endregion
-
 }

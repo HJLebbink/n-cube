@@ -41,9 +41,6 @@
     <ClInclude Include="cube\constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cube\Cube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cube\n_cube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
