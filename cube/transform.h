@@ -1,0 +1,152 @@
+#pragma once
+#include <array>
+
+#include "Cube.h"
+#include "CubeI.h"
+#include "array_tools.h"
+
+namespace cube {
+
+	namespace {
+
+#pragma region apply
+		template <int N> constexpr CubeI<N> apply(const CubeI<N>& c, const CubeI<N>& ci) {
+			if constexpr (N == 1) {
+				return CubeI<N>{ c[ci[0]], c[ci[1]] };
+			}
+			if constexpr (N == 2) {
+				return CubeI<N>{ c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]] };
+			}
+			if constexpr (N == 3) {
+				return CubeI<N>{ c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]] };
+			}
+			if constexpr (N == 4) {
+				return CubeI<N>{
+					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
+						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]]
+				};
+			}
+			if constexpr (N == 5) {
+				return CubeI<N>{
+					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
+						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]],
+						c[ci[16]], c[ci[17]], c[ci[18]], c[ci[19]], c[ci[20]], c[ci[21]], c[ci[22]], c[ci[23]],
+						c[ci[24]], c[ci[25]], c[ci[26]], c[ci[27]], c[ci[28]], c[ci[29]], c[ci[30]], c[ci[31]]
+				};
+			}
+			if constexpr (N == 6) {
+				return CubeI<N>{
+					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
+						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]],
+						c[ci[16]], c[ci[17]], c[ci[18]], c[ci[19]], c[ci[20]], c[ci[21]], c[ci[22]], c[ci[23]],
+						c[ci[24]], c[ci[25]], c[ci[26]], c[ci[27]], c[ci[28]], c[ci[29]], c[ci[30]], c[ci[31]],
+						c[ci[32]], c[ci[33]], c[ci[34]], c[ci[35]], c[ci[36]], c[ci[37]], c[ci[38]], c[ci[39]],
+						c[ci[40]], c[ci[41]], c[ci[42]], c[ci[43]], c[ci[44]], c[ci[45]], c[ci[46]], c[ci[47]],
+						c[ci[48]], c[ci[49]], c[ci[50]], c[ci[51]], c[ci[52]], c[ci[53]], c[ci[54]], c[ci[55]],
+						c[ci[56]], c[ci[57]], c[ci[58]], c[ci[59]], c[ci[60]], c[ci[61]], c[ci[62]], c[ci[63]]
+				};
+			}
+			return CubeI<N>();
+		}
+
+		template <int N> constexpr Cube<N> apply(const Cube<N>& c, const CubeI<N>& ci) {
+			if constexpr (N == 1) {
+				return Cube<N>{ std::array<bool, (1 << N)>{c[ci[0]], c[ci[1]] }};
+			}
+			if constexpr (N == 2) {
+				return Cube<N>{ std::array<bool, (1 << N)>{c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]] }};
+			}
+			if constexpr (N == 3) {
+				return Cube<N>{ std::array<bool, (1 << N)>{c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]] }};
+			}
+			if constexpr (N == 4) {
+				return Cube<N>{ std::array<bool, (1 << N)>{
+					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
+						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]]
+				}};
+			}
+			if constexpr (N == 5) {
+				return Cube<N>{ std::array<bool, (1 << N)>{
+					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
+						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]],
+						c[ci[16]], c[ci[17]], c[ci[18]], c[ci[19]], c[ci[20]], c[ci[21]], c[ci[22]], c[ci[23]],
+						c[ci[24]], c[ci[25]], c[ci[26]], c[ci[27]], c[ci[28]], c[ci[29]], c[ci[30]], c[ci[31]]
+				}};
+			}
+			if constexpr (N == 6) {
+				return Cube<N>{ std::array<bool, (1 << N)>{
+					c[ci[0]], c[ci[1]], c[ci[2]], c[ci[3]], c[ci[4]], c[ci[5]], c[ci[6]], c[ci[7]],
+						c[ci[8]], c[ci[9]], c[ci[10]], c[ci[11]], c[ci[12]], c[ci[13]], c[ci[14]], c[ci[15]],
+						c[ci[16]], c[ci[17]], c[ci[18]], c[ci[19]], c[ci[20]], c[ci[21]], c[ci[22]], c[ci[23]],
+						c[ci[24]], c[ci[25]], c[ci[26]], c[ci[27]], c[ci[28]], c[ci[29]], c[ci[30]], c[ci[31]],
+						c[ci[32]], c[ci[33]], c[ci[34]], c[ci[35]], c[ci[36]], c[ci[37]], c[ci[38]], c[ci[39]],
+						c[ci[40]], c[ci[41]], c[ci[42]], c[ci[43]], c[ci[44]], c[ci[45]], c[ci[46]], c[ci[47]],
+						c[ci[48]], c[ci[49]], c[ci[50]], c[ci[51]], c[ci[52]], c[ci[53]], c[ci[54]], c[ci[55]],
+						c[ci[56]], c[ci[57]], c[ci[58]], c[ci[59]], c[ci[60]], c[ci[61]], c[ci[62]], c[ci[63]]
+				}};
+			}
+		}
+#pragma endregion
+	}
+
+#pragma region functional composition
+
+	template <int N> constexpr CubeI<N> function_composition(const CubeI<N>& a) noexcept {
+		return a;
+	}
+	template <int N> constexpr CubeI<N> function_composition(const CubeI<N>& a0, const CubeI<N>& a1) noexcept {
+		return apply<N>(a0, a1);
+	}
+	template <int N> constexpr CubeI<N> function_composition(const CubeI<N>& a0, const CubeI<N>& a1, const CubeI<N>& a2) noexcept {
+		return apply<N>(a0, apply<N>(a1, a2));
+	}
+	template <int N> constexpr CubeI<N> function_composition(const CubeI<N>& a0, const CubeI<N>& a1, const CubeI<N>& a2, const CubeI<N>& a3) noexcept {
+		return apply<N>(apply<N>(a0, a1), apply<N>(a2, a3));
+	}
+
+	template <int N, int M> constexpr CubeI<N> function_composition(const std::array<CubeI<N>, M>& a) noexcept {
+		if constexpr (M == 1) {
+			return function_composition(a[0]);
+		}
+		if constexpr (M == 2) {
+			return function_composition(a[0], a[1]);
+		}
+		if constexpr (M == 3) {
+			return function_composition(a[0], a[1], a[2]);
+		}
+		if constexpr (M == 4) {
+			return function_composition(a[0], a[1], a[2], a[3]);
+		}
+		static_assert(fail);
+	}
+
+	static void test_function_composition() {
+
+		constexpr int N = 2;
+
+		constexpr auto id = init_cubeI<(N)>();
+		static_assert(array_tools::equal(function_composition<N>(id, id), id), "");
+		//static_assert(array_tools::equal(function_composition<N>(value(1), value(1)), id), "");
+		//static_assert(array_tools::equal(function_composition<N>(value(2), value(2)), id), "");
+	}
+#pragma endregion
+
+
+#pragma region transform
+	// Transform (shuffle) cube c according to the change as provided by cube ci
+	template <int N> constexpr Cube<N> transform(const Cube<N>& c, const CubeI<N>& ci)
+	{
+		return apply<N>(c, ci);
+	}
+	// Transform (shuffle) cube c according to the change as provided by cube ci
+	template <int N> constexpr CubeI<N> transform(const CubeI<N>& c, const CubeI<N>& ci)
+	{
+		return apply<N>(c, ci);
+	}
+	// Transform (shuffle) Boolean function bf according to the change as provided by cube
+	template <int N> constexpr BF transform(const BF bf, const CubeI<N>& cube)
+	{
+		return transform<N>(Cube<N>(bf), cube).get_bf();
+	}
+#pragma endregion
+}

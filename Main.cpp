@@ -21,8 +21,8 @@ int main(int, char** /*argv[]*/)
 
 	//n_cube::print_all_class_ids_with_values<1>(".\\data\\npn1.txt");
 	//n_cube::print_all_class_ids_with_values<2>(".\\data\\npn2.txt");
-	cube::print_all_class_ids_with_values<3>(".\\data\\npn3.txt");
-	//n_cube::print_all_class_ids_with_values<4>(".\\data\\npn4.txt");   //222 classes; 65536 = 2^16 bfs; 220 ms
+	//cube::print_all_class_ids_with_values<3>(".\\data\\npn3.txt");
+	cube::print_all_class_ids_with_values<4>(".\\data\\npn4.txt");   //222 classes; 65536 = 2^16 bfs; 220 ms
 	//n_cube::print_all_class_ids_with_values<5>(".\\data\\npn5.txt");
 
 	//n_cube::test_reachability_bf2();
@@ -34,7 +34,7 @@ int main(int, char** /*argv[]*/)
 	//n_cube::save_all_npn_classes<4>(".\\data\\npn4-b.txt"); //222 classes; 65536 = 2^16 bfs; 95 ms
 	//n_cube::save_all_npn_classes<5>(".\\data\\npn5-b.txt"); // takes ? ms: ? classes; 2^32 bfs
 
-	cube::rewrite::test_greedy_rewrite_algorithm<3>();
+	//cube::rewrite::test_greedy_rewrite_algorithm<3>();
 	//n_cube::rewrite::test_greedy_rewrite_algorithm<4>(); //takes 8 sec
 	//n_cube::rewrite::test_greedy_rewrite_algorithm<5>(); //takes ? sec
 

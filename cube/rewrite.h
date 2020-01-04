@@ -1,8 +1,40 @@
 #pragma once
-#include "n_cube.h"
+#include <tuple>
+
+#include "BF.h"
+#include "reflect.h"
+#include "rotate.h"
+#include "Transformations.h"
 
 
 namespace cube {
+
+	template <int N> std::array<std::string, N> create_descriptions()
+	{
+		if constexpr (N == 1) {
+			return { "x0" };
+		}
+		if constexpr (N == 2) {
+			return { "0", "1" };
+		}
+		if constexpr (N == 3) {
+			return { "0", "1", "2" };
+		}
+		if constexpr (N == 4) {
+			return { "d", "c", "b", "a" };
+		}
+		if constexpr (N == 5) {
+			return { "e", "d", "c", "b", "a" };
+		}
+		if constexpr (N == 6) {
+			return { "f", "e", "d", "c", "b", "a" };
+		}
+		if constexpr (N == 7) {
+			return { "g", "f", "e", "d", "c", "b", "a" };
+		}
+		return std::array<std::string, N>();
+	}
+
 
 	namespace rewrite {
 
@@ -107,7 +139,198 @@ namespace cube {
 				}
 			}
 		}
-	
+
+		namespace details {
+#pragma region greedy rewrite tranformations
+			static std::tuple<Transformations<0>, Transformations<1>, Transformations<2>, Transformations<3>, Transformations<4>, Transformations<5>, Transformations<6>> transformations_greedy_cache;
+			template <int N> struct create_transformations_for_greedy_rewrite_struct
+			{
+				static Transformations<N> value([[maybe_unused]] const std::array<std::string, N>& descr)
+				{
+					std::cout << "ERROR: create_transformations_for_greedy_rewrite: dim=" << N << " not implemented yet" << std::endl;
+					getchar();
+					return Transformations<N>();
+				}
+			};
+			template <> struct create_transformations_for_greedy_rewrite_struct<2>
+			{
+				static constexpr int N = 2;
+
+				static Transformations<N> value(const std::array<std::string, N>& descr)
+				{
+					if (std::get<N>(transformations_greedy_cache).empty())
+					{
+						const std::string b = descr[0];
+						const std::string a = descr[1];
+
+						auto& transformations = std::get<N>(transformations_greedy_cache);
+						transformations.push_back(std::make_pair(cube::details::reflect<N>::value(0), "Ref[" + b + "]"));
+						transformations.push_back(std::make_pair(cube::details::reflect<N>::value(1), "Ref[" + a + "]"));
+						transformations.push_back(std::make_pair(cube::details::rotate<N>::value(0, 1), "Rot[" + b + "," + a + "]"));
+					}
+					return std::get<N>(transformations_greedy_cache);
+				}
+			};
+			template <> struct create_transformations_for_greedy_rewrite_struct<3>
+			{
+				static constexpr int N = 3;
+				static Transformations<N> value(const std::array<std::string, N>& descr)
+				{
+					if (std::get<N>(transformations_greedy_cache).empty())
+					{
+						const bool use_minized_transformations_set = true;
+						if (use_minized_transformations_set)
+						{
+							const std::string a = descr[2];
+							const std::string b = descr[1];
+							const std::string c = descr[0];
+
+							constexpr auto ref_a = cube::details::reflect<N>::value(2);
+							constexpr auto ref_b = cube::details::reflect<N>::value(1);
+							constexpr auto ref_c = cube::details::reflect<N>::value(0);
+
+							constexpr auto rot_cb = cube::details::rotate<N>::value(0, 1);
+							constexpr auto rot_ca = cube::details::rotate<N>::value(0, 2);
+							constexpr auto rot_ba = cube::details::rotate<N>::value(1, 2);
+
+							auto& transformations = std::get<N>(transformations_greedy_cache);
+							transformations.push_back(std::make_pair(ref_a, "Ref[" + a + "]"));
+							transformations.push_back(std::make_pair(ref_b, "Ref[" + b + "]"));
+							transformations.push_back(std::make_pair(ref_c, "Ref[" + c + "]"));
+
+							transformations.push_back(std::make_pair(function_composition<N>(ref_a, ref_b), "Ref[" + a + "].Ref[" + b + "]"));
+							//transformations.push_back(std::make_pair(function_composition<N>(ref_b, ref_c), "Ref[" + b + "].Ref[" + c + "]"));
+							//transformations.push_back(std::make_pair(function_composition<N>(ref_a, ref_c), "Ref[" + a + "].Ref[" + c + "]"));
+							//transformations.push_back(std::make_pair(function_composition<N>(ref_a, ref_b, ref_c), "Ref[" + a + "].Ref[" + b + "].Ref[" + c + "]"));
+
+							//transformations.push_back(std::make_pair(rot_cb, "Rot[" + c + "," + b + "]"));
+							//transformations.push_back(std::make_pair(rot_ca, "Rot[" + c + "," + a + "]"));
+							//transformations.push_back(std::make_pair(rot_ba, "Rot[" + b + "," + a + "]"));
+
+							//transformations.push_back(std::make_pair(function_composition<N>(rot_cb, ref_a), "Rot[" + c + "," + b + "].Ref[" + a + "]"));
+							transformations.push_back(std::make_pair(function_composition<N>(rot_cb, ref_b), "Rot[" + c + "," + b + "].Ref[" + b + "]"));
+							//transformations.push_back(std::make_pair(function_composition<N>(rot_cb, ref_c), "Rot[" + c + "," + b + "].Ref[" + c + "]"));
+							//transformations.push_back(std::make_pair(function_composition<N>(rot_cb, ref_a, ref_b), "Rot[" + c + "," + b + "].Ref[" + a + "].Ref[" + b + "]"));
+							//transformations.push_back(std::make_pair(function_composition<N>(rot_cb, ref_a, ref_c), "Rot[" + c + "," + b + "].Ref[" + a + "].Ref[" + c + "]"));
+							//transformations.push_back(std::make_pair(function_composition<N>(rot_cb, ref_b, ref_c), "Rot[" + c + "," + b + "].Ref[" + b + "].Ref[" + c + "]"));
+
+							//transformations.push_back(std::make_pair(function_composition<N>(rot_ca, ref_a), "Rot[" + c + "," + a + "].Ref[" + a + "]"));
+							//transformations.push_back(std::make_pair(function_composition<N>(rot_ca, ref_b), "Rot[" + c + "," + a + "].Ref[" + b + "]"));
+							//transformations.push_back(std::make_pair(function_composition<N>(rot_ca, ref_c), "Rot[" + c + "," + a + "].Ref[" + c + "]"));
+							//transformations.push_back(std::make_pair(function_composition<N>(rot_ca, ref_a, ref_b), "Rot[" + c + "," + a + "].Ref[" + a + "].Ref[" + b + "]"));
+							//transformations.push_back(std::make_pair(function_composition<N>(rot_ca, ref_a, ref_c), "Rot[" + c + "," + a + "].Ref[" + a + "].Ref[" + c + "]"));
+							//transformations.push_back(std::make_pair(function_composition<N>(rot_ca, ref_b, ref_c), "Rot[" + c + "," + a + "].Ref[" + b + "].Ref[" + c + "]"));
+
+							//transformations.push_back(std::make_pair(function_composition<N>(rot_ba, ref_a), "Rot[" + b + "," + a + "].Ref[" + a + "]"));
+							//transformations.push_back(std::make_pair(function_composition<N>(rot_ba, ref_b), "Rot[" + b + "," + a + "].Ref[" + b + "]"));
+							//transformations.push_back(std::make_pair(function_composition<N>(rot_ba, ref_a), "Rot[" + b + "," + a + "].Ref[" + c + "]"));
+							//transformations.push_back(std::make_pair(function_composition<N>(rot_ba, ref_a, ref_b), "Rot[" + b + "," + a + "].Ref[" + a + "].Ref[" + b + "]"));
+							transformations.push_back(std::make_pair(function_composition<N>(rot_ba, ref_a, ref_c), "Rot[" + b + "," + a + "].Ref[" + a + "].Ref[" + c + "]"));
+							//transformations.push_back(std::make_pair(function_composition<N>(rot_ba, ref_b, ref_c), "Rot[" + b + "," + a + "].Ref[" + b + "].Ref[" + c + "]"));
+
+							for (const auto& pair : transformations)
+							{
+								std::cout << to_string<N>(pair) << std::endl;
+							}
+
+						}
+						else
+						{
+							std::get<N>(transformations_greedy_cache) = cube::get_transformations_from_cache<N, false>();
+						}
+					}
+					return std::get<N>(transformations_greedy_cache);
+				}
+			};
+			template <> struct create_transformations_for_greedy_rewrite_struct<4>
+			{
+				static constexpr int N = 4;
+				static Transformations<N> value(const std::array<std::string, N>& /*descr*/)
+				{
+					if (std::get<N>(transformations_greedy_cache).empty())
+					{
+						const bool use_minized_transformations_set = false;
+						if (use_minized_transformations_set)
+						{
+							// TODO: find a reduced set of transformations that is correct, for the time being take the full closure:
+						}
+						else
+						{
+							std::get<N>(transformations_greedy_cache) = cube::get_transformations_from_cache<N, false>();
+						}
+					}
+					return std::get<N>(transformations_greedy_cache);
+				}
+			};
+			template <> struct create_transformations_for_greedy_rewrite_struct<5>
+			{
+				static constexpr int N = 5;
+				static Transformations<N> value(const std::array<std::string, N>& /*descr*/)
+				{
+					if (std::get<N>(transformations_greedy_cache).empty())
+					{
+						const bool use_minized_transformations_set = false;
+						if (use_minized_transformations_set)
+						{
+							// TODO: find a reduced set of transformations that is correct, for the time being take the full closure:
+						}
+						else
+						{
+							std::get<N>(transformations_greedy_cache) = cube::get_transformations_from_cache<N, false>();
+						}
+					}
+					return std::get<N>(transformations_greedy_cache);
+				}
+			};
+#pragma endregion
+		}
+
+		template <int N, bool DESC = false> Transformations<N> create_transformations_for_greedy_rewrite()
+		{
+			if constexpr (DESC)
+			{
+				return details::create_transformations_for_greedy_rewrite_struct<N>::value(create_descriptions<N>());
+			}
+			else
+			{
+				//TODO make a greedy rewrite with no descriptions
+				return details::create_transformations_for_greedy_rewrite_struct<N>::value(create_descriptions<N>());
+			}
+		}
+
+		// find the transformation that when applied to bf1 yields bf2.
+		template <int N> std::vector<std::pair<CubeI<N>, std::string>> find_transformation(const BF bf1, const BF bf2, [[maybe_unused]] const std::array<std::string, N>& descr)
+		{
+			std::vector<std::pair<CubeI<N>, std::string>> results;
+
+			const BF bf1b = complement_if_needed<N>(bf1);
+			const BF bf2b = complement_if_needed<N>(bf2);
+
+			const Cube<N> cube1 = Cube<N>(bf1b);
+			const Cube<N> cube2 = Cube<N>(bf2b);
+
+			const auto transformations = get_transformations_from_cache<N, true>();
+			{
+				if (bf1b == bf2b) results.push_back(std::make_pair(init_cubeI<N>(), "Identity"));
+
+				for (const auto& pair : transformations)
+				{
+					if (transform<N>(cube1, std::get<0>(pair)) == cube2)
+					{
+						results.push_back(pair);
+					}
+				}
+				if (results.empty())
+				{
+					std::cout << "WARNING: could not find transformation" << std::endl;
+					static_cast<void>(getchar());
+				}
+			}
+			return results;
+		}
+
+
+
 		void test()
 		{
 			constexpr int N = 4;
@@ -120,12 +343,12 @@ namespace cube {
 				std::cout << "bf                  " << to_string_bin<N>(bf1) << std::endl;
 			}
 			{
-				const auto pair = details::search_class_id_method0<N, true>(bf1);
-				std::cout << "transitive closure: " << to_string_bin<N>(std::get<0>(pair)) << "; " << std::get<1>(pair) << std::endl;
+				//const auto pair = cube::details::search_class_id_method0<N, true>(bf1);
+				//std::cout << "transitive closure: " << to_string_bin<N>(std::get<0>(pair)) << "; " << std::get<1>(pair) << std::endl;
 			}
 			{
-				const auto pair = details::search_class_id_method1<N, true>(bf1);
-				std::cout << "greedy rewrite    : " << to_string_bin<N>(std::get<0>(pair)) << "; " << std::get<1>(pair) << std::endl;
+				//const auto pair = cube::details::search_class_id_method1<N, true>(bf1);
+				//std::cout << "greedy rewrite    : " << to_string_bin<N>(std::get<0>(pair)) << "; " << std::get<1>(pair) << std::endl;
 			}
 			{
 				const auto trans = find_transformation<N>(bf1, bf2, descr);

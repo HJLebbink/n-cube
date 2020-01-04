@@ -28,8 +28,12 @@
     <ClInclude Include="cube\n_cube.h" />
     <ClInclude Include="cube\prime.h" />
     <ClInclude Include="cube\reachable.h" />
+    <ClInclude Include="cube\reflect.h" />
     <ClInclude Include="cube\rewrite.h" />
+    <ClInclude Include="cube\rotate.h" />
     <ClInclude Include="cube\timing.h" />
+    <ClInclude Include="cube\transform.h" />
+    <ClInclude Include="cube\Transformations.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
