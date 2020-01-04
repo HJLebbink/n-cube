@@ -11,21 +11,28 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\array_tools.h" />
-    <ClInclude Include="src\bf_tools.ipp" />
-    <ClInclude Include="src\Cube.h" />
-    <ClInclude Include="src\n_cube.ipp" />
-    <ClInclude Include="src\timing.ipp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <Text Include="data\npn1.txt" />
     <Text Include="data\npn2.txt" />
     <Text Include="data\npn3.txt" />
     <Text Include="data\npn4.txt" />
     <Text Include="data\npn5.txt" />
+    <Text Include="notes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cube\array_tools.h" />
+    <ClInclude Include="cube\BF.h" />
+    <ClInclude Include="cube\bf_tools.h" />
+    <ClInclude Include="cube\constants.h" />
+    <ClInclude Include="cube\Cube.h" />
+    <ClInclude Include="cube\CubeI.h" />
+    <ClInclude Include="cube\n_cube.h" />
+    <ClInclude Include="cube\prime.h" />
+    <ClInclude Include="cube\reachable.h" />
+    <ClInclude Include="cube\rewrite.h" />
+    <ClInclude Include="cube\timing.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

@@ -12,9 +12,10 @@
 #include <cassert>
 #include <algorithm>	// std::find
 
-namespace bf_tools
+#include "BF.h"
+
+namespace n_cube
 {
-	using BF = unsigned long long;
 
 	namespace details
 	{
@@ -84,13 +85,6 @@ namespace bf_tools
 			return result;
 		}
 
-		// count the number of bits set to one.
-		constexpr int count_bits(const BF v) noexcept
-		{
-			int r = 0;
-			for (int i = 0; i < 64; ++i) if (((v >> i) & 1) == 1) r++;
-			return r;
-		}
 		template<size_t S>
 		constexpr std::bitset<S / 2> lower(const std::bitset<S>& a) {
 			constexpr size_t S2 = S / 2;
@@ -184,8 +178,8 @@ namespace bf_tools
 			const std::vector<T2>& descr)
 		{
 			const int n_vars = static_cast<int>(content.size());
-			const unsigned long long used_vars = bf_tools::details::bf_used_vars(bf, n_vars);
-			const int n_used_vars = bf_tools::details::count_bits(used_vars);
+			const unsigned long long used_vars = n_cube::details::bf_used_vars(bf, n_vars);
+			const int n_used_vars = n_cube::details::count_bits(used_vars);
 
 			if (n_used_vars < n_vars)
 			{
@@ -224,8 +218,8 @@ namespace bf_tools
 		{
 			const int n_vars = static_cast<int>(content.size());
 
-			const unsigned long long used_vars = bf_tools::details::bf_used_vars(bf, n_vars);
-			const int n_used_vars = bf_tools::details::count_bits(used_vars);
+			const unsigned long long used_vars = n_cube::details::bf_used_vars(bf, n_vars);
+			const int n_used_vars = n_cube::details::count_bits(used_vars);
 
 			if (n_used_vars < n_vars)
 			{
