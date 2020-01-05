@@ -5,14 +5,15 @@
 namespace cube {
 
 	template<int DIM>
-	using CubeI = std::array<int, ((1 << DIM))>;
-
+	using CubeI = std::array<unsigned char, (1 << DIM)>; // unsigned char takes 8 hours for save_all_npn_classes<5>
+	//using CubeI = std::array<char, (1 << DIM)>; // char takes 8 hours for save_all_npn_classes<5>
+	//using CubeI = std::array<int, (1 << DIM)>; // char takes 9 hours for save_all_npn_classes<5>
 
 	template <int N>
 	constexpr CubeI<N> init_cubeI() noexcept
 	{
 		constexpr int S = 1 << N;
-		return array_tools::create_index_array<int, S>();
+		return array_tools::create_index_array<CubeI<N>::value_type, S>();
 	}
 
 	template <int N> 

@@ -31,15 +31,8 @@ namespace cube
 	template<int DIM>
 	using CubeMap = std::map<CubeI<DIM>, std::string>;
 
-
-	#pragma endregion
-
-	#pragma region to_string
-	#pragma endregion
-
 	namespace details
 	{
-
 		#pragma region transitive closure
 		template <int N, int M> void transitive_closure_recursive_no_descriptions(
 			const int start_index,
@@ -212,7 +205,10 @@ namespace cube
 		//for the set of all transformations find the transformation that yields the smallest bf, which is the bf class id.
 		template <int N, bool DESCR> std::tuple<BF, std::string> search_class_id_method0(const BF bf)
 		{
-			std::string complement_string = "";
+			std::string complement_string;
+			if constexpr (DESCR) {
+				complement_string = "";
+			}
 			BF smallest_bf = bf;
 			if (details::count_bits(bf) > ((1 << N) / 2))
 			{
@@ -221,9 +217,10 @@ namespace cube
 				}
 				smallest_bf = complement<N>(bf);
 			}
-
-			std::string transform_string = "";
-
+			std::string transform_string;
+			if constexpr (DESCR) {
+				transform_string = "";
+			}
 			// find minimum in set
 			for (const auto& pair : get_transformations_from_cache<N, DESCR>())
 			{
@@ -247,7 +244,12 @@ namespace cube
 					}
 				}
 			}
-			return std::make_pair(smallest_bf, complement_string + transform_string);
+			if constexpr (DESCR) {
+				return std::make_pair(smallest_bf, complement_string + transform_string);
+			}
+			else {
+				return std::make_pair(smallest_bf, "");
+			}
 		}
 
 

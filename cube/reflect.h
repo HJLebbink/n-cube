@@ -11,8 +11,10 @@ namespace cube {
 		template <int N, int D> constexpr CubeI<N> lift_reflect() noexcept
 		{
 			static_assert(D < N, "");
-			constexpr auto reflect_embedded_cube = reflect<(N - 1)>::value(D);
-			return array_tools::concat(reflect_embedded_cube, array_tools::add(reflect_embedded_cube, 1 << (N - 1)));
+			using T = CubeI<N>::value_type;
+			constexpr int N2 = N - 1;
+			constexpr CubeI<N2> reflect_embedded_cube = reflect<N2>::value(D);
+			return array_tools::concat<T>(reflect_embedded_cube, array_tools::add(reflect_embedded_cube, static_cast<T>(1 << N2)));
 		}
 		template <int N> struct reflect
 		{
@@ -41,9 +43,11 @@ namespace cube {
 			static constexpr int N = 2;
 			static constexpr CubeI<N> value(const int dim) noexcept
 			{
-				constexpr auto r0 = lift_reflect<N, 0>();
-				constexpr auto id = init_cubeI<(N - 1)>();
-				constexpr auto r1 = array_tools::concat(array_tools::add(id, 1 << (N - 1)), id);
+				using T = CubeI<N>::value_type;
+				constexpr int N2 = N - 1;
+				constexpr CubeI<N> r0 = lift_reflect<N, 0>();
+				constexpr CubeI<N2> id = init_cubeI<N2>();
+				constexpr auto r1 = array_tools::concat(array_tools::add<T>(id, 1 << N2), id);
 
 				switch (dim)
 				{
@@ -70,10 +74,11 @@ namespace cube {
 			static constexpr int N = 3;
 			static constexpr CubeI<N> value(const int dim) noexcept
 			{
+				using T = CubeI<N>::value_type;
 				constexpr auto r0 = lift_reflect<N, 0>();
 				constexpr auto r1 = lift_reflect<N, 1>();
 				constexpr auto id = init_cubeI<(N - 1)>();
-				constexpr auto r2 = array_tools::concat(array_tools::add(id, 1 << (N - 1)), id);
+				constexpr auto r2 = array_tools::concat(array_tools::add<T>(id, 1 << (N - 1)), id);
 
 				switch (dim)
 				{
@@ -135,11 +140,12 @@ namespace cube {
 
 			static constexpr CubeI<N> value(const int dim) noexcept
 			{
+				using T = CubeI<N>::value_type;
 				constexpr auto r0 = lift_reflect<N, 0>();
 				constexpr auto r1 = lift_reflect<N, 1>();
 				constexpr auto r2 = lift_reflect<N, 2>();
 				constexpr auto id = init_cubeI<(N - 1)>();
-				constexpr auto r3 = array_tools::concat(array_tools::add(id, 1 << (N - 1)), id);
+				constexpr auto r3 = array_tools::concat(array_tools::add<T>(id, 1 << (N - 1)), id);
 
 				switch (dim)
 				{
@@ -165,12 +171,13 @@ namespace cube {
 			static constexpr int N = 5;
 			static constexpr CubeI<N> value(const int dim) noexcept
 			{
+				using T = CubeI<N>::value_type;
 				constexpr auto r0 = lift_reflect<N, 0>();
 				constexpr auto r1 = lift_reflect<N, 1>();
 				constexpr auto r2 = lift_reflect<N, 2>();
 				constexpr auto r3 = lift_reflect<N, 3>();
 				constexpr auto id = init_cubeI<(N - 1)>();
-				constexpr auto r4 = array_tools::concat(array_tools::add(id, 1 << (N - 1)), id);
+				constexpr auto r4 = array_tools::concat(array_tools::add<T>(id, 1 << (N - 1)), id);
 
 				switch (dim)
 				{
@@ -198,13 +205,14 @@ namespace cube {
 			static constexpr int N = 6;
 			static constexpr CubeI<N> value(const int dim) noexcept
 			{
+				using T = CubeI<N>::value_type;
 				constexpr auto r0 = lift_reflect<N, 0>();
 				constexpr auto r1 = lift_reflect<N, 1>();
 				constexpr auto r2 = lift_reflect<N, 2>();
 				constexpr auto r3 = lift_reflect<N, 3>();
 				constexpr auto r4 = lift_reflect<N, 4>();
 				constexpr auto id = init_cubeI<(N - 1)>();
-				constexpr auto r5 = array_tools::concat(array_tools::add(id, 1 << (N - 1)), id);
+				constexpr auto r5 = array_tools::concat(array_tools::add<T>(id, 1 << (N - 1)), id);
 
 				switch (dim)
 				{

@@ -41,7 +41,7 @@ namespace {
 		std::index_sequence<S...>
 	) noexcept 
 	{
-		return { (a[S] + value) ... };
+		return { (static_cast<T>(a[S] + value)) ... };
 	};
 
 	template<typename T, int N, int ... S>
