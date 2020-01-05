@@ -216,7 +216,9 @@ namespace cube
 			BF smallest_bf = bf;
 			if (details::count_bits(bf) > ((1 << N) / 2))
 			{
-				complement_string = "COMPLEMENT ";
+				if constexpr (DESCR) {
+					complement_string = "COMPLEMENT ";
+				}
 				smallest_bf = complement<N>(bf);
 			}
 
@@ -231,14 +233,18 @@ namespace cube
 				if (bf_new < smallest_bf)
 				{
 					smallest_bf = bf_new;
-					transform_string = to_string<N>(pair);
+					if constexpr (DESCR) {
+						transform_string = to_string<N>(pair);
+					}
 				}
 
 				const BF bf_new_compl = complement<N>(bf_new);
 				if (bf_new_compl < smallest_bf)
 				{
 					smallest_bf = bf_new_compl;
-					transform_string = to_string<N>(pair);
+					if constexpr (DESCR) {
+						transform_string = to_string<N>(pair);
+					}
 				}
 			}
 			return std::make_pair(smallest_bf, complement_string + transform_string);
@@ -288,7 +294,7 @@ namespace cube
 		}
 	}
 
-	template <int N> constexpr BF search_class_id(const BF bf)
+	template <int N> constexpr BF search_npn_class(const BF bf)
 	{
 		const bool method1 = true;
 		return (method1)
@@ -343,7 +349,9 @@ namespace cube
 			#pragma omp parallel for num_threads(12) default(shared)
 			for (long long bf = 0; bf < max_bf; ++bf)
 			{
-				const BF c = search_class_id<N>(bf);
+				const BF c = search_npn_class<N>(bf);
+				//std::cout << "INFO: bf " << to_string_bin<N>(bf) << "; npn class " << to_string_bin<N>(c) << std::endl;
+
 				const int thread_id = omp_get_thread_num();
 
 				counter_per_thread[thread_id]++;
@@ -487,9 +495,13 @@ namespace cube
 	template <int N> void save_all_npn_classes(const std::string& filename)
 	{
 		const std::set<BF> all_npn_classes = generate_all_npn_classes<N>(); // this may take a while...
+		const unsigned long long n_npn_classes = all_npn_classes.size();
+		if (n_npn_classes != cardinality_npn_class(N)) {
+			std::cout << "WARNING: number of npn classes is " << n_npn_classes << " which is not equal to the expected number " << cardinality_npn_class(N) << std::endl;
+		}
 
 		if (!std::filesystem::exists(filename)) {
-			std::cout << "INFO: Creating new NPN class file " << filename << " with " << all_npn_classes.size() << " clasess in " << std::filesystem::current_path() << std::endl;
+			std::cout << "INFO: Creating new NPN class file " << filename << " with " << n_npn_classes << " clasess in " << std::filesystem::current_path() << std::endl;
 			std::fstream myfile(filename, std::fstream::out); // replace existing file
 			if (myfile.good()) {
 				for (const BF bf : all_npn_classes) {

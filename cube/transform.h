@@ -8,7 +8,8 @@ namespace cube {
 
 	namespace {
 
-		template <int N> constexpr CubeI<N> apply(const CubeI<N>& c, const CubeI<N>& ci) {
+		template <int N> 
+		constexpr CubeI<N> apply(const CubeI<N>& c, const CubeI<N>& ci) {
 			if constexpr (N == 1) {
 				return CubeI<N>{ c[ci[0]], c[ci[1]] };
 			}
@@ -52,8 +53,9 @@ namespace cube {
 			return (... | (((bf >> c[S]) & 1) << S));		
 		}
 
-		template <int N> constexpr BF apply(const BF bf, const CubeI<N>& c) noexcept {
-			return apply_private<N>(bf, c, std::make_index_sequence<N>());		
+		template <int N> 
+		constexpr BF apply(const BF bf, const CubeI<N>& c) noexcept {
+			return apply_private<N>(bf, c, std::make_index_sequence<(1<<N)>());
 		}
 	}
 
@@ -99,7 +101,6 @@ namespace cube {
 	}
 #pragma endregion
 
-
 	// Transform (shuffle) cube c according to the change as provided by cube ci
 	template <int N> 
 	constexpr CubeI<N> transform(const CubeI<N>& c, const CubeI<N>& ci)
@@ -109,7 +110,7 @@ namespace cube {
 	
 	// Transform (shuffle) Boolean function bf according to the change as provided by cube
 	template <int N> 
-	constexpr BF transform(const BF bf, const CubeI<N>& cube)
+	constexpr BF transform(const BF bf, const CubeI<N>& cube) noexcept
 	{
 		return apply<N>(bf, cube);
 	}
