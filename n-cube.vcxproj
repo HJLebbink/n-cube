@@ -25,6 +25,7 @@
     <ClInclude Include="cube\constants.h" />
     <ClInclude Include="cube\CubeI.h" />
     <ClInclude Include="cube\n_cube.h" />
+    <ClInclude Include="cube\plot_class.h" />
     <ClInclude Include="cube\prime.h" />
     <ClInclude Include="cube\reachable.h" />
     <ClInclude Include="cube\reflect.h" />

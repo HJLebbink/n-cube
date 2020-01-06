@@ -6,6 +6,8 @@
 #include "cube/array_tools.h"
 
 #include "cube/rewrite.h"
+#include "cube/plot_class.h"
+
 
 int main(int, char** /*argv[]*/)
 {
@@ -27,12 +29,20 @@ int main(int, char** /*argv[]*/)
 
 	//cube::test_reachability_bf2();
 	//cube::test_reachability_bf3();
+	{
+		constexpr int N = 2;
+		for (const cube::BF npn_class : cube::load_all_npn_classes<N>()) {
+			const std::string filename = ".\\data\\class_" + std::to_string(N) + "_" + cube::to_string_bin<N>(npn_class) + ".dot";
+			std::cout << filename << std::endl;
+			cube::plot::plot_npn_classes<N>(npn_class, cube::equiv_class<N>(npn_class), filename);
+		}
+	}
 
 	//cube::save_all_npn_classes<1>(".\\data\\npn1-b.txt");
 	//cube::save_all_npn_classes<2>(".\\data\\npn2-b.txt");
 	//cube::save_all_npn_classes<3>(".\\data\\npn3-b.txt");
 	//cube::save_all_npn_classes<4>(".\\data\\npn4-b.txt"); //222 classes; 65536 = 2^16 bfs; 95 ms
-	cube::save_all_npn_classes<5>(".\\data\\npn5-b.txt"); // takes ? ms: ? classes; 2^32 bfs
+	//cube::save_all_npn_classes<5>(".\\data\\npn5-b.txt"); // takes ? ms: ? classes; 2^32 bfs
 
 	//cube::rewrite::test_greedy_rewrite_algorithm<3>();
 	//cube::rewrite::test_greedy_rewrite_algorithm<4>(); //takes 8 sec

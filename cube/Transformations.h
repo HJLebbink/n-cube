@@ -361,6 +361,12 @@ namespace cube {
 		}
 	}
 
+	template <int N>
+	Transformations<N> create_transformations(const std::array<std::string, N>& descr)
+	{
+		return details::create_transformations_struct<N>::value(descr);
+	}
+
 	namespace {
 		static std::tuple<Transformations<0>, Transformations<1>, Transformations<2>, Transformations<3>, Transformations<4>, Transformations<5>, Transformations<6>> tranformations_cache;
 	}

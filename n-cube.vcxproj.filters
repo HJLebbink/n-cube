@@ -74,6 +74,9 @@
     <ClInclude Include="cube\Transformations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cube\plot_class.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">

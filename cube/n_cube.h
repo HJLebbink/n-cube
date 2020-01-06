@@ -59,12 +59,12 @@ namespace cube
 			for (int i = start_index; i < s; ++i)
 			{
 				const CubeI<N> cube_new = function_composition<N>(cube, std::get<0>(transformations[i]));
-				const std::string descr_new = descr + "." + std::get<1>(transformations[i]);
+				const std::string descr_new = (descr.empty()) ? std::get<1>(transformations[i]) : (descr + "." + std::get<1>(transformations[i]));
 				
 				if (results.contains(cube_new)) 
 				{
 					if (descr_new.length() < results.at(cube_new).length()) {
-						//std::cout << "descr_new=" << descr_new << "; old=" << results.at(cube_new) << std::endl;
+						std::cout << "descr_new=" << descr_new << "; old=" << results.at(cube_new) << std::endl;
 						results[cube_new] = descr_new;
 					}
 				}
@@ -192,13 +192,6 @@ namespace cube
 	}
 	#pragma endregion
 
-	#pragma region create transformations
-	template <int N> Transformations<N> create_transformations(const std::array<std::string, N>& descr)
-	{
-		return details::create_transformations_struct<N>::value(descr);
-	}
-	#pragma endregion
-
 	#pragma region class id
 	namespace details
 	{
@@ -309,15 +302,14 @@ namespace cube
 	// Get the set of BFs that are in the equivalence class of the provided bf.
 	template <int N> std::set<BF> equiv_class(const BF bf)
 	{
-		const Transformations<N>& transformations_from_cache = get_transformations_from_cache<N, false>();
+		const Transformations<N>& transformations = get_transformations_from_cache<N, false>();
 
 		std::set<BF> result;
 		result.insert(complement<N>(bf));
 
-		for (const auto& pair : transformations_from_cache)
+		for (const auto& pair : transformations)
 		{
-			const CubeI<N>& cube = std::get<0>(pair);
-			const BF bf_new = transform<N>(bf, cube);
+			const BF bf_new = transform<N>(bf, std::get<0>(pair));
 
 			result.insert(bf_new);
 			result.insert(complement<N>(bf_new));
@@ -326,7 +318,6 @@ namespace cube
 	}
 
 
-	#pragma region all class ids
 	namespace details
 	{
 		//Naive method: iterates over all bf of cardinality >=N
@@ -412,7 +403,6 @@ namespace cube
 			? details::generate_all_npn_classes_method0<N>()
 			: details::generate_all_npn_classes_method1<N>();
 	}
-	#pragma endregion
 
 
 	std::tuple<std::array<BF, 2>, std::array<std::string, 3>> boolean_expression_transform_3_2(
@@ -476,19 +466,19 @@ namespace cube
 	template <int N> std::set<BF> load_all_npn_classes() 
 	{
 		if constexpr (N == 1) {
-			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-transformation//data//npn1.txt");
+			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn1.txt");
 		}
 		if constexpr (N == 2) {
-			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-transformation//data//npn2.txt");
+			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn2.txt");
 		}
 		if constexpr (N == 3) {
-			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-transformation//data//npn3.txt");
+			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn3.txt");
 		}
 		if constexpr (N == 4) {
-			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-transformation//data//npn4.txt");
+			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn4.txt");
 		}
 		if constexpr (N == 5) {
-			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-transformation//data//npn5.txt");
+			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn5.txt");
 		}
 		std::cout << "WARNING: load_all_npn_classes provided N " << N << " is not supported" << std::endl;
 		return std::set<BF>();
