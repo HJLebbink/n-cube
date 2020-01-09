@@ -465,20 +465,23 @@ namespace cube
 
 	template <int N> std::set<BF> load_all_npn_classes() 
 	{
+		//const std::string path = "C://Users//henk//Documents//Github//n-cube//data//";
+		const std::string path = "C://Source//n-cube//data//";
+
 		if constexpr (N == 1) {
-			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn1.txt");
+			return load_all_npn_classes<N>(path + "npn1.txt");
 		}
 		if constexpr (N == 2) {
-			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn2.txt");
+			return load_all_npn_classes<N>(path + "npn2.txt");
 		}
 		if constexpr (N == 3) {
-			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn3.txt");
+			return load_all_npn_classes<N>(path + "npn3.txt");
 		}
 		if constexpr (N == 4) {
-			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn4.txt");
+			return load_all_npn_classes<N>(path + "npn4.txt");
 		}
 		if constexpr (N == 5) {
-			return load_all_npn_classes<N>("C://Users//henk//Documents//Github//n-cube//data//npn5.txt");
+			return load_all_npn_classes<N>(path + "npn5.txt");
 		}
 		std::cout << "WARNING: load_all_npn_classes provided N " << N << " is not supported" << std::endl;
 		return std::set<BF>();

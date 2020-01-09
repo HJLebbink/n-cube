@@ -62,9 +62,9 @@ namespace cube {
 				const std::string& d1 = descr[1];
 
 				Transformations<N> transformations;
-				transformations.push_back(std::make_pair(reflect<N>::value(0), "Ref[" + d0 + "]"));
-				transformations.push_back(std::make_pair(reflect<N>::value(1), "Ref[" + d1 + "]"));
-				transformations.push_back(std::make_pair(rotate<N>::value(0, 1), "Rot[" + d0 + "," + d1 + "]"));
+				transformations.push_back(std::make_pair(reflect<N>::value(0), "t" + d0));
+				transformations.push_back(std::make_pair(reflect<N>::value(1), "t" + d1));
+				transformations.push_back(std::make_pair(rotate<N>::value(0, 1), "r" + d0 + "" + d1));
 				return transformations;
 			}
 			static constexpr std::array<CubeI<N>, 3> value()

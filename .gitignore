@@ -34,3 +34,6 @@
 /Release/*
 /.vs/*
 /x64/*
+
+**.dot
+**.dot.pdf
