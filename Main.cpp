@@ -30,7 +30,7 @@ int main(int, char** /*argv[]*/)
 	//cube::test_reachability_bf2();
 	//cube::test_reachability_bf3();
 	{
-		constexpr int N = 2;
+		constexpr int N = 3;
 		for (const cube::BF npn_class : cube::load_all_npn_classes<N>()) {
 			const std::string filename = ".\\data\\class_" + std::to_string(N) + "_" + cube::to_string_bin<N>(npn_class) + ".dot";
 			std::cout << filename << std::endl;
