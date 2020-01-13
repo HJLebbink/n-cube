@@ -1,3 +1,6 @@
+"C:\Program Files (x86)\Graphviz2.38\bin\dot.exe" class_1_00.dot -Tpdf -O
+"C:\Program Files (x86)\Graphviz2.38\bin\dot.exe" class_1_01.dot -Tpdf -O
+
 "C:\Program Files (x86)\Graphviz2.38\bin\dot.exe" class_2_0000.dot -Tpdf -O
 "C:\Program Files (x86)\Graphviz2.38\bin\dot.exe" class_2_0001.dot -Tpdf -O
 "C:\Program Files (x86)\Graphviz2.38\bin\dot.exe" class_2_0011.dot -Tpdf -O

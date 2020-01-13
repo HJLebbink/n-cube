@@ -14,7 +14,7 @@ int main(int, char** /*argv[]*/)
 	const auto start = std::chrono::system_clock::now();
 
 	//cube::print_all_transformations<1, true>(); // 2     = 2^1
-	//cube::print_all_transformations<2, true>(); // 8     = 2^3
+	cube::print_all_transformations<2, true>(); // 8     = 2^3
 	//cube::print_all_transformations<3, true>(); // 48    = 2^4  * 3^1
 	//cube::print_all_transformations<4, true>(); // 384   = 2^7  * 3^1
 	//cube::print_all_transformations<5, false>(); // 3840  = 2^8  * 3^1 * 5^1 transformations takes 1 sec
@@ -23,18 +23,19 @@ int main(int, char** /*argv[]*/)
 
 	//cube::print_all_class_ids_with_values<1>(".\\data\\npn1.txt");
 	//cube::print_all_class_ids_with_values<2>(".\\data\\npn2.txt");
-	//cube::print_all_class_ids_with_values<3>(".\\data\\npn3.txt");
+	//cube::print_all_class_ids_with_values<3>(".\\data\\npn3.txt");	//14 class; 
 	//cube::print_all_class_ids_with_values<4>(".\\data\\npn4.txt");   //222 classes; 65536 = 2^16 bfs; 220 ms
 	//cube::print_all_class_ids_with_values<5>(".\\data\\npn5.txt");
 
 	//cube::test_reachability_bf2();
 	//cube::test_reachability_bf3();
-	{
-		constexpr int N = 3;
+	if (false) {
+		constexpr int N = 1;
 		for (const cube::BF npn_class : cube::load_all_npn_classes<N>()) {
 			const std::string filename = ".\\data\\class_" + std::to_string(N) + "_" + cube::to_string_bin<N>(npn_class) + ".dot";
 			std::cout << filename << std::endl;
 			cube::plot::plot_npn_classes<N>(npn_class, cube::equiv_class<N>(npn_class), filename);
+			//cube::plot::plot_npn_outgoing_edges<N>(npn_class, cube::equiv_class<N>(npn_class), filename);
 		}
 	}
 

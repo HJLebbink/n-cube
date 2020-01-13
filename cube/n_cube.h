@@ -79,7 +79,7 @@ namespace cube
 			const Transformations<N>& transformations_in)
 		{
 			std::map<CubeI<N>, std::string> results;
-			results.insert(std::make_pair(init_cubeI<N>(), ""));
+			results.insert(std::make_pair(init_cubeI<N>(), "id"));
 			transitive_closure_recursive_with_descriptions<N>(0, transformations_in, init_cubeI<N>(), "", results);
 			return Transformations<N>(results.begin(), results.end());
 		}
@@ -516,12 +516,12 @@ namespace cube
 	template <int N, bool DESCR> void print_all_transformations()
 	{
 		std::cout << "Transformations obtained by transitive closure N=" << N << ":" << std::endl;
-		const Transformations<N>& get_transformations_from_cache = details::get_transformations_from_cache<N, DESCR>();
-		std::cout << "number of transformations: " << get_transformations_from_cache.size() << std::endl;
+		const Transformations<N>& transformations_from_cache = get_transformations_from_cache<N, DESCR>();
+		std::cout << "number of transformations: " << transformations_from_cache.size() << std::endl;
 
 		// create a map such that the transformations are sorted
 		std::map<CubeI<N>, std::string> trans2;
-		for (const auto& pair : get_transformations_from_cache)
+		for (const auto& pair : transformations_from_cache)
 		{
 			trans2.insert(pair);
 		}
