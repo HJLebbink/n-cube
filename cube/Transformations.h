@@ -2,10 +2,11 @@
 #include <array>
 #include <string>
 #include <vector>
+#include <bitset>
 
 #include "reflect.h"
 #include "rotate.h"
-
+#include "transform.h"
 
 namespace cube {
 
@@ -23,7 +24,7 @@ namespace cube {
 		}
 		return result;
 	}
-
+	
 	namespace details {
 
 		template <int N> struct create_transformations_struct
@@ -64,15 +65,17 @@ namespace cube {
 				Transformations<N> transformations;
 				transformations.push_back(std::make_pair(reflect<N>::value(0), d0));
 				transformations.push_back(std::make_pair(reflect<N>::value(1), d1));
-				transformations.push_back(std::make_pair(rotate<N>::value(0, 1), d0 + "" + d1));
+					transformations.push_back(std::make_pair(rotate<N>::value(0, 1), d0 + "" + d1));
 				return transformations;
 			}
 			static constexpr std::array<CubeI<N>, 3> value()
 			{
+				// 3 basic transformatons is Sterling Number of second kind S(3,2) = 3
+
 				constexpr auto results = std::array<CubeI<N>, 3> {
 					reflect<N>::value(0),
-						reflect<N>::value(1),
-						rotate<N>::value(0, 1)
+					reflect<N>::value(1),
+					rotate<N>::value(0, 1)
 				};
 				return results;
 			}
@@ -97,6 +100,8 @@ namespace cube {
 			}
 			static constexpr std::array<CubeI<N>, 6> value()
 			{
+				// 6 basic transformatons is Sterling Number of second kind S(4,3) = 6
+
 				constexpr auto results = std::array<CubeI<N>, 6> {
 					reflect<N>::value(0),
 						reflect<N>::value(1),
@@ -133,6 +138,8 @@ namespace cube {
 			}
 			static constexpr std::array<CubeI<N>, 10> value()
 			{
+				// 10 basic transformatons is Sterling Number of second kind S(5,4) = 10
+
 				constexpr auto results = std::array<CubeI<N>, 10> {
 					reflect<N>::value(0),
 						reflect<N>::value(1),
@@ -180,6 +187,8 @@ namespace cube {
 			}
 			static constexpr std::array<CubeI<N>, 15> value()
 			{
+				// 15 basic transformatons is Sterling Number of second kind S(6,5) = 15
+
 				constexpr auto results = std::array<CubeI<N>, 15> {
 					reflect<N>::value(0),
 						reflect<N>::value(1),
@@ -239,6 +248,8 @@ namespace cube {
 			}
 			static constexpr std::array<CubeI<N>, 21> value()
 			{
+				// 21 basic transformatons is Sterling Number of second kind S(7,6) = 21
+
 				constexpr auto results = std::array<CubeI<N>, 21> {
 					reflect<N>::value(0),
 						reflect<N>::value(1),
@@ -378,5 +389,150 @@ namespace cube {
 			std::get<N>(tranformations_cache) = create_transformations<N, DESCR>();
 		}
 		return std::get<N>(tranformations_cache);
+	}
+
+
+
+
+	constexpr CubeI<2> create_transformations_N2(int trans_dim) noexcept
+	{
+		constexpr int N = 2;
+		constexpr CubeI<N> t1 = details::reflect<N>::value(0);
+		constexpr CubeI<N> t2 = details::reflect<N>::value(1);
+		constexpr CubeI<N> t3 = details::rotate<N>::value(0, 1);
+
+		constexpr CubeI<N> r0 = init_cubeI<N>();
+		const CubeI<N> r1 = ((trans_dim >> 0) & 1) ? transform<N>(r0, t1) : r0;
+		const CubeI<N> r2 = ((trans_dim >> 1) & 1) ? transform<N>(r1, t2) : r1;
+		const CubeI<N> r3 = ((trans_dim >> 2) & 1) ? transform<N>(r2, t3) : r2;
+		return r3;
+	}
+	constexpr CubeI<3> create_transformations_N3(int trans_dim) noexcept
+	{
+		constexpr int N = 3;
+		constexpr CubeI<N> t1 = details::reflect<N>::value(0);
+		constexpr CubeI<N> t2 = details::reflect<N>::value(1);
+		constexpr CubeI<N> t3 = details::reflect<N>::value(2);
+		constexpr CubeI<N> t4 = details::rotate<N>::value(0, 1);
+		constexpr CubeI<N> t5 = details::rotate<N>::value(0, 2);
+		constexpr CubeI<N> t6 = details::rotate<N>::value(1, 2);
+
+		constexpr CubeI<N> r0 = init_cubeI<N>();
+		const CubeI<N> r1 = ((trans_dim >> 0) & 1) ? transform<N>(r0, t1) : r0;
+		const CubeI<N> r2 = ((trans_dim >> 1) & 1) ? transform<N>(r1, t2) : r1;
+		const CubeI<N> r3 = ((trans_dim >> 2) & 1) ? transform<N>(r2, t3) : r2;
+		const CubeI<N> r4 = ((trans_dim >> 3) & 1) ? transform<N>(r3, t4) : r3;
+		const CubeI<N> r5 = ((trans_dim >> 4) & 1) ? transform<N>(r4, t5) : r4;
+		const CubeI<N> r6 = ((trans_dim >> 5) & 1) ? transform<N>(r5, t6) : r5;
+		return r6;
+	}
+	
+	constexpr CubeI<4> create_transformations_N4(int trans_dim) noexcept
+	{
+		constexpr int N = 4;
+		constexpr CubeI<N> t1 = details::reflect<N>::value(0);
+		constexpr CubeI<N> t2 = details::reflect<N>::value(1);
+		constexpr CubeI<N> t3 = details::reflect<N>::value(2);
+		constexpr CubeI<N> t4 = details::reflect<N>::value(3);
+		constexpr CubeI<N> t5 = details::rotate<N>::value(0, 1);
+		constexpr CubeI<N> t6 = details::rotate<N>::value(0, 2);
+		constexpr CubeI<N> t7 = details::rotate<N>::value(0, 3);
+		constexpr CubeI<N> t8 = details::rotate<N>::value(1, 2);
+		constexpr CubeI<N> t9 = details::rotate<N>::value(1, 3);
+		constexpr CubeI<N> t10 = details::rotate<N>::value(2, 3);
+
+		constexpr CubeI<N> r0 = init_cubeI<N>();
+		const CubeI<N> r1 = ((trans_dim >> 0) & 1) ? transform<N>(r0, t1) : r0;
+		const CubeI<N> r2 = ((trans_dim >> 1) & 1) ? transform<N>(r1, t2) : r1;
+		const CubeI<N> r3 = ((trans_dim >> 2) & 1) ? transform<N>(r2, t3) : r2;
+		const CubeI<N> r4 = ((trans_dim >> 3) & 1) ? transform<N>(r3, t4) : r3;
+		const CubeI<N> r5 = ((trans_dim >> 4) & 1) ? transform<N>(r4, t5) : r4;
+		const CubeI<N> r6 = ((trans_dim >> 5) & 1) ? transform<N>(r5, t6) : r5;
+		const CubeI<N> r7 = ((trans_dim >> 6) & 1) ? transform<N>(r6, t7) : r6;
+		const CubeI<N> r8 = ((trans_dim >> 7) & 1) ? transform<N>(r7, t8) : r7;
+		const CubeI<N> r9 = ((trans_dim >> 8) & 1) ? transform<N>(r8, t9) : r8;
+		const CubeI<N> r10 = ((trans_dim >> 9) & 1) ? transform<N>(r9, t10) : r9;
+		return r10;
+	}
+
+
+	constexpr std::array<CubeI<2>, 8> create_all_transformations_N2() noexcept
+	{
+		return std::array<CubeI<2>, 8> {
+			create_transformations_N2(0b000),
+				create_transformations_N2(0b001),
+				create_transformations_N2(0b010),
+				create_transformations_N2(0b011),
+				create_transformations_N2(0b100),
+				create_transformations_N2(0b101),
+				create_transformations_N2(0b110),
+				create_transformations_N2(0b111)
+		};
+	}
+	void test_create_transformations() 
+	{
+		constexpr auto method2 = create_all_transformations_N2();
+
+		if (false) 
+		{
+			constexpr int N = 3;
+			std::vector<std::pair<CubeI<N>, std::vector<int>>> transformations_vector;
+
+			for (int i = 0; i < (1 << 6); ++i) {
+				const CubeI<N> t = create_transformations_N3(i);
+
+				bool contains = false;
+				for (auto& e : transformations_vector) if (e.first == t) {
+					contains = true;
+					e.second.push_back(i);
+					break;
+				}
+				if (!contains) {
+					transformations_vector.push_back(std::make_pair(t, std::vector<int>{ i }));
+				}
+			}
+
+			int counter = 0;
+			for (const auto& e : transformations_vector) {
+				std::cout << counter << ": ";
+				std::cout << to_string<N>(e.first) << ": ";
+				for (const int i : e.second) {
+					std::cout << std::bitset<6>(i).to_string() << " ";
+				}
+				std::cout << std::endl;
+				counter++;
+			}
+		}
+		if (true) 
+		{
+			constexpr int N = 4;
+			std::vector<std::pair<CubeI<N>, std::vector<int>>> transformations_vector;
+
+			for (int i = 0; i < (1 << 10); ++i) {
+				const CubeI<N> t = create_transformations_N4(i);
+
+				bool contains = false;
+				for (auto& e : transformations_vector) if (e.first == t) {
+					contains = true;
+					e.second.push_back(i);
+					break;
+				}
+				if (!contains) {
+					transformations_vector.push_back(std::make_pair(t, std::vector<int>{ i }));
+				}
+			}
+
+			int counter = 0;
+			for (const auto& e : transformations_vector) {
+				std::cout << counter << ": ";
+				std::cout << to_string<N>(e.first) << ": ";
+				for (const int i : e.second) {
+					std::cout << std::bitset<10>(i).to_string() << " ";
+				}
+				std::cout << std::endl;
+				counter++;
+			}
+		}
+
 	}
 }

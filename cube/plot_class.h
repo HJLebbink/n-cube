@@ -5,6 +5,7 @@
 #include <iostream>		// std::cout
 #include <fstream>
 #include <set>
+#include <unordered_map>
 
 #include "BF.h"
 #include "Transformations.h"
@@ -17,17 +18,17 @@ namespace cube {
 
 			using Trans = std::string;
 
-			template <typename T>
+			template <typename T1, typename T2>
 			struct Edge {
-				BF from;
-				BF to;
-				std::set<T> transitions;
+				T1 from;
+				T1 to;
+				std::set<T2> transitions;
 				bool bidirectional;
 
-				Edge(BF from, BF to, const T& transition, bool bidirectional)
-					: from(from), to(to), transitions(std::set<T>{transition}), bidirectional(bidirectional)
+				Edge(T1 from, T1 to, const T2& transition, bool bidirectional)
+					: from(from), to(to), transitions(std::set<T2>{transition}), bidirectional(bidirectional)
 				{}
-				Edge(BF from, BF to, const std::set<T>& transitions, bool bidirectional)
+				Edge(T1 from, T1 to, const std::set<T2>& transitions, bool bidirectional)
 					: from(from), to(to), transitions(transitions), bidirectional(bidirectional)
 				{}
 			};
@@ -58,13 +59,14 @@ namespace cube {
 				return label;
 			}
 
-			std::vector<Edge<Trans>> remove_bidirectonal(const std::vector<Edge<Trans>>& edges)
+			template <typename T1, typename T2>
+			std::vector<Edge<T1, T2>> remove_bidirectonal(const std::vector<Edge<T1, T2>>& edges)
 			{
-				std::vector<Edge<Trans>> results;
-				for (const Edge<Trans>& e : edges)
+				std::vector<Edge<T1, T2>> results;
+				for (const Edge<T1, T2>& e : edges)
 				{
 					bool found = false;
-					for (Edge<Trans>& e2 : results)
+					for (Edge<T1, T2>& e2 : results)
 					{
 						if ((e2.from == e.to) && (e2.to == e.from) && (e2.transitions == e.transitions))
 						{	// found an existing edge that is pointing the other way around
@@ -80,11 +82,12 @@ namespace cube {
 				return results;
 			}
 
-			std::vector<Edge<Trans>> remove_equal(const std::vector<Edge<Trans>>& edges) {
-				std::vector<Edge<Trans>> results;
-				for (const Edge<Trans>& e : edges) {
+			template <typename T1, typename T2>
+			std::vector<Edge<T1, T2>> remove_equal(const std::vector<Edge<T1, T2>>& edges) {
+				std::vector<Edge<T1, T2>> results;
+				for (const Edge<T1, T2>& e : edges) {
 					bool found = false;
-					for (Edge<Trans>& e2 : results) {
+					for (Edge<T1, T2>& e2 : results) {
 						if ((e.from == e2.from) && (e.to == e2.to) && (e.bidirectional == e2.bidirectional)) {
 							for (const Trans& t : e.transitions) {
 								e2.transitions.insert(t);
@@ -100,8 +103,8 @@ namespace cube {
 				return results;
 			}
 
-			template <int N>
-			void write_to_dot_file(BF class_id, const std::vector<Edge<Trans>>& edges, const std::string& filename)
+			template <int N, typename T1, typename T2>
+			void write_to_dot_file(const std::vector<Edge<T1, T2>>& edges, const std::string& filename)
 			{
 				//const bool already_exists = std::filesystem::exists(filename);
 				const bool already_exists = false;
@@ -111,12 +114,11 @@ namespace cube {
 					if (myfile.good()) 
 					{
 						myfile << "digraph G {" << std::endl;
-						for (const Edge<Trans>& edge : edges)
+						for (const Edge<T1, T2>& edge : edges)
 						{
 							const std::string label = "label=\"" + to_string(edge.transitions) + "\"";
 							const std::string bidirectional = (edge.bidirectional) ? " dir=both" : "";
-							const std::string shape = (edge.from == class_id) ? " shape=box" : "";
-							const std::string line = to_string_bin<N>(edge.from) + " -> " + to_string_bin<N>(edge.to) + " [" + label + bidirectional + shape + " fontsize=10];";
+							const std::string line = to_string_bin<N>(edge.from) + " -> " + to_string_bin<N>(edge.to) + " [" + label + bidirectional + " fontsize=10];";
 							std::cout << line << std::endl;
 							myfile << line << std::endl;
 						}
@@ -135,7 +137,6 @@ namespace cube {
 
 		template <int N>
 		void plot_npn_classes(
-			const BF class_id,
 			const std::set<BF>& equiv_class,
 			const std::string& filename)
 		{
@@ -149,7 +150,7 @@ namespace cube {
 				transformation_id++;
 			}
 
-			std::vector<Edge<Trans>> all_edges;
+			std::vector<Edge<BF, Trans>> all_edges;
 			for (const BF bf : equiv_class)
 			{
 				for (const auto& pair : transformations)
@@ -159,9 +160,9 @@ namespace cube {
 				}
 			}
 
-			const std::vector<Edge<Trans>> edges1 = remove_equal(all_edges);
-			const std::vector<Edge<Trans>> edges2 = remove_bidirectonal(edges1);
-			write_to_dot_file<N>(class_id, edges2, filename);
+			const std::vector<Edge<BF, Trans>> edges1 = remove_equal(all_edges);
+			const std::vector<Edge<BF, Trans>> edges2 = remove_bidirectonal(edges1);
+			write_to_dot_file<N>(edges2, filename);
 		}
 
 		template <int N>
@@ -206,6 +207,53 @@ namespace cube {
 			}
 			std::cout << std::endl;
 
+		}
+
+		// plot the cube of transformations
+		template <int N>
+		void plot_transformation_transitions(
+			const std::string& filename)
+		{
+			using T1 = std::string;
+			using T2 = std::string;
+
+			const Transformations<N> all_transformations = create_transformations<N, true>();
+			const Transformations<N> atomic_transformations = details::create_transformations_struct<N>::value(create_descriptions<N>());
+
+			std::vector<Edge<T1, T2>> all_edges;
+			for (const std::pair<CubeI<N>, std::string>& transition1 : all_transformations)
+			{
+				CubeI<N> t1 = std::get<0>(transition1);
+				for (const std::pair<CubeI<N>, std::string>& transition2 : all_transformations)
+				{
+					const CubeI<N> t2 = std::get<0>(transition2);
+					const CubeI<N> t3 = transform<N>(t1, t2);
+
+					std::string node2 = "x";
+					for (const std::pair<CubeI<N>, std::string>& transition : all_transformations) {
+						if (std::get<0>(transition) == t2) {
+							node2 = std::get<1>(transition);
+							break;
+						}
+					}
+					std::string node3 = "x";
+					for (const std::pair<CubeI<N>, std::string>& transition : all_transformations) {
+						if (std::get<0>(transition) == t3) {
+							node3 = std::get<1>(transition);
+							break;
+						}
+					}
+
+					const std::string label = std::get<1>(transition2);
+					all_edges.push_back(Edge<T1, T2>(node2, node3, label, false));
+				}
+			}
+
+			const std::vector<Edge<T1, T2>> edges1 = remove_equal(all_edges);
+			const std::vector<Edge<T1, T2>> edges2 = remove_bidirectonal(edges1);
+
+
+			write_to_dot_file<N>(edges2, filename);
 		}
 	}
 }

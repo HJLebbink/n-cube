@@ -2,8 +2,8 @@
 #include <array>
 
 #include "n_cube.h"
+namespace cube {
 
-#pragma region reachable
 	namespace {
 
 		template <int N>
@@ -85,7 +85,7 @@
 
 
 	template <int N> constexpr CubeI<N> o(const CubeI<N>& a, const CubeI<N>& b) {
-		return details::function_composition<N>(a, b);
+		return function_composition<N>(a, b);
 	}
 
 	static void test_reachability_bf2() {
@@ -97,6 +97,14 @@
 		constexpr CubeI<N> rot01 = details::rotate<N>::value(0, 1);
 		constexpr CubeI<N> rot10 = details::rotate<N>::value(1, 0);
 		constexpr auto empty = std::array<CubeI<N>, 0>{};
+
+		constexpr CubeI<N> id = init_cubeI<N>();
+		constexpr CubeI<N> x0 = transform<N>(id, ref0);
+		constexpr CubeI<N> x1 = transform<N>(id, ref1);
+		constexpr CubeI<N> x01 = transform<N>(id, rot01);
+
+
+
 
 		std::vector<std::pair<std::string, CubeI<N>>> all_refs;
 		{
@@ -134,11 +142,10 @@
 		//equivalent BF: 0110 1001
 	}
 
-
 	static void test_reachability_bf3() 
 	{
 		constexpr int N = 3;
-		constexpr CubeI<N> id = details::init_cubeI<N>();
+		constexpr CubeI<N> id = init_cubeI<N>();
 		
 		constexpr CubeI<N> ref0 = details::reflect<N>::value(0);
 		constexpr CubeI<N> ref1 = details::reflect<N>::value(1);
@@ -396,10 +403,4 @@
 		//npn class #13; cardinality=3: 69=01101001; class size=2=(2^1)
 		//equivalent BF: 01101001 10010110
 	}
-	#pragma endregion
-
-
 }
-
-
-

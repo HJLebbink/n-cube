@@ -7,7 +7,7 @@
 
 #include "cube/rewrite.h"
 #include "cube/plot_class.h"
-
+#include "cube/reachable.h"
 
 int main(int, char** /*argv[]*/)
 {
@@ -29,14 +29,22 @@ int main(int, char** /*argv[]*/)
 
 	//cube::test_reachability_bf2();
 	//cube::test_reachability_bf3();
+
+	cube::test_create_transformations();
+
 	if (false) {
-		constexpr int N = 1;
+		constexpr int N = 2;
 		for (const cube::BF npn_class : cube::load_all_npn_classes<N>()) {
 			const std::string filename = ".\\data\\class_" + std::to_string(N) + "_" + cube::to_string_bin<N>(npn_class) + ".dot";
 			std::cout << filename << std::endl;
-			cube::plot::plot_npn_classes<N>(npn_class, cube::equiv_class<N>(npn_class), filename);
+			cube::plot::plot_npn_classes<N>(cube::equiv_class<N>(npn_class), filename);
 			//cube::plot::plot_npn_outgoing_edges<N>(npn_class, cube::equiv_class<N>(npn_class), filename);
 		}
+	}
+		
+	if (false) {
+		constexpr int N = 2;
+		cube::plot::plot_transformation_transitions<N>(".\\data\\transitions_" + std::to_string(N) + ".dot");
 	}
 
 	//cube::save_all_npn_classes<1>(".\\data\\npn1-b.txt");

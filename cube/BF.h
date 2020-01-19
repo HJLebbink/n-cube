@@ -9,20 +9,29 @@ namespace cube {
 	template <int N> 
 	std::string to_string_bin(const BF bf)
 	{
-		switch (N)
-		{
-			case 1: return std::bitset<2>(bf).to_string();
-			case 2: return std::bitset<4>(bf).to_string();
-			case 3: return std::bitset<8>(bf).to_string();
-			case 4: return std::bitset<16>(bf).to_string();
-			case 5: return std::bitset<32>(bf).to_string();
-			case 6: return std::bitset<64>(bf).to_string();
-			default:
-				std::cout << "ERROR: to_string_bin: dim=" << N << " not implemented yet" << std::endl;
-				static_cast<void>(getchar());
-				return std::to_string(bf);
-		}
+		return std::bitset<(1 << N)>(bf).to_string();
 	}
+
+	template <int N> 
+	std::string to_string_bin(const CubeI<N>& cube)
+	{
+		std::string result = "";
+		for (int i = 0; i < cube.size(); ++i) 
+		{
+			result += std::to_string(static_cast<int>(cube[i]));
+			if (i < (cube.size() - 1)) {
+				result += "";
+			}
+		}
+		return result;
+	}
+
+	template <int N> 
+	std::string to_string_bin(const std::string& str)
+	{
+		return "\"" + str + "\"";
+	}
+
 	template <int N> 
 	std::string to_string_hex(const BF bf)
 	{
