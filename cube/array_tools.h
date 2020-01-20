@@ -104,8 +104,7 @@ namespace array_tools {
 		const std::array<T, N>& a, 
 		const std::array<T, N>& b) noexcept
 	{
-		constexpr auto s1 = std::make_index_sequence<N>();
-		return add_private(a, b, s1);
+		return add_private(a, b, std::make_index_sequence<N>());
 	}
 
 	template <typename T, int N>
@@ -113,8 +112,7 @@ namespace array_tools {
 		const std::array<T, N>& a, 
 		const T value) noexcept 
 	{
-		constexpr auto s1 = std::make_index_sequence<N>();
-		return add_private(a, value, s1);
+		return add_private(a, value, std::make_index_sequence<N>());
 	}
 
 	template <typename T, int N>
@@ -122,8 +120,7 @@ namespace array_tools {
 		const std::array<T, N>& a, 
 		const std::array<T, N>& b) noexcept 
 	{
-		constexpr auto s1 = std::make_index_sequence<N>();
-		return equal_private(a, b, s1);
+		return equal_private(a, b, std::make_index_sequence<N>());
 	}
 
 	constexpr void test() 
