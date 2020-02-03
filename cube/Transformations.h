@@ -399,6 +399,9 @@ namespace cube {
 		constexpr CubeI<N> t2 = details::reflect<N>::value(1);
 		constexpr CubeI<N> t3 = details::rotate<N>::value(0, 1);
 
+		// rotation r01 is the dual of rotation sr10
+		static_assert(array_tools::equal(transform<N>(t3, details::rotate<N>::value(1, 0)), init_cubeI<N>()));
+
 		// reflections are commutative
 		static_assert(array_tools::equal(transform<N>(t1, t2), transform<N>(t2, t1)));
 

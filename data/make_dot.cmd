@@ -1,6 +1,8 @@
 
 
+"C:\Program Files (x86)\Graphviz2.38\bin\dot.exe" transitions_1.dot -Tpdf -O
 "C:\Program Files (x86)\Graphviz2.38\bin\dot.exe" transitions_2.dot -Tpdf -O
+"C:\Program Files (x86)\Graphviz2.38\bin\dot.exe" transitions_3.dot -Tpdf -O
 
 "C:\Program Files (x86)\Graphviz2.38\bin\dot.exe" class_1_00.dot -Tpdf -O
 "C:\Program Files (x86)\Graphviz2.38\bin\dot.exe" class_1_01.dot -Tpdf -O

@@ -14,7 +14,7 @@ int main(int, char** /*argv[]*/)
 	const auto start = std::chrono::system_clock::now();
 
 	//cube::print_all_transformations<1, true>(); // 2     = 2^1
-	cube::print_all_transformations<2, true>(); // 8     = 2^3
+	//cube::print_all_transformations<2, true>(); // 8     = 2^3
 	//cube::print_all_transformations<3, true>(); // 48    = 2^4  * 3^1
 	//cube::print_all_transformations<4, true>(); // 384   = 2^7  * 3^1
 	//cube::print_all_transformations<5, false>(); // 3840  = 2^8  * 3^1 * 5^1 transformations takes 1 sec
@@ -42,8 +42,16 @@ int main(int, char** /*argv[]*/)
 		}
 	}
 		
-	if (false) {
+	if (true) {
+		constexpr int N = 1;
+		cube::plot::plot_transformation_transitions<N>(".\\data\\transitions_" + std::to_string(N) + ".dot");
+	}
+	if (true) {
 		constexpr int N = 2;
+		cube::plot::plot_transformation_transitions<N>(".\\data\\transitions_" + std::to_string(N) + ".dot");
+	}
+	if (true) {
+		constexpr int N = 3;
 		cube::plot::plot_transformation_transitions<N>(".\\data\\transitions_" + std::to_string(N) + ".dot");
 	}
 

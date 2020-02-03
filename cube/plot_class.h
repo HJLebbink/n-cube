@@ -209,6 +209,70 @@ namespace cube {
 
 		}
 
+
+		void tranformations_partitions2() 
+		{
+			constexpr int N = 2;
+			constexpr CubeI<N> r0 = details::reflect<N>::value(0); //1032
+			constexpr CubeI<N> r1 = details::reflect<N>::value(1); //2301
+			constexpr CubeI<N> r01 = details::rotate<N>::value(0, 1); //1302
+			constexpr CubeI<N> r10 = details::rotate<N>::value(1, 0); //2031 
+
+			{	// size 2 (3 of 3 tranformations are idempotent) 
+				constexpr BF c0 = 0b0000;
+				static_assert(transform<N>(c0, r0) == c0); // r0 does nothing
+				static_assert(transform<N>(c0, r1) == c0);
+				static_assert(transform<N>(c0, r10) == c0);
+				static_assert(transform<N>(c0, r01) == c0);
+			}
+			{	// size 4 (2 of 3 tranformations are idempotent)
+				constexpr BF c1 = 0b0011;
+				static_assert(transform<N>(c1, r0) == c1); // r0 does nothing
+				static_assert(transform<N>(c1, r1) == 0b1100); // equal to negation
+				static_assert(transform<N>(c1, r01) == 0b0101);
+				static_assert(transform<N>(c1, r10) == 0b1010); 
+			}
+			{	// size 8 (1 of 3 tranformations are idempotent) 
+				constexpr BF c2 = 0b0001;
+				static_assert(transform<N>(c2, r0) == 0b0010);
+				static_assert(transform<N>(c2, r10) == 0b0010);
+
+				static_assert(transform<N>(c2, r1) == 0b0100);
+				static_assert(transform<N>(c2, r01) == 0b0100);
+
+				static_assert(transform<N>(c2, apply<N>(r0, r1)) == 0b1000);
+				static_assert(transform<N>(c2, apply<N>(r0, r10)) == 0b1000);
+				static_assert(transform<N>(c2, apply<N>(r1, r01)) == 0b1000);
+			}
+			{	// size 2 (3 of 3 tranformations are idempotent) 
+				constexpr BF c3 = 0b0110;
+				static_assert(transform<N>(c3, r0) == 0b1001); // equal to negation
+				static_assert(transform<N>(c3, r1) == 0b1001);
+				static_assert(transform<N>(c3, r10) == 0b1001);
+				static_assert(transform<N>(c3, r01) == 0b1001);
+			}
+		}
+
+		void tranformations_partitions3() 
+		{
+			constexpr int N = 3;
+			constexpr CubeI<N> r0 = details::reflect<N>::value(0); 
+			constexpr CubeI<N> r1 = details::reflect<N>::value(1);
+			constexpr CubeI<N> r2 = details::reflect<N>::value(2);
+			constexpr CubeI<N> r01 = details::rotate<N>::value(0, 1); 
+			constexpr CubeI<N> r02 = details::rotate<N>::value(0, 2); 
+			constexpr CubeI<N> r12 = details::rotate<N>::value(1, 2); 
+
+			constexpr CubeI<N> r10 = details::rotate<N>::value(1, 0);  
+			constexpr CubeI<N> r20 = details::rotate<N>::value(2, 0); 
+			constexpr CubeI<N> r21 = details::rotate<N>::value(2, 1); 
+
+			constexpr CubeI<N> id = init_cubeI<N>();
+			constexpr CubeI<N> a = transform<N>(id, r0);
+
+			//TODO
+		}
+
 		// plot the cube of transformations
 		template <int N>
 		void plot_transformation_transitions(
@@ -223,29 +287,21 @@ namespace cube {
 			std::vector<Edge<T1, T2>> all_edges;
 			for (const std::pair<CubeI<N>, std::string>& transition1 : all_transformations)
 			{
-				CubeI<N> t1 = std::get<0>(transition1);
+				const CubeI<N> node1 = std::get<0>(transition1);
 				for (const std::pair<CubeI<N>, std::string>& transition2 : all_transformations)
 				{
-					const CubeI<N> t2 = std::get<0>(transition2);
-					const CubeI<N> t3 = transform<N>(t1, t2);
+					const CubeI<N> t2 = transform<N>(node1, std::get<0>(transition2));
 
-					std::string node2 = "x";
+					std::string node2_name = "??";
 					for (const std::pair<CubeI<N>, std::string>& transition : all_transformations) {
 						if (std::get<0>(transition) == t2) {
-							node2 = std::get<1>(transition);
+							node2_name = std::get<1>(transition);
 							break;
 						}
 					}
-					std::string node3 = "x";
-					for (const std::pair<CubeI<N>, std::string>& transition : all_transformations) {
-						if (std::get<0>(transition) == t3) {
-							node3 = std::get<1>(transition);
-							break;
-						}
-					}
-
+					const std::string node1_name = std::get<1>(transition1);
 					const std::string label = std::get<1>(transition2);
-					all_edges.push_back(Edge<T1, T2>(node2, node3, label, false));
+					all_edges.push_back(Edge<T1, T2>(node1_name, node2_name, label, false));
 				}
 			}
 
