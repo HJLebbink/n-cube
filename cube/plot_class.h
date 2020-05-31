@@ -271,7 +271,134 @@ namespace cube {
 			constexpr CubeI<N> a = transform<N>(id, r0);
 
 			//TODO
+			/*
+			0
+			1
+			3
+			6
+			7
+			15
+			22
+			23
+			24
+			25
+			27
+			30
+			60
+			105
+*/
+			{	// size ? (4 of 6 tranformations are idempotent) 
+				constexpr BF c3 = 0b0011'1100; //60
+
+				static_assert(transform<N>(c3, r0) == c3); // idempotent
+				static_assert(transform<N>(c3, r1) == 0b1100'0011);  // equal to negation
+				static_assert(transform<N>(c3, r2) == 0b1100'0011);  // equal to negation
+
+				static_assert(transform<N>(c3, r01) == 0b0101'1010); // new 1
+				static_assert(transform<N>(c3, r02) == 0b0110'0110); // new 2
+				static_assert(transform<N>(c3, r12) == 0b1100'0011); // equal to negation
+
+				static_assert(transform<N>(c3, r10) == 0b1010'0101); // negation of new 1
+				static_assert(transform<N>(c3, r20) == 0b1001'1001); // negation of new 2
+				static_assert(transform<N>(c3, r21) == 0b1100'0011); // equal to negation
+
+				constexpr BF x = transform<N>(c3, r20);
+
+
+			}
+			{	// size 2 (6 of 6 tranformations are idempotent) 
+				constexpr BF c3 = 0b0110'1001;
+				static_assert(transform<N>(c3, r0) == 0b1001'0110); // equal to negation
+				static_assert(transform<N>(c3, r1) == 0b1001'0110);
+				static_assert(transform<N>(c3, r2) == 0b1001'0110);
+				static_assert(transform<N>(c3, r01) == 0b1001'0110);
+				static_assert(transform<N>(c3, r02) == 0b1001'0110);
+				static_assert(transform<N>(c3, r12) == 0b1001'0110);
+
+				static_assert(transform<N>(c3, r10) == 0b1001'0110);
+				static_assert(transform<N>(c3, r20) == 0b1001'0110);
+				static_assert(transform<N>(c3, r21) == 0b1001'0110);
+			}
+
 		}
+
+		void rot2_tranformations() {
+			constexpr int N = 2;
+			constexpr CubeI<N> r0 = details::reflect<N>::value(0); 
+			constexpr CubeI<N> r1 = details::reflect<N>::value(1);
+			
+			constexpr CubeI<N> r0o1 = transform<N>(r0, r1);
+
+			constexpr CubeI<N> r01 = details::rotate<N>::value(0, 1); 
+			constexpr CubeI<N> r10 = details::rotate<N>::value(1, 0); 
+
+
+			constexpr CubeI<N> id = init_cubeI<N>();
+			
+			constexpr CubeI<N> x0_0 = id;                      // 0123
+			constexpr CubeI<N> x0_1 = transform<N>(x0_0, r01); // 1302
+			constexpr CubeI<N> x0_2 = transform<N>(x0_1, r01); // 3210
+			constexpr CubeI<N> x0_3 = transform<N>(x0_2, r01); // 2031
+
+			constexpr CubeI<N> x1_0 = transform<N>(x0_0, r0); // 1031
+			constexpr CubeI<N> x1_1 = transform<N>(x0_1, r0); // 3120
+			constexpr CubeI<N> x1_2 = transform<N>(x0_2, r0); // 2301
+			constexpr CubeI<N> x1_3 = transform<N>(x0_3, r0); // 0213
+
+			constexpr CubeI<N> x2_0 = transform<N>(x1_0, r10); // 0213
+			constexpr CubeI<N> x2_1 = transform<N>(x1_1, r0); //
+			constexpr CubeI<N> x2_2 = transform<N>(x1_2, r0); //
+			constexpr CubeI<N> x2_3 = transform<N>(x1_3, r0); //
+
+
+
+//			static_assert(array_tools::equal(x2_))
+		}
+
+		void rot3_tranformations() {
+			constexpr int N = 3;
+			constexpr CubeI<N> r0 = details::reflect<N>::value(0); 
+			constexpr CubeI<N> r1 = details::reflect<N>::value(1);
+			constexpr CubeI<N> r2 = details::reflect<N>::value(2);
+			
+			constexpr CubeI<N> r0o1 = transform<N>(r0, r1);
+			constexpr CubeI<N> r0o2 = transform<N>(r0, r2);
+			constexpr CubeI<N> r1o2 = transform<N>(r1, r2);
+
+			constexpr CubeI<N> r01 = details::rotate<N>::value(0, 1); 
+			constexpr CubeI<N> r02 = details::rotate<N>::value(0, 2); 
+			constexpr CubeI<N> r12 = details::rotate<N>::value(1, 2); 
+
+			constexpr CubeI<N> r10 = details::rotate<N>::value(1, 0);  
+			constexpr CubeI<N> r20 = details::rotate<N>::value(2, 0); 
+			constexpr CubeI<N> r21 = details::rotate<N>::value(2, 1); 
+			
+
+			constexpr CubeI<N> id = init_cubeI<N>();
+
+			constexpr CubeI<N> x0_0 = id;                      // 01234567
+			constexpr CubeI<N> x0_1 = transform<N>(x0_0, r01); // 13025646
+			constexpr CubeI<N> x0_2 = transform<N>(x0_1, r01); // 32107654
+			constexpr CubeI<N> x0_3 = transform<N>(x0_2, r01); // 20316475
+			static_assert(array_tools::equal(x0_0, transform<N>(x0_3, r01)));
+
+			constexpr CubeI<N> x1_0 = id;                      // 01234567
+			constexpr CubeI<N> x1_1 = transform<N>(x1_0, r02); // 15370426
+			constexpr CubeI<N> x1_2 = transform<N>(x1_1, r02); // 54761032
+			constexpr CubeI<N> x1_3 = transform<N>(x1_2, r02); // 40625173
+			static_assert(array_tools::equal(x1_0, transform<N>(x1_3, r02)));
+
+			constexpr CubeI<N> x2_0 = id;                      // 01234567
+			constexpr CubeI<N> x2_1 = transform<N>(x2_0, r12); // 23670145
+			constexpr CubeI<N> x2_2 = transform<N>(x2_1, r12); // 67452301
+			constexpr CubeI<N> x2_3 = transform<N>(x2_2, r12); // 45016723
+			static_assert(array_tools::equal(x2_0, transform<N>(x2_3, r12)));
+			
+//			static_assert(array_tools::equal(x2_2, transform<N>(id, r1)));		
+//			constexpr CubeI<N> y2_1 = transform<N>(x2_1, ); 
+//			constexpr CubeI<N> y2_1 = transform<N>(x2_1, r0o1); 
+		}
+
 
 		// plot the cube of transformations
 		template <int N>

@@ -161,7 +161,7 @@ namespace cube
 		if constexpr (N == 6) {
 			return ~bf;
 		}
-		return 0;
+		//return 0;
 	}
 	template <int N> constexpr BF complement_if_needed(const BF bf) noexcept
 	{
