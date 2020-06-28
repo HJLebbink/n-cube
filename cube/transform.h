@@ -45,7 +45,7 @@ namespace cube {
 						c[ci[56]], c[ci[57]], c[ci[58]], c[ci[59]], c[ci[60]], c[ci[61]], c[ci[62]], c[ci[63]]
 				};
 			}
-			return CubeI<N>();
+			//return CubeI<N>();
 		}
 
 		template <int N, int ... S> 
@@ -90,7 +90,7 @@ namespace cube {
 		static_assert(fail);
 	}
 
-	static void test_function_composition() {
+	void test_function_composition() {
 
 		constexpr int N = 2;
 

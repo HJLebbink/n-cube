@@ -32,7 +32,7 @@ namespace cube {
 		if constexpr (N == 7) {
 			return { "g", "f", "e", "d", "c", "b", "a" };
 		}
-		return std::array<std::string, N>();
+		//return std::array<std::string, N>();
 	}
 
 

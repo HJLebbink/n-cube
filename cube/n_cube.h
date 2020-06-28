@@ -483,8 +483,8 @@ namespace cube
 		if constexpr (N == 5) {
 			return load_all_npn_classes<N>(path + "npn5.txt");
 		}
-		std::cout << "WARNING: load_all_npn_classes provided N " << N << " is not supported" << std::endl;
-		return std::set<BF>();
+		//std::cout << "WARNING: load_all_npn_classes provided N " << N << " is not supported" << std::endl;
+		//return std::set<BF>();
 	}
 
 	template <int N> void save_all_npn_classes(const std::string& filename)

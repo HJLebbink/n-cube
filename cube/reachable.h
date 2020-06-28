@@ -88,7 +88,7 @@ namespace cube {
 		return function_composition<N>(a, b);
 	}
 
-	static void test_reachability_bf2() {
+	void test_reachability_bf2() {
 		constexpr int N = 2;
 		constexpr CubeI<N> ref0 = details::reflect<N>::value(0);
 		constexpr CubeI<N> ref1 = details::reflect<N>::value(1);
@@ -142,7 +142,7 @@ namespace cube {
 		//equivalent BF: 0110 1001
 	}
 
-	static void test_reachability_bf3() 
+	void test_reachability_bf3() 
 	{
 		constexpr int N = 3;
 		constexpr CubeI<N> id = init_cubeI<N>();
