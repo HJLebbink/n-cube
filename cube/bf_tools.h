@@ -13,7 +13,7 @@
 #include <algorithm>	// std::find
 
 #include "BF.h"
-
+#include "bitwise_tools.ipp"
 namespace cube
 {
 
