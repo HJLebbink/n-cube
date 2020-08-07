@@ -13,6 +13,7 @@
 #include <fstream>
 #include <time.h>
 #include <filesystem>
+#include <bit>
 
 #include "CubeI.h"
 #include "bf_tools.h"
@@ -530,6 +531,21 @@ namespace cube
 			std::cout << to_string<N>(pair) << std::endl;
 		}
 	}
+
+	template <int N> std::vector<std::set<BF>> load_all_npn_classes_sorted_by_nbit() 
+	{
+		std::vector<std::set<BF>> result;
+		for (int i = 0; i < (1 << N); ++i) {
+			result.push_back(std::set<BF>());
+		}
+		for (const BF bf : load_all_npn_classes<N>()) 
+		{
+			const int n_bits = __builtin_popcountll(bf);
+			result[n_bits].insert(bf);
+		}
+		return result;
+	}
+
 
 	template <int N> void print_all_class_ids_with_values(const std::string& filename)
 	{
