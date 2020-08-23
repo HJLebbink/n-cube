@@ -544,7 +544,7 @@ namespace cube
 			const BF bf_complement = complement<N>(bf);
 			const int n_bits = std::popcount(bf);
 			const int n_bits_complement = std::popcount(bf_complement);
-			result[n_bits].insert((n_bits < n_bits_complement) ? bf : bf_complement);
+			result[n_bits].insert((n_bits <= n_bits_complement) ? bf : bf_complement);
 		}
 		return result;
 	}
