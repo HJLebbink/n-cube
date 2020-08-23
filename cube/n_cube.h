@@ -466,7 +466,8 @@ namespace cube
 
 	template <int N> std::set<BF> load_all_npn_classes() 
 	{
-		const std::string path = "C://Users//henk//Documents//Github//n-cube//data//";
+		const std::string path = "C://Users//909077//Documents//GitHub//n-cube//data//";
+		//const std::string path = "C://Users//henk//Documents//Github//n-cube//data//";
 		//const std::string path = "C://Source//n-cube//data//";
 
 		if constexpr (N == 1) {
