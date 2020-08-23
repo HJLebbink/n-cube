@@ -292,7 +292,7 @@ namespace cube
 
 	template <int N> constexpr BF search_npn_class(const BF bf)
 	{
-		const bool method1 = true;
+		constexpr bool method1 = true;
 		return (method1)
 			? std::get<0>(details::search_class_id_method0<N, false>(bf))
 			: std::get<0>(details::search_class_id_method1<N, false>(bf));
@@ -399,7 +399,7 @@ namespace cube
 	}
 	template <int N> std::set<BF> generate_all_npn_classes()
 	{
-		const bool use_method0 = true;
+		constexpr bool use_method0 = true;
 		return (use_method0)
 			? details::generate_all_npn_classes_method0<N>()
 			: details::generate_all_npn_classes_method1<N>();
@@ -540,7 +540,7 @@ namespace cube
 		}
 		for (const BF bf : load_all_npn_classes<N>()) 
 		{
-			const int n_bits = __builtin_popcountll(bf);
+			const int n_bits = std::popcount(bf);
 			result[n_bits].insert(bf);
 		}
 		return result;

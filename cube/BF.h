@@ -2,6 +2,9 @@
 #include <string>
 #include <bitset>
 #include <iostream>		// std::cout
+#include <sstream>
+#include "CubeI.h"
+
 
 namespace cube {
 	using BF = unsigned long long;

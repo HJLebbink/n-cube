@@ -32,7 +32,7 @@ int main(int, char** /*argv[]*/)
 
 	cube::test_create_transformations();
 
-	if (true) {
+	if (false) {
 		constexpr int N = 3;
 		for (const cube::BF npn_class : cube::load_all_npn_classes<N>()) {
 			const std::string filename = ".\\data\\class_" + std::to_string(N) + "_" + cube::to_string_bin<N>(npn_class) + ".dot";
@@ -42,15 +42,15 @@ int main(int, char** /*argv[]*/)
 		}
 	}
 		
-	if (true) {
+	if (false) {
 		constexpr int N = 1;
 		cube::plot::plot_transformation_transitions<N>(".\\data\\transitions_" + std::to_string(N) + ".dot");
 	}
-	if (true) {
+	if (false) {
 		constexpr int N = 2;
 		cube::plot::plot_transformation_transitions<N>(".\\data\\transitions_" + std::to_string(N) + ".dot");
 	}
-	if (true) {
+	if (false) {
 		constexpr int N = 3;
 		cube::plot::plot_transformation_transitions<N>(".\\data\\transitions_" + std::to_string(N) + ".dot");
 	}
@@ -58,7 +58,7 @@ int main(int, char** /*argv[]*/)
 	//cube::save_all_npn_classes<1>(".\\data\\npn1-b.txt");
 	//cube::save_all_npn_classes<2>(".\\data\\npn2-b.txt");
 	//cube::save_all_npn_classes<3>(".\\data\\npn3-b.txt");
-	//cube::save_all_npn_classes<4>(".\\data\\npn4-b.txt"); //222 classes; 65536 = 2^16 bfs; 95 ms
+	cube::save_all_npn_classes<4>(".\\data\\npn4-b.txt"); //222 classes; 65536 = 2^16 bfs; 95 ms
 	//cube::save_all_npn_classes<5>(".\\data\\npn5-b.txt"); // takes ? ms: ? classes; 2^32 bfs
 
 	//cube::rewrite::test_greedy_rewrite_algorithm<3>();
