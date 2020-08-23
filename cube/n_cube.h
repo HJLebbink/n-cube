@@ -466,8 +466,8 @@ namespace cube
 
 	template <int N> std::set<BF> load_all_npn_classes() 
 	{
-		const std::string path = "C://Users//909077//Documents//GitHub//n-cube//data//";
-		//const std::string path = "C://Users//henk//Documents//Github//n-cube//data//";
+		//const std::string path = "C://Users//909077//Documents//GitHub//n-cube//data//";
+		const std::string path = "C://Users//henk//Documents//Github//n-cube//data//";
 		//const std::string path = "C://Source//n-cube//data//";
 
 		if constexpr (N == 1) {
@@ -536,17 +536,18 @@ namespace cube
 	template <int N> std::vector<std::set<BF>> load_all_npn_classes_sorted_by_nbit() 
 	{
 		std::vector<std::set<BF>> result;
-		for (int i = 0; i < (1 << N); ++i) {
+		for (int n_bit = 0; n_bit < (1 << N); ++n_bit) {
 			result.push_back(std::set<BF>());
 		}
 		for (const BF bf : load_all_npn_classes<N>()) 
 		{
+			const BF bf_complement = complement<N>(bf);
 			const int n_bits = std::popcount(bf);
-			result[n_bits].insert(bf);
+			const int n_bits_complement = std::popcount(bf_complement);
+			result[n_bits].insert((n_bits < n_bits_complement) ? bf : bf_complement);
 		}
 		return result;
 	}
-
 
 	template <int N> void print_all_class_ids_with_values(const std::string& filename)
 	{
