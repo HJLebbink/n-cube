@@ -181,7 +181,7 @@ namespace cube {
 				transformation_id++;
 			}
 
-			std::vector<Edge<Trans>> all_edges;
+			std::vector<Edge<BF, Trans>> all_edges;
 			for (const BF bf : equiv_class)
 			{
 				for (const auto& pair : transformations2)
@@ -196,7 +196,7 @@ namespace cube {
 
 
 			std::set<Trans> outgoing_edges;
-			for (const Edge<Trans>& e : all_edges) {
+			for (const Edge<BF, Trans>& e : all_edges) {
 				if (e.from == class_id) {
 					for (auto t : e.transitions) outgoing_edges.insert(t);
 				}

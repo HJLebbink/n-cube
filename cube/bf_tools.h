@@ -16,9 +16,57 @@
 
 namespace cube
 {
-
 	namespace details
 	{
+#pragma region To String
+
+		std::string to_string_binary(const unsigned char a)
+		{
+			return std::bitset<8>(a).to_string();
+		}
+
+		std::string to_string_binary(const unsigned short a)
+		{
+			return std::bitset<8>(a >> 8).to_string() + "." + std::bitset<8>(a).to_string();
+		}
+
+		std::string to_string_binary(const unsigned int a)
+		{
+			std::string result = "";
+			for (auto i = 3; i >= 0; --i) result += std::bitset<8>(a >> (i * 8)).to_string() + ".";
+			return result;
+		}
+
+		std::string to_string_binary(const unsigned long long a)
+		{
+			std::string result = "";
+			for (auto i = 7; i >= 0; --i) result += std::bitset<8>(a >> (i * 8)).to_string() + ".";
+			return result;
+		}
+
+		std::string to_string_binary(const __m128i& a)
+		{
+			std::string result = "";
+			for (auto i = 0; i < 16; ++i) result += std::bitset<8>(a.m128i_u8[i]).to_string() + ".";
+			return result;
+		}
+
+		std::string to_string_binary(const __m256i& a)
+		{
+			std::string result = "";
+			for (auto i = 0; i < 32; ++i) result += std::bitset<8>(a.m256i_u8[i]).to_string() + ".";
+			return result;
+		}
+
+		std::string to_string_binary(const __m512i& a)
+		{
+			std::string result = "";
+			for (auto i = 0; i < 64; ++i) result += std::bitset<8>(a.m512i_u8[i]).to_string() + ".";
+			return result;
+		}
+#pragma endregion
+
+
 		template <size_t _Nvars>
 		[[nodiscard]] std::bitset<(1ull << _Nvars)> random_bf() {
 			constexpr size_t Nbits = 1ull << _Nvars;
@@ -239,7 +287,7 @@ namespace cube
 					std::cout << "remove_redundant_vars: bf=" << bf << "; n_vars=" << n_vars << "; n_used_vars=" << n_used_vars << std::endl;
 					for (int i = 0; i < n_used_vars; ++i)
 					{
-						std::cout << "remove_redundant_vars: " << descr2[i] << " = " << tools::to_string_binary(content2[i]) << std::endl;
+						std::cout << "remove_redundant_vars: " << descr2[i] << " = " << details::to_string_binary(content2[i]) << std::endl;
 					}
 				}
 				return { content2, descr2 };

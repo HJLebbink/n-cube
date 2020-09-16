@@ -38,39 +38,11 @@ namespace cube {
 
 	namespace rewrite {
 
-		template <int N> void test_greedy_rewrite_algorithm()
-		{
-			bool found_error = false;
-
-			for (BF bf = 0; bf < (1ull << (1 << N)); ++bf)
-			{
-				const auto r1 = details::search_class_id_method0<N, true>(bf);
-				const auto r2 = details::search_class_id_method1<N, true>(bf);
-
-				const BF bf1 = std::get<0>(r1);
-				const BF bf2 = std::get<0>(r2);
-
-				if ((bf & 0xFF) == 0) std::cout << ".";
-
-				if (bf1 != bf2)
-				{
-					std::cout << std::endl << "ERROR: test_greedy_rewrite_algorithm<" << N << ">:" << std::endl;
-					std::cout << "bf      = " << to_string_hex<N>(bf) << " = " << to_string_bin<N>(bf) << "; number of bits set:" << details::count_bits(bf) << std::endl;
-					std::cout << "closure = " << to_string_hex<N>(bf1) << " = " << to_string_bin<N>(bf1) << " " << std::get<1>(r1) << std::endl;
-					std::cout << "greedy  = " << to_string_hex<N>(bf2) << " = " << to_string_bin<N>(bf2) << " " << std::get<1>(r2) << std::endl;
-
-					found_error = true;
-					getchar();
-				}
-			}
-			if (!found_error) std::cout << std::endl << "test_greedy_rewrite_algorithm<" << N << ">: found no errors" << std::endl;
-		}
-
 		template <int N> void find_greedy_rewrite_algorithms()
 		{
 			std::vector<CubeI<N>> all_tranformations_vector;
 			int counter = 0;
-			for (const auto& t : details::get_transformations_from_cache<N, false>())
+			for (const auto& t : get_transformations_from_cache<N, false>())
 			{
 				all_tranformations_vector.push_back(std::get<0>(t));
 				std::cout << counter << ":" << to_string<N>(t) << std::endl;

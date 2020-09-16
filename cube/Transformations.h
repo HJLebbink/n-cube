@@ -358,17 +358,118 @@ namespace cube {
 				};
 		*/
 	}
+	namespace details
+	{
+#pragma region transitive closure
+		template <int N, int M> void transitive_closure_recursive_no_descriptions(
+			const int start_index,
+			const std::array<CubeI<N>, M>& transformations,
+			const CubeI<N>& cube,
+			INOUT std::set<CubeI<N>>& results)
+		{
+			for (int i = start_index; i < M; ++i)
+			{
+				const CubeI<N> cube_new = function_composition<N>(cube, transformations[i]);
+				results.insert(cube_new);
+				transitive_closure_recursive_no_descriptions<N>(i + 1, transformations, cube_new, results);
+			}
+		}
+
+		template <int N> void transitive_closure_recursive_with_descriptions(
+			const int start_index,
+			const Transformations<N>& transformations,
+			const CubeI<N>& cube,
+			const std::string& descr,
+			INOUT std::map<CubeI<N>, std::string>& results)
+		{
+			const int s = static_cast<int>(transformations.size());
+			for (int i = start_index; i < s; ++i)
+			{
+				const CubeI<N> cube_new = function_composition<N>(cube, std::get<0>(transformations[i]));
+				const std::string descr_new = (descr.empty()) ? std::get<1>(transformations[i]) : (descr + "." + std::get<1>(transformations[i]));
+
+				if (results.contains(cube_new))
+				{
+					if (descr_new.length() < results.at(cube_new).length()) {
+						std::cout << "descr_new=" << descr_new << "; old=" << results.at(cube_new) << std::endl;
+						results[cube_new] = descr_new;
+					}
+				}
+				else {
+					results.insert(std::make_pair(cube_new, descr_new));
+				}
+				transitive_closure_recursive_with_descriptions<N>(i + 1, transformations, cube_new, descr_new, results);
+			}
+		}
+
+		template <int N> static Transformations<N> transitive_closure(
+			const Transformations<N>& transformations_in)
+		{
+			std::map<CubeI<N>, std::string> results;
+			results.insert(std::make_pair(init_cubeI<N>(), "id"));
+			transitive_closure_recursive_with_descriptions<N>(0, transformations_in, init_cubeI<N>(), "", results);
+			return Transformations<N>(results.begin(), results.end());
+		}
+		template <int N, int M> static Transformations<N> transitive_closure(
+			const std::array<CubeI<N>, M>& transformations_in)
+		{
+			std::set<CubeI<N>> results;
+			results.insert(init_cubeI<N>());
+			transitive_closure_recursive_no_descriptions<N>(0, transformations_in, init_cubeI<N>(), results);
+			Transformations<N> transformations_out;
+			for (const auto& e : results) transformations_out.push_back(std::make_pair(e, "?"));
+			return transformations_out;
+		}
+
+		template <int N, int M> static std::set<CubeI<N>> transitive_closure_x(
+			const std::array<CubeI<N>, M>& transformations_in)
+		{
+			std::set<CubeI<N>> results;
+			results.insert(init_cubeI<N>());
+			transitive_closure_recursive_no_descriptions<N>(0, transformations_in, init_cubeI<N>(), results);
+			return results;
+		}
+		// slow method
+		template <int N, int M> static std::set<CubeI<N>> transitive_closure_y(
+			const std::array<CubeI<N>, M>& transformations_in)
+		{
+			std::set<CubeI<N>> results;
+
+			//for (const auto& cube_in : transformations_in) results.insert(cube_in);
+
+			//bool changed = true;
+			//while (changed)
+			//{
+			//	changed = false;
+			//	for (const auto& cube_in : transformations_in)
+			//	{
+			//		const CubeI<N> cube = std::get<0>(transformations[i]);
+
+			//		for (const auto& e2 : results)
+			//		{
+			//			const CubeI<N> cube_new = details::function_composition<N>(cube_in, cube);
+			//			results.insert(cube_new);
+			//			changed = true;
+			//		}
+			//	}
+			//}
+			return results;
+		}
+#pragma endregion
+
+	} // end namespace details
+
 
 	template <int N, bool DESCR>
 	const Transformations<N> create_transformations()
 	{
 		if constexpr (DESCR)
 		{
-			return details::transitive_closure<N>(details::create_transformations_struct<N>::value(create_descriptions<N>()));
+			return cube::details::transitive_closure<N>(details::create_transformations_struct<N>::value(create_descriptions<N>()));
 		}
 		else
 		{
-			return details::transitive_closure<N>(details::create_transformations_struct<N>::value());
+			return cube::details::transitive_closure<N>(details::create_transformations_struct<N>::value());
 		}
 	}
 
@@ -462,7 +563,6 @@ namespace cube {
 		const CubeI<N> r6 = ((trans_dim >> 5) & 1) ? transform<N>(r5, t6) : r5;
 		return r6;
 	}
-	
 	constexpr CubeI<4> create_transformations_N4(int trans_dim) noexcept
 	{
 		constexpr int N = 4;
@@ -490,7 +590,6 @@ namespace cube {
 		const CubeI<N> r10 = ((trans_dim >> 9) & 1) ? transform<N>(r9, t10) : r9;
 		return r10;
 	}
-
 
 	constexpr std::array<CubeI<2>, 8> create_all_transformations_N2() noexcept
 	{

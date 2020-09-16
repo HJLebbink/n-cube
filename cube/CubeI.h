@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
 #include <utility> // pair
+#include <bitset>
 #include "array_tools.h"
-
 
 namespace cube {
 

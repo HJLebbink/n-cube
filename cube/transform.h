@@ -78,16 +78,16 @@ namespace cube {
 		if constexpr (M == 1) {
 			return function_composition(a[0]);
 		}
-		if constexpr (M == 2) {
+		else if constexpr (M == 2) {
 			return function_composition(a[0], a[1]);
 		}
-		if constexpr (M == 3) {
+		else if constexpr (M == 3) {
 			return function_composition(a[0], a[1], a[2]);
 		}
-		if constexpr (M == 4) {
+		else if constexpr (M == 4) {
 			return function_composition(a[0], a[1], a[2], a[3]);
 		}
-		static_assert(fail);
+		static_assert(false);
 	}
 
 	void test_function_composition() {

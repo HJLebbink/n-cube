@@ -58,7 +58,7 @@ int main(int, char** /*argv[]*/)
 	//cube::save_all_npn_classes<1>(".\\data\\npn1-b.txt");
 	//cube::save_all_npn_classes<2>(".\\data\\npn2-b.txt");
 	//cube::save_all_npn_classes<3>(".\\data\\npn3-b.txt");
-	cube::save_all_npn_classes<4>(".\\data\\npn4-b.txt"); //222 classes; 65536 = 2^16 bfs; 95 ms
+	//cube::save_all_npn_classes<4>(".\\data\\npn4-b.txt"); //222 classes; 65536 = 2^16 bfs; 95 ms
 	//cube::save_all_npn_classes<5>(".\\data\\npn5-b.txt"); // takes ? ms: ? classes; 2^32 bfs
 
 	//cube::rewrite::test_greedy_rewrite_algorithm<3>();

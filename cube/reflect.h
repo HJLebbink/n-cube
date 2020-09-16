@@ -11,7 +11,7 @@ namespace cube {
 		template <int N, int D> constexpr CubeI<N> lift_reflect() noexcept
 		{
 			static_assert(D < N, "");
-			using T = CubeI<N>::value_type;
+			using T = typename CubeI<N>::value_type;
 			constexpr int N2 = N - 1;
 			constexpr CubeI<N2> reflect_embedded_cube = reflect<N2>::value(D);
 			return array_tools::concat<T>(reflect_embedded_cube, array_tools::add(reflect_embedded_cube, static_cast<T>(1 << N2)));
