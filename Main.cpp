@@ -9,6 +9,7 @@
 #include "cube/plot_class.h"
 #include "cube/reachable.h"
 
+
 int main(int, char** /*argv[]*/)
 {
 	const auto start = std::chrono::system_clock::now();
