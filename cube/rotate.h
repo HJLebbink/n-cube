@@ -1,6 +1,6 @@
 #pragma once
 #include <array>
-
+#include <algorithm>
 #include "CubeI.h"
 #include "array_tools.h"
 #include "transform.h"
@@ -80,9 +80,9 @@ namespace cube {
 				const int d1a = std::min(d1, d2);
 				const int d2a = std::max(d1, d2);
 
-				if ((d1a == 0) & (d2a == 1)) return { 2 };
-				if ((d1a == 0) & (d2a == 2)) return { 1 };
-				if ((d1a == 1) & (d2a == 2)) return { 0 };
+				if ((d1a == 0) && (d2a == 1)) return { 2 };
+				if ((d1a == 0) && (d2a == 2)) return { 1 };
+				if ((d1a == 1) && (d2a == 2)) return { 0 };
 				return { -1 };
 			}
 			static constexpr CubeI<N> cycles_2_cube(const std::array<Cycle, 2>& cycles) noexcept

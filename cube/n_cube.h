@@ -204,6 +204,7 @@ namespace cube
 		const Transformations<N>& transformations = get_transformations_from_cache<N, false>();
 
 		std::set<BF> result;
+		result.insert(bf);
 		result.insert(complement<N>(bf));
 
 		for (const auto& pair : transformations)

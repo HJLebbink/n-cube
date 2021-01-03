@@ -324,7 +324,7 @@ namespace cube
 	}
 
 	template <size_t S>
-	[[nodiscard]] std::bitset<S> create_truth_table_var(int i)
+	[[nodiscard]] constexpr std::bitset<S> create_truth_table_var(int i)
 	{
 		auto result = std::bitset<S>(); // construct with all false values
 		bool b = false;
