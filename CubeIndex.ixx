@@ -18,7 +18,7 @@ export namespace cube {
 	//template <int DIM> using CubeI = std::array<int, (1 << DIM)>; // char takes 9 hours for save_all_npn_classes<5>
 
 	template <int N>
-	consteval CubeI<N> init_cubeI() noexcept
+	[[nodiscard]] consteval CubeI<N> init_cubeI() noexcept
 	{
 		constexpr int S = 1 << N;
 		return array_tools::create_index_array<CubeI<N>::value_type, S>();

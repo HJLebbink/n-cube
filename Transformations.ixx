@@ -3,6 +3,9 @@ module;
 #include <string>
 #include <vector>
 #include <set>
+#include <compare>
+#include <functional> //less
+
 
 #include <map>
 #include <bitset>
@@ -330,14 +333,18 @@ namespace cube {
 	}
 	namespace details
 	{
-		auto cmp = []<int N>(const CubeI<N>& a, const CubeI<N>& b) -> bool { return array_tools::lesseq<CubeI<N>>(a, b); };
-
+		template <int N>
+		struct Cmp {
+			[[nodiscard]] constexpr bool operator()(const CubeI<N>& left, const CubeI<N>& right) const {
+				return array_tools::lesseq<1<<N>(left, right);
+			}
+		};
 
 		template <int N>
-		using CubeSet = std::set<CubeI<N>, decltype(cmp)>;
+		using CubeSet = std::set<CubeI<N>, Cmp<N>>;
 
 		template <int N>
-		using CubeMap = std::map<CubeI<N>, std::string, decltype(cmp)>;
+		using CubeMap = std::map<CubeI<N>, std::string, Cmp<N>>;
 
 
 #pragma region transitive closure
@@ -386,7 +393,7 @@ namespace cube {
 			const Transf<N>& transformations_in)
 		{
 			CubeMap<N> results;
-			results.insert(std::make_pair(init_cubeI<N>(), "id"));
+			results.insert({ init_cubeI<N>(), "id" });
 			transitive_closure_recursive_with_descriptions<N>(0, transformations_in, init_cubeI<N>(), "", INOUT results);
 			return Transf<N>(results.begin(), results.end());
 		}
@@ -397,15 +404,14 @@ namespace cube {
 			results.insert(init_cubeI<N>());
 			transitive_closure_recursive_no_descriptions<N>(0, transformations_in, init_cubeI<N>(), INOUT results);
 			Transf<N> transformations_out;
-			for (const auto& e : results) transformations_out.push_back(std::make_pair(e, "?"));
+			for (const CubeI<N>& e : results) transformations_out.push_back({ e, "?" });
 			return transformations_out;
 		}
 
 		export template <int N, int M> static CubeSet<N> transitive_closure_x(
 			const std::array<CubeI<N>, M>& transformations_in)
 		{
-			CubeSet<N> results;
-			results.insert(init_cubeI<N>());
+			CubeSet<N> results{ init_cubeI<N>() };
 			transitive_closure_recursive_no_descriptions<N>(0, transformations_in, init_cubeI<N>(), INOUT results);
 			return results;
 		}

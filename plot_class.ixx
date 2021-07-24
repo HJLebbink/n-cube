@@ -1,5 +1,6 @@
 module;
 #include <set>
+#include <array>
 #include <string>
 #include <filesystem>
 #include <iostream>		// std::cout
@@ -415,7 +416,7 @@ namespace cube::plot {
 		using T2 = std::string;
 
 		const Transf<N> all_transformations = create_transformations<N, true>();
-		const Transf<N> atomic_transformations = create_transformations<N>(create_descriptions<N>());
+		const Transf<N> atomic_transformations = details::create_transformations_X<N>(create_descriptions<N>());
 
 		std::vector<Edge<T1, T2>> all_edges;
 		for (const std::pair<CubeI<N>, std::string>& transition1 : all_transformations)
@@ -427,7 +428,7 @@ namespace cube::plot {
 
 				std::string node2_name = "??";
 				for (const std::pair<CubeI<N>, std::string>& transition : all_transformations) {
-					if (std::get<0>(transition) == t2) {
+					if (array_tools::equal(std::get<0>(transition), t2)) {
 						node2_name = std::get<1>(transition);
 						break;
 					}

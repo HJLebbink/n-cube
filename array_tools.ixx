@@ -66,19 +66,20 @@ namespace {
 	) noexcept
 	{
 		return (... && (a[S] <= b[S]));
+//		return a < b;
 	};
 }
 
-namespace array_tools {
+export namespace array_tools {
 
-	export template <typename T, int N>
-	consteval std::array<T, N> create_index_array() noexcept
+	template <typename T, int N>
+	[[nodiscard]] consteval std::array<T, N> create_index_array() noexcept
 	{
 		return create_array<T, N>(std::make_index_sequence<N>());
 	}
 
-	export template <typename T, int N1, int N2>
-	constexpr std::array<T, N1 + N2> concat(
+	template <typename T, int N1, int N2>
+	[[nodiscard]] constexpr std::array<T, N1 + N2> concat(
 		const std::array<T, N1>& a,
 		const std::array<T, N2>& b) noexcept
 	{
@@ -87,8 +88,8 @@ namespace array_tools {
 		return concat_private(a, b, s1, s2);
 	}
 
-	export template <typename T, int N1, int N2, int N3>
-	constexpr std::array<T, N1 + N2 + N3> concat(
+	template <typename T, int N1, int N2, int N3>
+	[[nodiscard]] constexpr std::array<T, N1 + N2 + N3> concat(
 		const std::array<T, N1>& a,
 		const std::array<T, N2>& b,
 		const std::array<T, N3>& c) noexcept
@@ -99,8 +100,8 @@ namespace array_tools {
 		return concat_private(ab, c, s1, s2);
 	}
 
-	export template <typename T, int N1, int N2, int N3, int N4>
-	constexpr std::array<T, N1 + N2 + N3 + N4> concat(
+	template <typename T, int N1, int N2, int N3, int N4>
+	[[nodiscard]] constexpr std::array<T, N1 + N2 + N3 + N4> concat(
 		const std::array<T, N1>& a,
 		const std::array<T, N2>& b,
 		const std::array<T, N3>& c,
@@ -113,34 +114,35 @@ namespace array_tools {
 		return concat_private(ab, cd, s1, s2);
 	}
 
-	export template <typename T, int N>
-	constexpr std::array<T, N> add(
+	template <typename T, int N>
+	[[nodiscard]] constexpr std::array<T, N> add(
 		const std::array<T, N>& a,
 		const std::array<T, N>& b) noexcept
 	{
 		return add_private(a, b, std::make_index_sequence<N>());
 	}
 
-	export template <typename T, int N>
-	constexpr std::array<T, N> add(
+	template <typename T, int N>
+	[[nodiscard]] constexpr std::array<T, N> add(
 		const std::array<T, N>& a,
 		const T value) noexcept
 	{
 		return add_private(a, value, std::make_index_sequence<N>());
 	}
 
-	export template <typename T, int N>
-	constexpr bool equal(
+	template <typename T, int N>
+	[[nodiscard]] constexpr bool equal(
 		const std::array<T, N>& a,
 		const std::array<T, N>& b) noexcept
 	{
 		return equal_private(a, b, std::make_index_sequence<N>());
+
 	}
 
-	export template <typename T, int N>
-	constexpr bool lesseq(
-		const std::array<T, N>& a,
-		const std::array<T, N>& b) noexcept
+	template <int N>
+	[[nodiscard]] constexpr bool lesseq(
+		const std::array<int, N>& a,
+		const std::array<int, N>& b) noexcept
 	{
 		return lesseq_private(a, b, std::make_index_sequence<N>());
 	}
