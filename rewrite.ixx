@@ -1,15 +1,22 @@
-#pragma once
+module;
+#include <string>
+#include <vector>
 #include <tuple>
+#include <iostream>		// std::cout
 
-#include "BF.h"
-#include "reflect.h"
-#include "rotate.h"
-#include "Transformations.h"
 
+
+export module rewrite;
+import BF;
+import reflect;
+import rotate;
+import Transformations;
+import transform;
+import n_cube;
 
 namespace cube {
 
-	template <int N> std::array<std::string, N> create_descriptions()
+	export template <int N> std::array<std::string, N> create_descriptions()
 	{
 		if constexpr (N == 1) {
 			return { "x0" };
@@ -114,10 +121,10 @@ namespace cube {
 
 		namespace details {
 #pragma region greedy rewrite tranformations
-			static std::tuple<Transformations<0>, Transformations<1>, Transformations<2>, Transformations<3>, Transformations<4>, Transformations<5>, Transformations<6>> transformations_greedy_cache;
+			static std::tuple<Transf<0>, Transf<1>, Transf<2>, Transf<3>, Transf<4>, Transf<5>, Transf<6>> transformations_greedy_cache;
 			template <int N> struct create_transformations_for_greedy_rewrite_struct
 			{
-				static Transformations<N> value([[maybe_unused]] const std::array<std::string, N>& descr)
+				static Transf<N> value([[maybe_unused]] const std::array<std::string, N>& descr)
 				{
 					std::cout << "ERROR: create_transformations_for_greedy_rewrite: dim=" << N << " not implemented yet" << std::endl;
 					getchar();
@@ -128,7 +135,7 @@ namespace cube {
 			{
 				static constexpr int N = 2;
 
-				static Transformations<N> value(const std::array<std::string, N>& descr)
+				static Transf<N> value(const std::array<std::string, N>& descr)
 				{
 					if (std::get<N>(transformations_greedy_cache).empty())
 					{
@@ -136,9 +143,9 @@ namespace cube {
 						const std::string a = descr[1];
 
 						auto& transformations = std::get<N>(transformations_greedy_cache);
-						transformations.push_back(std::make_pair(cube::details::reflect<N>::value(0), "Ref[" + b + "]"));
-						transformations.push_back(std::make_pair(cube::details::reflect<N>::value(1), "Ref[" + a + "]"));
-						transformations.push_back(std::make_pair(cube::details::rotate<N>::value(0, 1), "Rot[" + b + "," + a + "]"));
+						transformations.push_back(std::make_pair(cube::details::reflect<N>::valueY<0>(), "Ref[" + b + "]"));
+						transformations.push_back(std::make_pair(cube::details::reflect<N>::valueY<1>(), "Ref[" + a + "]"));
+						transformations.push_back(std::make_pair(cube::details::rotate<N>::valueX<0, 1>(), "Rot[" + b + "," + a + "]"));
 					}
 					return std::get<N>(transformations_greedy_cache);
 				}
@@ -146,7 +153,7 @@ namespace cube {
 			template <> struct create_transformations_for_greedy_rewrite_struct<3>
 			{
 				static constexpr int N = 3;
-				static Transformations<N> value(const std::array<std::string, N>& descr)
+				static Transf<N> value(const std::array<std::string, N>& descr)
 				{
 					if (std::get<N>(transformations_greedy_cache).empty())
 					{
@@ -157,13 +164,13 @@ namespace cube {
 							const std::string b = descr[1];
 							const std::string c = descr[0];
 
-							constexpr auto ref_a = cube::details::reflect<N>::value(2);
-							constexpr auto ref_b = cube::details::reflect<N>::value(1);
-							constexpr auto ref_c = cube::details::reflect<N>::value(0);
+							constexpr auto ref_a = cube::details::reflect<N>::valueY<2>();
+							constexpr auto ref_b = cube::details::reflect<N>::valueY<1>();
+							constexpr auto ref_c = cube::details::reflect<N>::valueY<0>();
 
-							constexpr auto rot_cb = cube::details::rotate<N>::value(0, 1);
-							constexpr auto rot_ca = cube::details::rotate<N>::value(0, 2);
-							constexpr auto rot_ba = cube::details::rotate<N>::value(1, 2);
+							constexpr auto rot_cb = cube::details::rotate<N>::valueX<0, 1>();
+							constexpr auto rot_ca = cube::details::rotate<N>::valueX<0, 2>();
+							constexpr auto rot_ba = cube::details::rotate<N>::valueX<1, 2>();
 
 							auto& transformations = std::get<N>(transformations_greedy_cache);
 							transformations.push_back(std::make_pair(ref_a, "Ref[" + a + "]"));
@@ -217,7 +224,7 @@ namespace cube {
 			template <> struct create_transformations_for_greedy_rewrite_struct<4>
 			{
 				static constexpr int N = 4;
-				static Transformations<N> value(const std::array<std::string, N>& /*descr*/)
+				static Transf<N> value(const std::array<std::string, N>& /*descr*/)
 				{
 					if (std::get<N>(transformations_greedy_cache).empty())
 					{
@@ -237,7 +244,7 @@ namespace cube {
 			template <> struct create_transformations_for_greedy_rewrite_struct<5>
 			{
 				static constexpr int N = 5;
-				static Transformations<N> value(const std::array<std::string, N>& /*descr*/)
+				static Transf<N> value(const std::array<std::string, N>& /*descr*/)
 				{
 					if (std::get<N>(transformations_greedy_cache).empty())
 					{
@@ -257,7 +264,7 @@ namespace cube {
 #pragma endregion
 		}
 
-		template <int N, bool DESC = false> Transformations<N> create_transformations_for_greedy_rewrite()
+		template <int N, bool DESC = false> Transf<N> create_transformations_for_greedy_rewrite()
 		{
 			if constexpr (DESC)
 			{

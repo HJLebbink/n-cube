@@ -1,24 +1,30 @@
-#pragma once
+module;
 #include <string>
 #include <utility> // pair
 #include <bitset>
-#include "array_tools.h"
+#include <array>
+#include "CubeDef.h"
 
-namespace cube {
 
-	template<int DIM>
+export module CubeIndex;
+//import std.core;
+import array_tools;
+
+
+export namespace cube {
+
 	//using CubeI = std::array<unsigned char, (1 << DIM)>; // unsigned char takes 8 hours for save_all_npn_classes<5>
 	//using CubeI = std::array<char, (1 << DIM)>; // char takes 8 hours for save_all_npn_classes<5>
-	using CubeI = std::array<int, (1 << DIM)>; // char takes 9 hours for save_all_npn_classes<5>
+	//template <int DIM> using CubeI = std::array<int, (1 << DIM)>; // char takes 9 hours for save_all_npn_classes<5>
 
 	template <int N>
-	constexpr CubeI<N> init_cubeI() noexcept
+	consteval CubeI<N> init_cubeI() noexcept
 	{
 		constexpr int S = 1 << N;
 		return array_tools::create_index_array<CubeI<N>::value_type, S>();
 	}
 
-	template <int N> 
+	template <int N>
 	std::string to_string(const CubeI<N>& c)
 	{
 		std::string r = "";
@@ -61,8 +67,7 @@ namespace cube {
 		return r;
 	}
 
-
-	template <int N> 
+	template <int N>
 	std::string to_string(const std::pair<CubeI<N>, std::string>& c)
 	{
 		return to_string<N>(std::get<0>(c)) + " " + std::get<1>(c);

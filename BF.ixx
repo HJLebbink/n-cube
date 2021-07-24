@@ -1,25 +1,30 @@
-#pragma once
+module;
 #include <string>
 #include <bitset>
 #include <iostream>		// std::cout
 #include <sstream>
-#include "CubeI.h"
+#include <iomanip>
+#include "CubeDef.h"
+
+export module BF;
+//import std.core;
+import CubeIndex;
 
 
 namespace cube {
-	using BF = unsigned long long;
-	
-	template <int N> 
+	export using BF = unsigned long long;
+
+	export template <int N>
 	std::string to_string_bin(const BF bf)
 	{
 		return std::bitset<(1 << N)>(bf).to_string();
 	}
 
-	template <int N> 
+	export template <int N>
 	std::string to_string_bin(const CubeI<N>& cube)
 	{
 		std::string result = "";
-		for (int i = 0; i < cube.size(); ++i) 
+		for (int i = 0; i < cube.size(); ++i)
 		{
 			result += std::to_string(static_cast<int>(cube[i]));
 			if (i < (cube.size() - 1)) {
@@ -29,13 +34,13 @@ namespace cube {
 		return result;
 	}
 
-	template <int N> 
+	export template <int N>
 	std::string to_string_bin(const std::string& str)
 	{
 		return "\"" + str + "\"";
 	}
 
-	template <int N> 
+	export template <int N>
 	std::string to_string_hex(const BF bf)
 	{
 		constexpr int width = ((N <= 3) ? 2 : ((N == 4) ? 4 : ((N == 5) ? 8 : 16)));
@@ -46,7 +51,7 @@ namespace cube {
 
 	namespace details {
 		// count the number of bits set to one.
-		constexpr int count_bits(const BF v) noexcept
+		export inline constexpr int count_bits(const BF v) noexcept
 		{
 			int r = 0;
 			for (int i = 0; i < 64; ++i) if (((v >> i) & 1) == 1) r++;

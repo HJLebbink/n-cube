@@ -1,4 +1,4 @@
-#pragma once
+module;
 #include <string>
 #include <array>
 #include <set>
@@ -14,18 +14,22 @@
 #include <time.h>
 #include <filesystem>
 #include <bit>
+#include <map>
+#include "CubeDef.h"
 
-#include "CubeI.h"
-#include "bf_tools.h"
-#include "array_tools.h"
-#include "constants.h"
-#include "prime.h"
-#include "BF.h"
-#include "transform.h"
-#include "reflect.h"
-#include "rotate.h"
-#include "rewrite.h"
-#include "Transformations.h"
+
+export module n_cube;
+import CubeIndex;
+import bf_tools;
+import array_tools;
+import constants;
+import prime;
+import BF;
+import transform;
+import reflect;
+import rotate;
+//import rewrite;
+import Transformations;
 
 namespace cube
 {
@@ -33,14 +37,14 @@ namespace cube
 	using CubeMap = std::map<CubeI<DIM>, std::string>;
 
 
-	template <int N> 
+	template <int N>
 	void init_n_cube() {
 		// run all_transformations once to fill the transformation cache
 		const auto transformations_from_cache = get_transformations_from_cache<N, false>();
 	}
 
 
-	template <int N> constexpr BF complement(const BF bf) noexcept
+	export template <int N> constexpr BF complement(const BF bf) noexcept
 	{
 		if constexpr (N == 1) {
 			return ~bf & 0b11;
@@ -62,25 +66,33 @@ namespace cube
 		}
 		//return 0;
 	}
-	template <int N> constexpr BF complement_if_needed(const BF bf) noexcept
+	export template <int N> constexpr BF complement_if_needed(const BF bf) noexcept
 	{
-		constexpr int N2 = (1<<N) / 2;
+		constexpr int N2 = (1 << N) / 2;
 		return (details::count_bits(bf) <= N2) ? bf : complement<N>(bf);
 	}
 
 
-	#pragma region reflect
+#pragma region reflect
 	template <int N> constexpr CubeI<N> reflect(const int dim)
 	{
-		return details::reflect<N>::value(dim);
+		switch (dim) {
+		case 1: return details::reflect<N>::template valueY<1>();
+		case 2: return details::reflect<N>::template valueY<2>();
+		case 3: return details::reflect<N>::template valueY<3>();
+		case 4: return details::reflect<N>::template valueY<4>();
+		case 5: return details::reflect<N>::template valueY<5>();
+		case 6: return details::reflect<N>::template valueY<6>();
+		default: return CubeI<N>();
+		}
 	}
 	template <int N> constexpr BF reflect(const BF bf, const int dim)
 	{
 		return transform<N>(bf, reflect<N>(dim));
 	}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region rotate
+#pragma region rotate
 	template <int N> constexpr CubeI<N> rotate(const int dim1, const int dim2)
 	{
 		return details::rotate<N>::value(dim1, dim2);
@@ -89,9 +101,9 @@ namespace cube
 	{
 		return to_BF<N>(transform<N>(to_cube<N>(bf), rotate<N>(dim1, dim2)));
 	}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region class id
+#pragma region class id
 	namespace details
 	{
 		//for the set of all transformations find the transformation that yields the smallest bf, which is the bf class id.
@@ -144,64 +156,21 @@ namespace cube
 			}
 		}
 
-
 		bool overall_decreasing(const BF a, const BF b) noexcept { return b < a; }
 
-
-
-		//for a specific sequence of transformations, reduce the provided bf with in a greedy fashion with the tranformations.
-		template <int N, bool DESCR = false> std::tuple<BF, std::string> search_class_id_method1(const BF bf)
-		{
-			const auto transformations = cube::rewrite::create_transformations_for_greedy_rewrite<N, DESCR>();
-
-			std::string transform_string = "";
-			BF smallest_bf = bf;
-			if (details::count_bits(bf) > ((1 << N) / 2))
-			{
-				transform_string = "COMPLEMENT ";
-				smallest_bf = complement<N>(bf);
-			}
-
-			bool changed = true;
-			while (changed)
-			{
-				changed = false;
-				{
-					for (const auto& pair : transformations)
-					{
-						const BF bf_tmp = transform<N>(smallest_bf, std::get<0>(pair));
-						const BF bf_new = std::min(bf_tmp, complement<N>(bf_tmp));
-
-						//std::cout << "trying " << to_string<N>(pair) << "; bf_new=" << to_string_bin<N>(bf_new) << std::endl;
-						if (bf_new < smallest_bf)
-						{
-							smallest_bf = bf_new;
-
-							if (transform_string.length() > 0) transform_string += " + ";
-							transform_string += to_string<N>(pair);
-							changed = true;
-						}
-					}
-				}
-			}
-			return std::make_tuple(smallest_bf, transform_string);
-		}
 	}
 
 	template <int N> constexpr BF search_npn_class(const BF bf)
 	{
-		constexpr bool method1 = true;
-		return (method1)
-			? std::get<0>(details::search_class_id_method0<N, false>(bf))
-			: std::get<0>(details::search_class_id_method1<N, false>(bf));
+		return std::get<0>(details::search_class_id_method0<N, false>(bf));
 	}
 
-	#pragma endregion 
+#pragma endregion 
 
 	// Get the set of BFs that are in the equivalence class of the provided bf.
-	template <int N> std::set<BF> equiv_class(const BF bf)
+	export template <int N> std::set<BF> equiv_class(const BF bf)
 	{
-		const Transformations<N>& transformations = get_transformations_from_cache<N, false>();
+		const Transf<N>& transformations = get_transformations_from_cache<N, false>();
 
 		std::set<BF> result;
 		result.insert(bf);
@@ -227,7 +196,7 @@ namespace cube
 			constexpr long long max_bf = 1ll << (1 << N);
 			constexpr long long update_interval = 0x3FFFF;
 			constexpr int n_threads = 12;
-			
+
 			init_n_cube<N>();
 
 			const time_t start_time_sec = time(nullptr);
@@ -239,7 +208,7 @@ namespace cube
 			std::atomic<long long> global_counter = 0;
 			std::mutex global_results_mutex;
 
-			#pragma omp parallel for num_threads(12) default(shared)
+#pragma omp parallel for num_threads(12) default(shared)
 			for (long long bf = 0; bf < max_bf; ++bf)
 			{
 				const BF c = search_npn_class<N>(bf);
@@ -341,7 +310,7 @@ namespace cube
 		return { params, descr };
 	}
 
-	template <int N> std::set<BF> load_all_npn_classes(const std::string& filename) 
+	export template <int N> std::set<BF> load_all_npn_classes(const std::string& filename)
 	{
 		std::set<BF> results;
 		if (std::filesystem::exists(filename)) {
@@ -363,7 +332,7 @@ namespace cube
 		return results;
 	}
 
-	template <int N> std::set<BF> load_all_npn_classes() 
+	export template <int N> std::set<BF> load_all_npn_classes()
 	{
 		//const std::string path = "C://Users//909077//Documents//GitHub//n-cube//data//";
 		const std::string path = "C://Users//henk//Documents//Github//n-cube//data//";
@@ -388,7 +357,7 @@ namespace cube
 		//return std::set<BF>();
 	}
 
-	template <int N> void save_all_npn_classes(const std::string& filename)
+	export template <int N> void save_all_npn_classes(const std::string& filename)
 	{
 		const std::set<BF> all_npn_classes = generate_all_npn_classes<N>(); // this may take a while...
 		const unsigned long long n_npn_classes = all_npn_classes.size();
@@ -432,13 +401,13 @@ namespace cube
 		}
 	}
 
-	template <int N> std::vector<std::set<BF>> load_all_npn_classes_sorted_by_nbit() 
+	template <int N> std::vector<std::set<BF>> load_all_npn_classes_sorted_by_nbit()
 	{
 		std::vector<std::set<BF>> result;
 		for (int n_bit = 0; n_bit < (1 << N); ++n_bit) {
 			result.push_back(std::set<BF>());
 		}
-		for (const BF bf : load_all_npn_classes<N>()) 
+		for (const BF bf : load_all_npn_classes<N>())
 		{
 			const BF bf_complement = complement<N>(bf);
 			const int n_bits = std::popcount(bf);
@@ -451,8 +420,8 @@ namespace cube
 	template <int N> void print_all_class_ids_with_values(const std::string& filename)
 	{
 		int class_counter = 0;
-		std::cout << "All classes (with values) for N=" << N <<":" << std::endl;
-		
+		std::cout << "All classes (with values) for N=" << N << ":" << std::endl;
+
 		const std::set<BF> class_ids = load_all_npn_classes<N>(filename);
 
 		for (int c = 0; c <= N; ++c)
@@ -473,7 +442,7 @@ namespace cube
 					std::cout << std::endl;
 
 					constexpr bool show_npn_class_content = false;
-					if (show_npn_class_content) 
+					if (show_npn_class_content)
 					{
 						std::cout << "equivalent BF: ";
 						for (const BF equivalent_bf : set)

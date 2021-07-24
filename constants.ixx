@@ -1,9 +1,9 @@
-#pragma once
+module;
 
-#define INOUT
+export module constants;
 
 namespace cube {
-	constexpr unsigned long long cardinality_npn_class(int n) {
+	export inline constexpr unsigned long long cardinality_npn_class(int n) {
 		switch (n) {
 		case 1: return 2;
 		case 2: return 4;

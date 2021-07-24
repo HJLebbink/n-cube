@@ -1,7 +1,20 @@
-#pragma once
+module;
+#include <string>
 #include <array>
+#include <vector>
+#include <utility> //pair
+#include <iostream>		// std::cout
+#include "CubeDef.h"
 
-#include "n_cube.h"
+export module reachable;
+import CubeIndex;
+import n_cube;
+import BF;
+import reflect;
+import rotate;
+import transform;
+
+
 namespace cube {
 
 	namespace {
@@ -31,7 +44,7 @@ namespace cube {
 			return (... && reachable_private_X1<N>(from, to[S], transformations, std::make_index_sequence<N>()));
 		}
 	}
-	
+
 	template <int N>
 	bool constexpr reachable(const BF from, const BF to, const CubeI<N>& transformation)
 	{
@@ -45,7 +58,7 @@ namespace cube {
 	}
 
 	template <int N, int Q>
-	bool constexpr reachable(const BF from, const std::array<BF, Q>& to, const CubeI<N>& transformation) 
+	bool constexpr reachable(const BF from, const std::array<BF, Q>& to, const CubeI<N>& transformation)
 	{
 		return reachable_private_X2<N, Q>(from, to, transformation, std::make_index_sequence<Q>());
 	}
@@ -57,7 +70,7 @@ namespace cube {
 	}
 
 	template <int N>
-	static void print_rotation(const BF a, const BF b, const std::vector<std::pair<std::string, CubeI<N>>>& vec) 
+	static void print_rotation(const BF a, const BF b, const std::vector<std::pair<std::string, CubeI<N>>>& vec)
 	{
 		bool none = true;
 		for (const std::pair<std::string, CubeI<N>>& p : vec) {
@@ -67,7 +80,7 @@ namespace cube {
 			}
 		}
 		if (none) {
-			std::cout << to_string_bin<N>(a) << " -> " << to_string_bin<N>(b) << " not possible"  << std::endl;
+			std::cout << to_string_bin<N>(a) << " -> " << to_string_bin<N>(b) << " not possible" << std::endl;
 		}
 	}
 
@@ -75,7 +88,7 @@ namespace cube {
 	static void print_translations(
 		const std::array<BF, Q>& bfs,
 		const std::vector<std::pair<std::string, CubeI<N>>>& all_refs,
-		const std::vector<std::pair<std::string, CubeI<N>>>& all_rots) 
+		const std::vector<std::pair<std::string, CubeI<N>>>& all_rots)
 	{
 		std::cout << "===============" << std::endl;
 		for (int i = 1; i < bfs.size(); ++i) print_rotation<N>(bfs[0], bfs[i], all_rots);
@@ -90,12 +103,12 @@ namespace cube {
 
 	void test_reachability_bf2() {
 		constexpr int N = 2;
-		constexpr CubeI<N> ref0 = details::reflect<N>::value(0);
-		constexpr CubeI<N> ref1 = details::reflect<N>::value(1);
+		constexpr CubeI<N> ref0 = details::reflect<N>::valueY<0>();
+		constexpr CubeI<N> ref1 = details::reflect<N>::valueY<1>();
 		constexpr CubeI<N> ref01 = o<N>(ref0, ref1);
-		
-		constexpr CubeI<N> rot01 = details::rotate<N>::value(0, 1);
-		constexpr CubeI<N> rot10 = details::rotate<N>::value(1, 0);
+
+		constexpr CubeI<N> rot01 = details::rotate<N>::valueX<0, 1>();
+		constexpr CubeI<N> rot10 = details::rotate<N>::valueX<1, 0>();
 		constexpr auto empty = std::array<CubeI<N>, 0>{};
 
 		constexpr CubeI<N> id = init_cubeI<N>();
@@ -142,54 +155,54 @@ namespace cube {
 		//equivalent BF: 0110 1001
 	}
 
-	void test_reachability_bf3() 
+	void test_reachability_bf3()
 	{
 		constexpr int N = 3;
 		constexpr CubeI<N> id = init_cubeI<N>();
-		
-		constexpr CubeI<N> ref0 = details::reflect<N>::value(0);
-		constexpr CubeI<N> ref1 = details::reflect<N>::value(1);
-		constexpr CubeI<N> ref2 = details::reflect<N>::value(2);
+
+		constexpr CubeI<N> ref0 = details::reflect<N>::valueY<0>();
+		constexpr CubeI<N> ref1 = details::reflect<N>::valueY<1>();
+		constexpr CubeI<N> ref2 = details::reflect<N>::valueY<2>();
 
 		constexpr CubeI<N> ref01 = o<N>(ref0, ref1);
 		constexpr CubeI<N> ref02 = o<N>(ref0, ref2);
 		constexpr CubeI<N> ref12 = o<N>(ref1, ref2);
 		constexpr CubeI<N> ref012 = o<N>(ref0, o<N>(ref1, ref2));
 
-/*
-0_1_2_3_4_5_6_7
-1_3_0_2_5_7_4_6 .Rot[0,1]
-1_5_3_7_0_4_2_6 .Rot[0,2]
-2_0_3_1_6_4_7_5 .Rot[1,0]
-2_3_6_7_0_1_4_5 .Rot[1,2]
-4_0_6_2_5_1_7_3 .Rot[2,0]
-4_5_0_1_6_7_2_3 .Rot[2,1]
+		/*
+		0_1_2_3_4_5_6_7
+		1_3_0_2_5_7_4_6 .Rot[0,1]
+		1_5_3_7_0_4_2_6 .Rot[0,2]
+		2_0_3_1_6_4_7_5 .Rot[1,0]
+		2_3_6_7_0_1_4_5 .Rot[1,2]
+		4_0_6_2_5_1_7_3 .Rot[2,0]
+		4_5_0_1_6_7_2_3 .Rot[2,1]
 
-3_7_2_6_1_5_0_4 .Rot[0,1].Rot[0,2]
-0_2_4_6_1_3_5_7 .Rot[0,1].Rot[1,2]
-5_1_4_0_7_3_6_2 .Rot[0,1].Rot[2,0]
-5_7_1_3_4_6_0_2 .Rot[0,1].Rot[2,1]
-3_1_7_5_2_0_6_4 .Rot[0,2].Rot[1,0]
-0_4_1_5_2_6_3_7 .Rot[0,2].Rot[2,1]
-6_4_2_0_7_5_3_1 .Rot[1,0].Rot[2,1]
-6_2_7_3_4_0_5_1 .Rot[1,2].Rot[1,0]
+		3_7_2_6_1_5_0_4 .Rot[0,1].Rot[0,2]
+		0_2_4_6_1_3_5_7 .Rot[0,1].Rot[1,2]
+		5_1_4_0_7_3_6_2 .Rot[0,1].Rot[2,0]
+		5_7_1_3_4_6_0_2 .Rot[0,1].Rot[2,1]
+		3_1_7_5_2_0_6_4 .Rot[0,2].Rot[1,0]
+		0_4_1_5_2_6_3_7 .Rot[0,2].Rot[2,1]
+		6_4_2_0_7_5_3_1 .Rot[1,0].Rot[2,1]
+		6_2_7_3_4_0_5_1 .Rot[1,2].Rot[1,0]
 
-1_0_5_4_3_2_7_6 .Rot[0,1].Rot[1,2].Rot[2,0]
-2_6_0_4_3_7_1_5 .Rot[0,1].Rot[0,2].Rot[1,2]
-4_6_5_7_0_2_1_3 .Rot[1,2].Rot[1,0].Rot[2,0]
-7_3_5_1_6_2_4_0 .Rot[0,1].Rot[2,0].Rot[2,1]
+		1_0_5_4_3_2_7_6 .Rot[0,1].Rot[1,2].Rot[2,0]
+		2_6_0_4_3_7_1_5 .Rot[0,1].Rot[0,2].Rot[1,2]
+		4_6_5_7_0_2_1_3 .Rot[1,2].Rot[1,0].Rot[2,0]
+		7_3_5_1_6_2_4_0 .Rot[0,1].Rot[2,0].Rot[2,1]
 
-3_2_1_0_7_6_5_4 .Rot[0,1].Rot[0,2].Rot[1,2].Rot[2,0]
-5_4_7_6_1_0_3_2 .Rot[0,1].Rot[1,2].Rot[1,0].Rot[2,0]
-7_6_3_2_5_4_1_0 .Rot[0,1].Rot[0,2].Rot[1,2].Rot[2,0].Rot[2,1]
-*/
-		
-		constexpr CubeI<N> rot01 = details::rotate<N>::value(0, 1);
-		constexpr CubeI<N> rot02 = details::rotate<N>::value(0, 2);
-		constexpr CubeI<N> rot12 = details::rotate<N>::value(1, 2);
-		constexpr CubeI<N> rot10 = details::rotate<N>::value(1, 0);
-		constexpr CubeI<N> rot20 = details::rotate<N>::value(2, 0);
-		constexpr CubeI<N> rot21 = details::rotate<N>::value(2, 1);
+		3_2_1_0_7_6_5_4 .Rot[0,1].Rot[0,2].Rot[1,2].Rot[2,0]
+		5_4_7_6_1_0_3_2 .Rot[0,1].Rot[1,2].Rot[1,0].Rot[2,0]
+		7_6_3_2_5_4_1_0 .Rot[0,1].Rot[0,2].Rot[1,2].Rot[2,0].Rot[2,1]
+		*/
+
+		constexpr CubeI<N> rot01 = details::rotate<N>::valueX<0, 1>();
+		constexpr CubeI<N> rot02 = details::rotate<N>::valueX<0, 2>();
+		constexpr CubeI<N> rot12 = details::rotate<N>::valueX<1, 2>();
+		constexpr CubeI<N> rot10 = details::rotate<N>::valueX<1, 0>();
+		constexpr CubeI<N> rot20 = details::rotate<N>::valueX<2, 0>();
+		constexpr CubeI<N> rot21 = details::rotate<N>::valueX<2, 1>();
 
 		constexpr CubeI<N> rot01_02 = o<N>(rot01, rot02);
 		constexpr CubeI<N> rot01_12 = o<N>(rot01, rot12);
@@ -247,7 +260,7 @@ namespace cube {
 			all_rots.push_back(std::make_pair("rot01_12_10_20", rot01_12_10_20));
 			all_rots.push_back(std::make_pair("rot01_02_12_20_21", rot01_02_12_20_21));
 		}
-		
+
 		constexpr auto empty = std::array<CubeI<N>, 0>{};
 
 		//npn class #0; cardinality=0: 00=00000000; class size=2=(2^1)
@@ -266,7 +279,7 @@ namespace cube {
 		//===========================
 		//npn class #2; cardinality=2: 03=00000011; class size=24=(2^3 + 3^1)
 		//equivalent BF: 00000011 00000101 00001010 00001100 00010001 00100010 00110000 00111111 01000100 01010000 01011111 01110111 10001000 10100000 10101111 10111011 11000000 11001111 11011101 11101110 11110011 11110101 11111010 11111100
-		constexpr auto c2 = std::array<BF, 12>{0b0000'0011, 0b0000'0101, 0b0000'1010, 0b0000'1100, 0b0001'0001, 0b0010'0010, 0b0011'0000, 0b0100'0100, 0b0101'0000, 0b1000'1000, 0b1010'0000, 0b1100'0000};		
+		constexpr auto c2 = std::array<BF, 12>{0b0000'0011, 0b0000'0101, 0b0000'1010, 0b0000'1100, 0b0001'0001, 0b0010'0010, 0b0011'0000, 0b0100'0100, 0b0101'0000, 0b1000'1000, 0b1010'0000, 0b1100'0000};
 		static_assert(reachable<N>(c2[0], c2[1], rot01));
 		static_assert(reachable<N>(c2[0], c2[2], rot10));
 		static_assert(reachable<N>(c2[0], c2[3], rot21)); static_assert(reachable<N>(c2[0], c2[3], ref1));
@@ -359,7 +372,7 @@ namespace cube {
 		static_assert(reachable<N>(c9[0], c9[3], ref2));
 		//rot || ref
 		if (false) print_translations<N>(c9, all_refs, all_rots);
-		
+
 		//===========================
 		//npn class #10; cardinality=3: 19=00011001; class size=48=(2^4 + 3^1)
 		//equivalent BF: 00011001 00011010 00011100 00100101 00100110 00101100 00110100 00111000 00111101 00111110 01000011 01000110 01001010 01010010 01011000 01011011 01011110 01100010 01100100 01100111 01101110 01110110 01111010 01111100 10000011 10000101 10001001 10010001 10011000 10011011 10011101 10100001 10100100 10100111 10101101 10110101 10111001 10111100 11000001 11000010 11000111 11001011 11010011 11011001 11011010 11100011 11100101 11100110
@@ -384,7 +397,7 @@ namespace cube {
 		static_assert(reachable<N>(c11[0], c11[7], ref1));
 		//static_assert(reachable<N>(c11[0], c11[8], ));// needs closure of ref and rot!!
 		static_assert(reachable<N>(c11[0], c11[9], rot01_21));
-		static_assert(reachable<N>(c11[0], c11[10], rot12)); 
+		static_assert(reachable<N>(c11[0], c11[10], rot12));
 		static_assert(reachable<N>(c11[0], c11[10], ref02));
 		//static_assert(reachable<N>(c11[0], c11[11], ));// needs closure of ref and rot!!
 

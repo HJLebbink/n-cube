@@ -32,55 +32,58 @@
     <Text Include="notes.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cube\array_tools.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cube\bf_tools.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cube\constants.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cube\n_cube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cube\prime.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cube\reachable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cube\timing.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cube\CubeI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cube\rewrite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cube\BF.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cube\transform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cube\reflect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cube\rotate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cube\Transformations.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cube\plot_class.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="reflect.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeIndex.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bf_tools.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="array_tools.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="transform.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BF.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rotate.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="n_cube.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="timing.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Transformations.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="constants.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="prime.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="reachable.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="plot_class.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rewrite.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CubeDef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

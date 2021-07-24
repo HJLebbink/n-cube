@@ -1,13 +1,14 @@
 #include <chrono>
 #include <iostream> // for cout
 
-#include "cube/timing.h"
-#include "cube/n_cube.h"
-#include "cube/array_tools.h"
-
-#include "cube/rewrite.h"
-#include "cube/plot_class.h"
-#include "cube/reachable.h"
+import BF;
+import timing;
+import n_cube;
+import array_tools;
+import rewrite;
+import plot_class;
+import reachable;
+import Transformations;
 
 
 int main(int, char** /*argv[]*/)
@@ -31,7 +32,9 @@ int main(int, char** /*argv[]*/)
 	//cube::test_reachability_bf2();
 	//cube::test_reachability_bf3();
 
-	cube::test_create_transformations();
+	if (false) {
+		cube::test_create_transformations();
+	}
 
 	if (false) {
 		constexpr int N = 3;
@@ -59,7 +62,7 @@ int main(int, char** /*argv[]*/)
 	//cube::save_all_npn_classes<1>(".\\data\\npn1-b.txt");
 	//cube::save_all_npn_classes<2>(".\\data\\npn2-b.txt");
 	//cube::save_all_npn_classes<3>(".\\data\\npn3-b.txt");
-	//cube::save_all_npn_classes<4>(".\\data\\npn4-b.txt"); //222 classes; 65536 = 2^16 bfs; 95 ms
+	cube::save_all_npn_classes<4>(".\\data\\npn4-b.txt"); //222 classes; 65536 = 2^16 bfs; 95 ms
 	//cube::save_all_npn_classes<5>(".\\data\\npn5-b.txt"); // takes ? ms: ? classes; 2^32 bfs
 
 	//cube::rewrite::test_greedy_rewrite_algorithm<3>();
