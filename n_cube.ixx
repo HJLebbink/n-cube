@@ -19,15 +19,15 @@ module;
 
 
 export module n_cube;
-import CubeIndex;
+import cube.index;
 import bf_tools;
 import array_tools;
 import constants;
 import prime;
 import BF;
 import transform;
-import reflect;
-import rotate;
+import cube.reflect;
+import cube.rotate;
 //import rewrite;
 import Transformations;
 
@@ -393,7 +393,7 @@ namespace cube
 		}
 	}
 
-	template <int N> [[nodiscard]] 
+	export template <int N> [[nodiscard]] 
 	std::vector<std::set<BF>> load_all_npn_classes_sorted_by_nbit()
 	{
 		std::vector<std::set<BF>> result;

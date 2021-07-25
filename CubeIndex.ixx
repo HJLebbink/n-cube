@@ -6,7 +6,7 @@ module;
 #include "CubeDef.h"
 
 
-export module CubeIndex;
+export module cube.index;
 //import std.core;
 import array_tools;
 

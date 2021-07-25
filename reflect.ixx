@@ -3,9 +3,9 @@ module;
 #include "CubeDef.h"
 
 
-export module reflect;
+export module cube.reflect;
 //import std.core;
-import CubeIndex;
+import cube.index;
 import array_tools;
 import transform;
 

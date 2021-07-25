@@ -7,11 +7,11 @@ module;
 #include "CubeDef.h"
 
 export module reachable;
-import CubeIndex;
+import cube.index;
 import n_cube;
 import BF;
-import reflect;
-import rotate;
+import cube.reflect;
+import cube.rotate;
 import transform;
 
 
@@ -45,26 +45,26 @@ namespace cube {
 		}
 	}
 
-	template <int N>
-	bool constexpr reachable(const BF from, const BF to, const CubeI<N>& transformation)
+	template <int N> constexpr [[nodiscard]]
+	bool  reachable(const BF from, const BF to, const CubeI<N>& transformation)
 	{
 		return reachable_private_A<N>(from, to, transformation);
 	}
 
-	template <int N, int M>
-	bool constexpr reachable(const BF from, const BF to, const std::array<CubeI<N>, M>& transformations)
+	template <int N, int M> constexpr [[nodiscard]]
+	bool reachable(const BF from, const BF to, const std::array<CubeI<N>, M>& transformations)
 	{
 		return reachable_private_X1<N, M>(from, to, transformations, std::make_index_sequence<N>());
 	}
 
-	template <int N, int Q>
-	bool constexpr reachable(const BF from, const std::array<BF, Q>& to, const CubeI<N>& transformation)
+	template <int N, int Q> constexpr [[nodiscard]]
+	bool reachable(const BF from, const std::array<BF, Q>& to, const CubeI<N>& transformation)
 	{
 		return reachable_private_X2<N, Q>(from, to, transformation, std::make_index_sequence<Q>());
 	}
 
-	template <int N, int Q, int M>
-	bool constexpr reachable(const BF from, const std::array<BF, Q>& to, const std::array<CubeI<N>, M>& transformations)
+	template <int N, int Q, int M> constexpr [[nodiscard]]
+	bool reachable(const BF from, const std::array<BF, Q>& to, const std::array<CubeI<N>, M>& transformations)
 	{
 		return reachable_private_Y<N, M, Q>(from, to, transformations, std::make_index_sequence<N>());
 	}
@@ -85,7 +85,7 @@ namespace cube {
 	}
 
 	template <int N, int Q>
-	static void print_translations(
+	void print_translations(
 		const std::array<BF, Q>& bfs,
 		const std::vector<std::pair<std::string, CubeI<N>>>& all_refs,
 		const std::vector<std::pair<std::string, CubeI<N>>>& all_rots)
@@ -97,7 +97,8 @@ namespace cube {
 	}
 
 
-	template <int N> constexpr CubeI<N> o(const CubeI<N>& a, const CubeI<N>& b) {
+	template <int N> constexpr [[nodiscard]]
+	CubeI<N> o(const CubeI<N>& a, const CubeI<N>& b) {
 		return function_composition<N>(a, b);
 	}
 

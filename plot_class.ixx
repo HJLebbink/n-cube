@@ -14,8 +14,8 @@ module;
 export module plot_class;
 import BF;
 import Transformations;
-import reflect;
-import rotate;
+import cube.reflect;
+import cube.rotate;
 import transform;
 import array_tools;
 

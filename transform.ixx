@@ -3,7 +3,7 @@ module;
 #include "CubeDef.h"
 
 export module transform;
-import CubeIndex;
+import cube.index;
 import array_tools;
 import BF;
 

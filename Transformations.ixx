@@ -14,10 +14,11 @@ module;
 #include "CubeDef.h"
 
 export module Transformations;
-import reflect;
-import rotate;
+
+import cube.reflect;
+import cube.rotate;
 import transform;
-import CubeIndex;
+import cube.index;
 import array_tools;
 
 

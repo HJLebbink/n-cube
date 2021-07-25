@@ -4,8 +4,8 @@ module;
 #include <iostream>
 #include "CubeDef.h"
 
-export module rotate;
-import CubeIndex;
+export module cube.rotate;
+import cube.index;
 import array_tools;
 import transform;
 

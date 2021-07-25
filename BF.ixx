@@ -8,7 +8,7 @@ module;
 
 export module BF;
 //import std.core;
-import CubeIndex;
+import cube.index;
 
 
 export namespace cube {

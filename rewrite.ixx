@@ -8,8 +8,8 @@ module;
 
 export module rewrite;
 import BF;
-import reflect;
-import rotate;
+import cube.reflect;
+import cube.rotate;
 import Transformations;
 import transform;
 import n_cube;
