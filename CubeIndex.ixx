@@ -25,7 +25,7 @@ export namespace cube {
 	}
 
 	template <int N>
-	std::string to_string(const CubeI<N>& c)
+	[[nodiscard]] std::string to_string(const CubeI<N>& c)
 	{
 		std::string r = "";
 
@@ -68,7 +68,7 @@ export namespace cube {
 	}
 
 	template <int N>
-	std::string to_string(const std::pair<CubeI<N>, std::string>& c)
+	[[nodiscard]] std::string to_string(const std::pair<CubeI<N>, std::string>& c)
 	{
 		return to_string<N>(std::get<0>(c)) + " " + std::get<1>(c);
 	}

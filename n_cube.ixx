@@ -33,9 +33,15 @@ import Transformations;
 
 namespace cube
 {
-	template<int DIM>
-	using CubeMap = std::map<CubeI<DIM>, std::string>;
+	template <int N>
+	struct Cmp {
+		[[nodiscard]] constexpr bool operator()(const CubeI<N>& left, const CubeI<N>& right) const {
+			return array_tools::lesseq<1 << N>(left, right);
+		}
+	};
 
+	template <int N>
+	using CubeMap = std::map<CubeI<N>, std::string, Cmp<N>>;
 
 	template <int N>
 	void init_n_cube() {
@@ -383,14 +389,14 @@ namespace cube
 		}
 	}
 
-	template <int N, bool DESCR> void print_all_transformations()
+	export template <int N, bool DESCR> void print_all_transformations()
 	{
 		std::cout << "Transformations obtained by transitive closure N=" << N << ":" << std::endl;
-		const Transformations<N>& transformations_from_cache = get_transformations_from_cache<N, DESCR>();
+		const Transf<N>& transformations_from_cache = get_transformations_from_cache<N, DESCR>();
 		std::cout << "number of transformations: " << transformations_from_cache.size() << std::endl;
 
 		// create a map such that the transformations are sorted
-		std::map<CubeI<N>, std::string> trans2;
+		CubeMap<N> trans2;
 		for (const auto& pair : transformations_from_cache)
 		{
 			trans2.insert(pair);

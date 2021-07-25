@@ -8,6 +8,7 @@ module;
 #include <set>
 #include <unordered_map>
 #include <utility> // pair
+#include <compare>
 #include "CubeDef.h"
 
 export module plot_class;
@@ -38,6 +39,27 @@ namespace cube::plot {
 			Edge(T1 from, T1 to, const std::set<T2>& transitions, bool bidirectional)
 				: from(from), to(to), transitions(transitions), bidirectional(bidirectional)
 			{}
+
+			//friend [[nodiscard]] auto operator==(const Edge& a, const Edge& b) noexcept {
+			//	return (a.from == b.from) && (a.to == b.to);
+			//}
+
+			[[nodiscard]] bool equal_transitions(const Edge& other) const noexcept {
+
+				const int s1 = static_cast<int>(this->transitions.size());
+				const int s2 = static_cast<int>(other.transitions.size());
+
+				if (s1 == s2) {
+					for (const auto& e : this->transitions) {
+						if (!other.transitions.contains(e)) {
+							return false;
+						}
+					}
+				}
+				return true;
+			}
+
+
 		};
 
 		// return true when a is a subset of b
@@ -75,7 +97,7 @@ namespace cube::plot {
 				bool found = false;
 				for (Edge<T1, T2>& e2 : results)
 				{
-					if ((e2.from == e.to) && (e2.to == e.from) && (e2.transitions == e.transitions))
+					if ((e2.from == e.to) && (e2.to == e.from) && e.equal_transitions(e2))
 					{	// found an existing edge that is pointing the other way around
 						e2.bidirectional = true;
 						found = true;
@@ -309,7 +331,7 @@ namespace cube::plot {
 			static_assert(transform<N>(c3, r20) == 0b1001'1001); // negation of new 2
 			static_assert(transform<N>(c3, r21) == 0b1100'0011); // equal to negation
 
-			constexpr BF x = transform<N>(c3, r20);
+			[[maybe_unused]] constexpr BF x = transform<N>(c3, r20);
 
 
 		}

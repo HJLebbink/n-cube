@@ -30,7 +30,7 @@ namespace cube {
 
 		template <int M, int J = 0> constexpr CycleIType find_next_in_cycle(const std::array<Cycle, M>& cycles, const int i) noexcept
 		{
-			if constexpr (J >= M) {
+			if constexpr (J >= M) { // end recursion
 				return static_cast<CycleIType>(-1);
 			} else {
 				const Cycle& c = cycles[J];
@@ -38,22 +38,8 @@ namespace cube {
 				if (c[1] == i) return c[2];
 				if (c[2] == i) return c[3];
 				if (c[3] == i) return c[0];
-				return find_next_in_cycle<M, J + 1>(cycles, i);
+				return find_next_in_cycle<M, J + 1>(cycles, i); // call recursively
 			}
-
-
-
-			//for (int j = 0; j < M; ++j)
-			//{
-			//	const Cycle& c = cycles[j];
-			//	if (c[0] == i) return c[1];
-			//	if (c[1] == i) return c[2];
-			//	if (c[2] == i) return c[3];
-			//	if (c[3] == i) return c[0];
-			//}
-			//return static_cast<CycleIType>(-1);
-
-			return static_cast<CycleIType>(-1);
 		}
 
 		export template <int N> struct rotate

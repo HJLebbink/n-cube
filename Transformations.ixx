@@ -335,7 +335,7 @@ namespace cube {
 	{
 		template <int N>
 		struct Cmp {
-			[[nodiscard]] constexpr bool operator()(const CubeI<N>& left, const CubeI<N>& right) const {
+			[[nodiscard]] bool operator()(const CubeI<N>& left, const CubeI<N>& right) const {
 				return array_tools::lesseq<1<<N>(left, right);
 			}
 		};
@@ -373,6 +373,8 @@ namespace cube {
 			for (int i = start_index; i < s; ++i)
 			{
 				const CubeI<N> cube_new = function_composition<N>(cube, std::get<0>(transformations[i]));
+				std::cout << "old cube: " << to_string<N>(cube) << "; new cube: " << to_string<N>(cube_new) << std::endl;
+					
 				const std::string descr_new = (descr.empty()) ? std::get<1>(transformations[i]) : (descr + "." + std::get<1>(transformations[i]));
 
 				if (results.contains(cube_new))

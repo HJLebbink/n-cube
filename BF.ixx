@@ -11,17 +11,17 @@ export module BF;
 import CubeIndex;
 
 
-namespace cube {
-	export using BF = unsigned long long;
+export namespace cube {
+	using BF = unsigned long long;
 
-	export template <int N>
-	std::string to_string_bin(const BF bf)
+	template <int N>
+	[[nodiscard]] std::string to_string_bin(const BF bf)
 	{
 		return std::bitset<(1 << N)>(bf).to_string();
 	}
 
-	export template <int N>
-	std::string to_string_bin(const CubeI<N>& cube)
+	template <int N>
+	[[nodiscard]] std::string to_string_bin(const CubeI<N>& cube)
 	{
 		std::string result = "";
 		for (int i = 0; i < cube.size(); ++i)
@@ -34,14 +34,14 @@ namespace cube {
 		return result;
 	}
 
-	export template <int N>
-	std::string to_string_bin(const std::string& str)
+	template <int N>
+	[[nodiscard]] std::string to_string_bin(const std::string& str)
 	{
 		return "\"" + str + "\"";
 	}
 
-	export template <int N>
-	std::string to_string_hex(const BF bf)
+	template <int N>
+	[[nodiscard]] std::string to_string_hex(const BF bf)
 	{
 		constexpr int width = ((N <= 3) ? 2 : ((N == 4) ? 4 : ((N == 5) ? 8 : 16)));
 		std::stringstream stream;

@@ -58,15 +58,51 @@ namespace {
 		return (... && (a[S] == b[S]));
 	};
 
-	template<typename T, int N, int ... S>
-	constexpr bool lesseq_private(
+	template<typename T, int N, int P = 0>
+	constexpr int lesseq_private(
 		const std::array<T, N>& a,
-		const std::array<T, N>& b,
-		std::index_sequence<S...>
+		const std::array<T, N>& b
 	) noexcept
 	{
-		return (... && (a[S] <= b[S]));
-//		return a < b;
+		if constexpr (P == N - 1) {
+			return (a[P] < b[P]) ? 1 : ((a[P] == b[P]) ? 0 : -1);
+		}
+		else {
+			return (a[P] < b[P]) ? 1 : lesseq_private<T, N, P + 1>(a, b);
+		}
+	};
+
+
+	template<typename T1, typename T2, int N, int P = 0>
+	constexpr void cast_to(
+		const std::array<T1, N>& a,
+		std::array<T2, N>& b
+	) noexcept
+	{
+		if constexpr (P == N - 1) {
+			b[P] = static_cast<T2>(a[P]);
+		}
+		else {
+			b[P] = static_cast<T2>(a[P]);
+			cast_to<T1, T2, N, P + 1>(a, b);
+		}
+	};
+
+	template<typename T, int N>
+	bool lesseq_private_slow(
+		const std::array<T, N>& a,
+		const std::array<T, N>& b
+	) noexcept
+	{
+		std::array<char, N> a2;
+		cast_to<T, char>(a, a2);
+
+		std::array<char, N> b2;
+		cast_to<T, char>(b, b2);
+
+		const std::string_view sa(a2.data(), sizeof a2);
+		const std::string_view sb(b2.data(), sizeof b2);
+		return sa < sb;
 	};
 }
 
@@ -140,18 +176,23 @@ export namespace array_tools {
 	}
 
 	template <int N>
-	[[nodiscard]] constexpr bool lesseq(
+	[[nodiscard]] bool lesseq(
 		const std::array<int, N>& a,
 		const std::array<int, N>& b) noexcept
 	{
-		return lesseq_private(a, b, std::make_index_sequence<N>());
+		return lesseq_private_slow(a, b);
 	}
 
-	constexpr void test()
+	 void test()
 	{
 		constexpr auto a = create_index_array<int, 10>();
 		constexpr auto b = create_index_array<int, 10>();
 		static_assert(equal(a, b));
+
+
+		constexpr auto x1 = std::array<int, 4>{1, 1, 2, 3};
+		constexpr auto x2 = std::array<int, 4>{0, 2, 3, 0};
+		[[maybe_unused]] const auto r = lesseq(x1, x2);
 
 		constexpr auto c = add(a, 2);
 		//constexpr auto d = add(c, 2);
