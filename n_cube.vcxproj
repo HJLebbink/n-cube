@@ -45,6 +45,7 @@
     <ProjectGuid>{5EDB122A-4DD6-48D3-8270-76F3FF6E9C0E}</ProjectGuid>
     <RootNamespace>ncube</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>n_cube</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
