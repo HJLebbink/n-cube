@@ -10,14 +10,14 @@ import array_tools;
 import transform;
 
 
-namespace cube::details {
+namespace cube {
 
 	//forward
-	export template <int N, int D>
-	[[nodiscard]] consteval CubeI<N> reflect();
+	export template <int N, int D> consteval [[nodiscard]]
+	CubeI<N> reflect();
 
-	template <int N, int D> consteval
-	[[nodiscard]] CubeI<N> lift_reflect() noexcept
+	template <int N, int D> consteval [[nodiscard]]
+	CubeI<N> lift_reflect() noexcept
 	{
 		static_assert(D < N, "");
 		using T = typename CubeI<N>::value_type;
@@ -26,8 +26,8 @@ namespace cube::details {
 		return array_tools::concat<T>(reflect_embedded_cube, array_tools::add(reflect_embedded_cube, static_cast<T>(1 << N2)));
 	}
 	
-	export template <int N, int D> consteval
-	[[nodiscard]] CubeI<N> reflect() {
+	export template <int N, int D> consteval [[nodiscard]]
+	CubeI<N> reflect() {
 		using T = CubeI<N>::value_type;
 
 		if constexpr (N == 1) {
@@ -120,6 +120,20 @@ namespace cube::details {
 		}
 	}
 	
+	export template <int N> constexpr [[nodiscard]]
+	CubeI<N> reflect(const int dim)
+	{
+		switch (dim) {
+		case 1: return reflect<N, 1>();
+		case 2: return reflect<N, 2>();
+		case 3: return reflect<N, 3>();
+		case 4: return reflect<N, 4>();
+		case 5: return reflect<N, 5>();
+		case 6: return reflect<N, 6>();
+		default: return CubeI<N>();
+		}
+	}
+
 	consteval void test_reflect()
 	{
 		{

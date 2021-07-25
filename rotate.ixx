@@ -10,12 +10,13 @@ import array_tools;
 import transform;
 
 
-namespace cube::details {
+namespace cube {
 
 	using CycleIType = CubeI<1>::value_type;// does not matter which N=1 to use to get the value type of the CubeI
 	using Cycle = std::array<CycleIType, 4>;
 
-	constexpr Cycle create_cycle(const int d1, const int d2) noexcept
+	constexpr [[nodiscard]]
+	Cycle create_cycle(const int d1, const int d2) noexcept
 	{
 		return Cycle{
 			static_cast<CycleIType>((0 << d1) | (0 << d2)),
@@ -24,7 +25,8 @@ namespace cube::details {
 			static_cast<CycleIType>((0 << d1) | (1 << d2)) };
 	}
 
-	template <int M, int J = 0> constexpr CycleIType find_next_in_cycle(const std::array<Cycle, M>& cycles, const int i) noexcept
+	template <int M, int J = 0> constexpr
+	CycleIType find_next_in_cycle(const std::array<Cycle, M>& cycles, const int i) noexcept
 	{
 		if constexpr (J >= M) { // end recursion
 			return static_cast<CycleIType>(-1);
@@ -38,8 +40,8 @@ namespace cube::details {
 		}
 	}
 
-	template <int N> constexpr
-	[[nodiscard]] std::array<int, (N - 2)> fixed_dimensions(const int d1, const int d2) noexcept {
+	template <int N> constexpr [[nodiscard]]
+	std::array<int, (N - 2)> fixed_dimensions(const int d1, const int d2) noexcept {
 		if constexpr (N == 3) {
 			const int d1a = std::min(d1, d2);
 			const int d2a = std::max(d1, d2);
@@ -105,11 +107,10 @@ namespace cube::details {
 		}
 	}
 
-	export template <int N> constexpr
-	[[nodiscard]] CubeI<N> rotate(int D1, int D2) {
-
+	export template <int N> constexpr [[nodiscard]]
+	CubeI<N> rotate(int d1, int d2) {
 		if constexpr (N == 2) {
-			const Cycle cycle = create_cycle(D1, D2);
+			const Cycle cycle = create_cycle(d1, d2);
 			const auto cycles = std::array<Cycle, 1> {cycle};
 			const auto x1 = find_next_in_cycle(cycles, 0);
 			const auto x2 = find_next_in_cycle(cycles, 1);
@@ -118,8 +119,8 @@ namespace cube::details {
 			return CubeI<2>{x1, x2, x3, x4};
 		}
 		else if constexpr (N == 3) {
-			const Cycle cycle = create_cycle(D1, D2);
-			const auto dim_fixed = fixed_dimensions<N>(D1, D2);
+			const Cycle cycle = create_cycle(d1, d2);
+			const auto dim_fixed = fixed_dimensions<N>(d1, d2);
 			const auto cycles = std::array<Cycle, 2> {
 				array_tools::add<CycleIType>(cycle, (0 << dim_fixed[0])),
 					array_tools::add<CycleIType>(cycle, (1 << dim_fixed[0]))
@@ -137,8 +138,8 @@ namespace cube::details {
 			};
 		}
 		else if constexpr (N == 4) {
-			const Cycle cycle = create_cycle(D1, D2);
-			const auto dim_fixed = fixed_dimensions<N>(D1, D2);
+			const Cycle cycle = create_cycle(d1, d2);
+			const auto dim_fixed = fixed_dimensions<N>(d1, d2);
 			const auto cycles = std::array<Cycle, 4> {
 				array_tools::add<CycleIType>(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1])),
 					array_tools::add<CycleIType>(cycle, (0 << dim_fixed[0]) | (1 << dim_fixed[1])),
@@ -168,8 +169,8 @@ namespace cube::details {
 			};
 		}
 		else if constexpr (N == 5) {
-			const Cycle cycle = create_cycle(D1, D2);
-			const auto dim_fixed = fixed_dimensions<N>(D1, D2);
+			const Cycle cycle = create_cycle(d1, d2);
+			const auto dim_fixed = fixed_dimensions<N>(d1, d2);
 			const auto cycles = std::array<Cycle, 8> {
 				array_tools::add<CycleIType>(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2])),
 					array_tools::add<CycleIType>(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (1 << dim_fixed[2])),
@@ -222,8 +223,8 @@ namespace cube::details {
 			};
 		}
 		else if constexpr (N == 6) {
-			const Cycle cycle = create_cycle(D1, D2);
-			const auto dim_fixed = fixed_dimensions<N>(D1, D2);
+			const Cycle cycle = create_cycle(d1, d2);
+			const auto dim_fixed = fixed_dimensions<N>(d1, d2);
 			const auto cycles = std::array<Cycle, 16> {
 				array_tools::add<CycleIType>(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2]) | (0 << dim_fixed[3])),
 					array_tools::add<CycleIType>(cycle, (0 << dim_fixed[0]) | (0 << dim_fixed[1]) | (0 << dim_fixed[2]) | (1 << dim_fixed[3])),

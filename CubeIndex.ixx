@@ -17,15 +17,15 @@ export namespace cube {
 	//using CubeI = std::array<char, (1 << DIM)>; // char takes 8 hours for save_all_npn_classes<5>
 	//template <int DIM> using CubeI = std::array<int, (1 << DIM)>; // char takes 9 hours for save_all_npn_classes<5>
 
-	template <int N>
-	[[nodiscard]] consteval CubeI<N> init_cubeI() noexcept
+	template <int N> consteval [[nodiscard]]
+	CubeI<N> init_cubeI() noexcept
 	{
 		constexpr int S = 1 << N;
 		return array_tools::create_index_array<CubeI<N>::value_type, S>();
 	}
 
-	template <int N>
-	[[nodiscard]] std::string to_string(const CubeI<N>& c)
+	template <int N> [[nodiscard]]
+	std::string to_string(const CubeI<N>& c)
 	{
 		std::string r = "";
 
@@ -67,8 +67,8 @@ export namespace cube {
 		return r;
 	}
 
-	template <int N>
-	[[nodiscard]] std::string to_string(const std::pair<CubeI<N>, std::string>& c)
+	template <int N> [[nodiscard]]
+	std::string to_string(const std::pair<CubeI<N>, std::string>& c)
 	{
 		return to_string<N>(std::get<0>(c)) + " " + std::get<1>(c);
 	}

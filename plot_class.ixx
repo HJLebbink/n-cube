@@ -242,10 +242,10 @@ namespace cube::plot {
 	void tranformations_partitions2()
 	{
 		constexpr int N = 2;
-		constexpr CubeI<N> r0 = details::reflect<N, 0>(); //1032
-		constexpr CubeI<N> r1 = details::reflect<N, 1>(); //2301
-		constexpr CubeI<N> r01 = details::rotate<N>(0, 1); //1302
-		constexpr CubeI<N> r10 = details::rotate<N>(1, 0); //2031 
+		constexpr CubeI<N> r0 = reflect<N, 0>(); //1032
+		constexpr CubeI<N> r1 = reflect<N, 1>(); //2301
+		constexpr CubeI<N> r01 = rotate<N>(0, 1); //1302
+		constexpr CubeI<N> r10 = rotate<N>(1, 0); //2031 
 
 		{	// size 2 (3 of 3 tranformations are idempotent) 
 			constexpr BF c0 = 0b0000;
@@ -285,16 +285,16 @@ namespace cube::plot {
 	void tranformations_partitions3()
 	{
 		constexpr int N = 3;
-		constexpr CubeI<N> r0 = details::reflect<N, 0>();
-		constexpr CubeI<N> r1 = details::reflect<N, 1>();
-		constexpr CubeI<N> r2 = details::reflect<N, 2>();
-		constexpr CubeI<N> r01 = details::rotate<N>(0, 1);
-		constexpr CubeI<N> r02 = details::rotate<N>(0, 2);
-		constexpr CubeI<N> r12 = details::rotate<N>(1, 2);
+		constexpr CubeI<N> r0 = reflect<N, 0>();
+		constexpr CubeI<N> r1 = reflect<N, 1>();
+		constexpr CubeI<N> r2 = reflect<N, 2>();
+		constexpr CubeI<N> r01 = rotate<N>(0, 1);
+		constexpr CubeI<N> r02 = rotate<N>(0, 2);
+		constexpr CubeI<N> r12 = rotate<N>(1, 2);
 
-		constexpr CubeI<N> r10 = details::rotate<N>(1, 0);
-		constexpr CubeI<N> r20 = details::rotate<N>(2, 0);
-		constexpr CubeI<N> r21 = details::rotate<N>(2, 1);
+		constexpr CubeI<N> r10 = rotate<N>(1, 0);
+		constexpr CubeI<N> r20 = rotate<N>(2, 0);
+		constexpr CubeI<N> r21 = rotate<N>(2, 1);
 
 		constexpr CubeI<N> id = init_cubeI<N>();
 		constexpr CubeI<N> a = transform<N>(id, r0);
@@ -353,13 +353,13 @@ namespace cube::plot {
 
 	void rot2_tranformations() {
 		constexpr int N = 2;
-		constexpr CubeI<N> r0 = details::reflect<N, 0>();
-		constexpr CubeI<N> r1 = details::reflect<N, 1>();
+		constexpr CubeI<N> r0 = reflect<N, 0>();
+		constexpr CubeI<N> r1 = reflect<N, 1>();
 
 		constexpr CubeI<N> r0o1 = transform<N>(r0, r1);
 
-		constexpr CubeI<N> r01 = details::rotate<N>(0, 1);
-		constexpr CubeI<N> r10 = details::rotate<N>(1, 0);
+		constexpr CubeI<N> r01 = rotate<N>(0, 1);
+		constexpr CubeI<N> r10 = rotate<N>(1, 0);
 
 
 		constexpr CubeI<N> id = init_cubeI<N>();
@@ -386,21 +386,21 @@ namespace cube::plot {
 
 	void rot3_tranformations() {
 		constexpr int N = 3;
-		constexpr CubeI<N> r0 = details::reflect<N, 0>();
-		constexpr CubeI<N> r1 = details::reflect<N, 1>();
-		constexpr CubeI<N> r2 = details::reflect<N, 2>();
+		constexpr CubeI<N> r0 = reflect<N, 0>();
+		constexpr CubeI<N> r1 = reflect<N, 1>();
+		constexpr CubeI<N> r2 = reflect<N, 2>();
 
 		constexpr CubeI<N> r0o1 = transform<N>(r0, r1);
 		constexpr CubeI<N> r0o2 = transform<N>(r0, r2);
 		constexpr CubeI<N> r1o2 = transform<N>(r1, r2);
 
-		constexpr CubeI<N> r01 = details::rotate<N>(0, 1);
-		constexpr CubeI<N> r02 = details::rotate<N>(0, 2);
-		constexpr CubeI<N> r12 = details::rotate<N>(1, 2);
+		constexpr CubeI<N> r01 = rotate<N>(0, 1);
+		constexpr CubeI<N> r02 = rotate<N>(0, 2);
+		constexpr CubeI<N> r12 = rotate<N>(1, 2);
 
-		constexpr CubeI<N> r10 = details::rotate<N>(1, 0);
-		constexpr CubeI<N> r20 = details::rotate<N>(2, 0);
-		constexpr CubeI<N> r21 = details::rotate<N>(2, 1);
+		constexpr CubeI<N> r10 = rotate<N>(1, 0);
+		constexpr CubeI<N> r20 = rotate<N>(2, 0);
+		constexpr CubeI<N> r21 = rotate<N>(2, 1);
 
 
 		constexpr CubeI<N> id = init_cubeI<N>();

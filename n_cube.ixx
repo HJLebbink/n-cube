@@ -78,36 +78,17 @@ namespace cube
 		return (details::count_bits(bf) <= N2) ? bf : complement<N>(bf);
 	}
 
-
-#pragma region reflect
-	template <int N> constexpr CubeI<N> reflect(const int dim)
-	{
-		switch (dim) {
-		case 1: return details::reflect<N, 1>();
-		case 2: return details::reflect<N, 2>();
-		case 3: return details::reflect<N, 3>();
-		case 4: return details::reflect<N, 4>();
-		case 5: return details::reflect<N, 5>();
-		case 6: return details::reflect<N, 6>();
-		default: return CubeI<N>();
-		}
-	}
-	template <int N> constexpr BF reflect(const BF bf, const int dim)
+	template <int N> constexpr [[nodiscard]]
+	BF reflect(const BF bf, const int dim)
 	{
 		return transform<N>(bf, reflect<N>(dim));
 	}
-#pragma endregion
 
-#pragma region rotate
-	template <int N> constexpr CubeI<N> rotate(const int dim1, const int dim2)
-	{
-		return details::rotate<N>::value(dim1, dim2);
-	}
-	template <int N> constexpr BF rotate(const BF bf, const int dim1, const int dim2)
+	template <int N> constexpr [[nodiscard]]
+	BF rotate(const BF bf, const int dim1, const int dim2)
 	{
 		return to_BF<N>(transform<N>(to_cube<N>(bf), rotate<N>(dim1, dim2)));
 	}
-#pragma endregion
 
 #pragma region class id
 	namespace details
