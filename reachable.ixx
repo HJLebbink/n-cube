@@ -103,8 +103,8 @@ namespace cube {
 
 	void test_reachability_bf2() {
 		constexpr int N = 2;
-		constexpr CubeI<N> ref0 = details::reflect<N>::valueY<0>();
-		constexpr CubeI<N> ref1 = details::reflect<N>::valueY<1>();
+		constexpr CubeI<N> ref0 = details::reflect<N, 0>();
+		constexpr CubeI<N> ref1 = details::reflect<N, 1>();
 		constexpr CubeI<N> ref01 = o<N>(ref0, ref1);
 
 		constexpr CubeI<N> rot01 = details::rotate<N>::valueX<0, 1>();
@@ -160,9 +160,9 @@ namespace cube {
 		constexpr int N = 3;
 		constexpr CubeI<N> id = init_cubeI<N>();
 
-		constexpr CubeI<N> ref0 = details::reflect<N>::valueY<0>();
-		constexpr CubeI<N> ref1 = details::reflect<N>::valueY<1>();
-		constexpr CubeI<N> ref2 = details::reflect<N>::valueY<2>();
+		constexpr CubeI<N> ref0 = details::reflect<N, 0>();
+		constexpr CubeI<N> ref1 = details::reflect<N, 1>();
+		constexpr CubeI<N> ref2 = details::reflect<N, 2>();
 
 		constexpr CubeI<N> ref01 = o<N>(ref0, ref1);
 		constexpr CubeI<N> ref02 = o<N>(ref0, ref2);

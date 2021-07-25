@@ -83,12 +83,12 @@ namespace cube
 	template <int N> constexpr CubeI<N> reflect(const int dim)
 	{
 		switch (dim) {
-		case 1: return details::reflect<N>::template valueY<1>();
-		case 2: return details::reflect<N>::template valueY<2>();
-		case 3: return details::reflect<N>::template valueY<3>();
-		case 4: return details::reflect<N>::template valueY<4>();
-		case 5: return details::reflect<N>::template valueY<5>();
-		case 6: return details::reflect<N>::template valueY<6>();
+		case 1: return details::reflect<N, 1>();
+		case 2: return details::reflect<N, 2>();
+		case 3: return details::reflect<N, 3>();
+		case 4: return details::reflect<N, 4>();
+		case 5: return details::reflect<N, 5>();
+		case 6: return details::reflect<N, 6>();
 		default: return CubeI<N>();
 		}
 	}

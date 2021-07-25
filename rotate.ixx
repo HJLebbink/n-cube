@@ -704,6 +704,7 @@ namespace cube {
 				*/
 			}
 		};
+
 #pragma endregion
 	}
 }

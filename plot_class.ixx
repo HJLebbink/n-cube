@@ -242,8 +242,8 @@ namespace cube::plot {
 	void tranformations_partitions2()
 	{
 		constexpr int N = 2;
-		constexpr CubeI<N> r0 = details::reflect<N>::valueY<0>(); //1032
-		constexpr CubeI<N> r1 = details::reflect<N>::valueY<1>(); //2301
+		constexpr CubeI<N> r0 = details::reflect<N, 0>(); //1032
+		constexpr CubeI<N> r1 = details::reflect<N, 1>(); //2301
 		constexpr CubeI<N> r01 = details::rotate<N>::valueX<0, 1>(); //1302
 		constexpr CubeI<N> r10 = details::rotate<N>::valueX<1, 0>(); //2031 
 
@@ -285,9 +285,9 @@ namespace cube::plot {
 	void tranformations_partitions3()
 	{
 		constexpr int N = 3;
-		constexpr CubeI<N> r0 = details::reflect<N>::valueY<0>();
-		constexpr CubeI<N> r1 = details::reflect<N>::valueY<1>();
-		constexpr CubeI<N> r2 = details::reflect<N>::valueY<2>();
+		constexpr CubeI<N> r0 = details::reflect<N, 0>();
+		constexpr CubeI<N> r1 = details::reflect<N, 1>();
+		constexpr CubeI<N> r2 = details::reflect<N, 2>();
 		constexpr CubeI<N> r01 = details::rotate<N>::valueX<0, 1>();
 		constexpr CubeI<N> r02 = details::rotate<N>::valueX<0, 2>();
 		constexpr CubeI<N> r12 = details::rotate<N>::valueX<1, 2>();
@@ -353,8 +353,8 @@ namespace cube::plot {
 
 	void rot2_tranformations() {
 		constexpr int N = 2;
-		constexpr CubeI<N> r0 = details::reflect<N>::valueY<0>();
-		constexpr CubeI<N> r1 = details::reflect<N>::valueY<1>();
+		constexpr CubeI<N> r0 = details::reflect<N, 0>();
+		constexpr CubeI<N> r1 = details::reflect<N, 1>();
 
 		constexpr CubeI<N> r0o1 = transform<N>(r0, r1);
 
@@ -386,9 +386,9 @@ namespace cube::plot {
 
 	void rot3_tranformations() {
 		constexpr int N = 3;
-		constexpr CubeI<N> r0 = details::reflect<N>::valueY<0>();
-		constexpr CubeI<N> r1 = details::reflect<N>::valueY<1>();
-		constexpr CubeI<N> r2 = details::reflect<N>::valueY<2>();
+		constexpr CubeI<N> r0 = details::reflect<N, 0>();
+		constexpr CubeI<N> r1 = details::reflect<N, 1>();
+		constexpr CubeI<N> r2 = details::reflect<N, 2>();
 
 		constexpr CubeI<N> r0o1 = transform<N>(r0, r1);
 		constexpr CubeI<N> r0o2 = transform<N>(r0, r2);
