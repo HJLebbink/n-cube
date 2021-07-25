@@ -41,16 +41,14 @@ namespace cube
 	};
 
 	template <int N>
-	using CubeMap = std::map<CubeI<N>, std::string, Cmp<N>>;
-
-	template <int N>
 	void init_n_cube() {
 		// run all_transformations once to fill the transformation cache
 		const auto transformations_from_cache = get_transformations_from_cache<N, false>();
 	}
 
 
-	export template <int N> constexpr BF complement(const BF bf) noexcept
+	export template <int N> constexpr [[nodiscard]]
+	BF complement(const BF bf) noexcept
 	{
 		if constexpr (N == 1) {
 			return ~bf & 0b11;
@@ -72,7 +70,8 @@ namespace cube
 		}
 		//return 0;
 	}
-	export template <int N> constexpr BF complement_if_needed(const BF bf) noexcept
+	export template <int N> constexpr [[nodiscard]]
+	BF complement_if_needed(const BF bf) noexcept
 	{
 		constexpr int N2 = (1 << N) / 2;
 		return (details::count_bits(bf) <= N2) ? bf : complement<N>(bf);
@@ -147,7 +146,8 @@ namespace cube
 
 	}
 
-	template <int N> constexpr BF search_npn_class(const BF bf)
+	template <int N> constexpr [[nodiscard]]
+	BF search_npn_class(const BF bf)
 	{
 		return std::get<0>(details::search_class_id_method0<N, false>(bf));
 	}
@@ -155,7 +155,8 @@ namespace cube
 #pragma endregion 
 
 	// Get the set of BFs that are in the equivalence class of the provided bf.
-	export template <int N> std::set<BF> equiv_class(const BF bf)
+	export template <int N> [[nodiscard]] 
+	std::set<BF> equiv_class(const BF bf)
 	{
 		const Transf<N>& transformations = get_transformations_from_cache<N, false>();
 
@@ -261,7 +262,7 @@ namespace cube
 	}
 
 
-	std::tuple<std::array<BF, 2>, std::array<std::string, 3>> boolean_expression_transform_3_2(
+	[[nodiscard]] std::tuple<std::array<BF, 2>, std::array<std::string, 3>> boolean_expression_transform_3_2(
 		const CubeI<3>& transformation,
 		const std::array<BF, 2>& params,
 		const std::array<std::string, 3>& descr)
@@ -297,7 +298,8 @@ namespace cube
 		return { params, descr };
 	}
 
-	export template <int N> std::set<BF> load_all_npn_classes(const std::string& filename)
+	export template <int N> [[nodiscard]] 
+	std::set<BF> load_all_npn_classes(const std::string& filename)
 	{
 		std::set<BF> results;
 		if (std::filesystem::exists(filename)) {
@@ -319,7 +321,8 @@ namespace cube
 		return results;
 	}
 
-	export template <int N> std::set<BF> load_all_npn_classes()
+	export template <int N> [[nodiscard]] 
+	std::set<BF> load_all_npn_classes()
 	{
 		//const std::string path = "C://Users//909077//Documents//GitHub//n-cube//data//";
 		const std::string path = "C://Users//henk//Documents//Github//n-cube//data//";
@@ -344,7 +347,8 @@ namespace cube
 		//return std::set<BF>();
 	}
 
-	export template <int N> void save_all_npn_classes(const std::string& filename)
+	export template <int N> 
+	void save_all_npn_classes(const std::string& filename)
 	{
 		const std::set<BF> all_npn_classes = generate_all_npn_classes<N>(); // this may take a while...
 		const unsigned long long n_npn_classes = all_npn_classes.size();
@@ -370,14 +374,15 @@ namespace cube
 		}
 	}
 
-	export template <int N, bool DESCR> void print_all_transformations()
+	export template <int N, bool DESCR> 
+	void print_all_transformations()
 	{
 		std::cout << "Transformations obtained by transitive closure N=" << N << ":" << std::endl;
 		const Transf<N>& transformations_from_cache = get_transformations_from_cache<N, DESCR>();
 		std::cout << "number of transformations: " << transformations_from_cache.size() << std::endl;
 
 		// create a map such that the transformations are sorted
-		CubeMap<N> trans2;
+		std::map<CubeI<N>, std::string, Cmp<N>> trans2;
 		for (const auto& pair : transformations_from_cache)
 		{
 			trans2.insert(pair);
@@ -388,7 +393,8 @@ namespace cube
 		}
 	}
 
-	template <int N> std::vector<std::set<BF>> load_all_npn_classes_sorted_by_nbit()
+	template <int N> [[nodiscard]] 
+	std::vector<std::set<BF>> load_all_npn_classes_sorted_by_nbit()
 	{
 		std::vector<std::set<BF>> result;
 		for (int n_bit = 0; n_bit < (1 << N); ++n_bit) {
@@ -404,7 +410,8 @@ namespace cube
 		return result;
 	}
 
-	template <int N> void print_all_class_ids_with_values(const std::string& filename)
+	template <int N> 
+	void print_all_class_ids_with_values(const std::string& filename)
 	{
 		int class_counter = 0;
 		std::cout << "All classes (with values) for N=" << N << ":" << std::endl;

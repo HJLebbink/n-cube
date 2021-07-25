@@ -16,27 +16,28 @@ import n_cube;
 
 namespace cube {
 
-	export template <int N> std::array<std::string, N> create_descriptions()
+	export template <int N> [[nodiscard]]
+	std::array<std::string, N> create_descriptions()
 	{
 		if constexpr (N == 1) {
 			return { "x0" };
 		}
-		if constexpr (N == 2) {
+		else if constexpr (N == 2) {
 			return { "0", "1" };
 		}
-		if constexpr (N == 3) {
+		else if constexpr (N == 3) {
 			return { "0", "1", "2" };
 		}
-		if constexpr (N == 4) {
+		else if constexpr (N == 4) {
 			return { "d", "c", "b", "a" };
 		}
-		if constexpr (N == 5) {
+		else if constexpr (N == 5) {
 			return { "e", "d", "c", "b", "a" };
 		}
-		if constexpr (N == 6) {
+		else if constexpr (N == 6) {
 			return { "f", "e", "d", "c", "b", "a" };
 		}
-		if constexpr (N == 7) {
+		else if constexpr (N == 7) {
 			return { "g", "f", "e", "d", "c", "b", "a" };
 		}
 		//return std::array<std::string, N>();

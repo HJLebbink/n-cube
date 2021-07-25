@@ -304,14 +304,14 @@ namespace cube
 	}
 
 	// get a random boolean function for the provided number of variables _Nvars
-	template <size_t _Nvars>
-	[[nodiscard]] std::bitset<(1ull << _Nvars)> random_bf() {
+	template <size_t _Nvars> [[nodiscard]] 
+	std::bitset<(1ull << _Nvars)> random_bf() {
 		return details::random_bf<_Nvars>();
 	}
 
 	// get the Boolean Function cardinality.
-	export inline 
-	[[nodiscard]] constexpr int bf_cardinality(
+	export inline constexpr [[nodiscard]]
+	int bf_cardinality(
 		const BF bf,
 		const int n_vars) noexcept
 	{
@@ -319,16 +319,16 @@ namespace cube
 	}
 
 	// get the Boolean Function cardinality.
-	export template<size_t S>
-	[[nodiscard]] constexpr int bf_cardinality(
+	export template<size_t S> constexpr [[nodiscard]]
+	int bf_cardinality(
 		const std::bitset<S> bf,
 		const int n_vars) noexcept
 	{
 		return details::count_bits(details::bf_used_vars(bf, n_vars));
 	}
 
-	template <size_t S>
-	[[nodiscard]] constexpr std::bitset<S> create_truth_table_var(int i)
+	template <size_t S> constexpr [[nodiscard]]
+	std::bitset<S> create_truth_table_var(int i)
 	{
 		auto result = std::bitset<S>(); // construct with all false values
 		bool b = false;
@@ -343,25 +343,26 @@ namespace cube
 	}
 
 	// return the number of bits that missmatch, that is, return the number of different bits.
-	template <size_t S>
-	[[nodiscard]] constexpr int missmatch(const std::bitset<S>& bf1, const std::bitset<S>& bf2) noexcept {
+	template <size_t S> constexpr [[nodiscard]]
+	int missmatch(const std::bitset<S>& bf1, const std::bitset<S>& bf2) noexcept {
 		const auto eq = (bf1 ^ bf2);
 		return static_cast<int>(eq.count());
 	}
 
 	// return the used variables. A set bit at position p indicates that the variable p is used.
-	[[nodiscard]] constexpr unsigned long long bf_used_vars(const BF bf, const int n_vars) noexcept {
+	constexpr [[nodiscard]]	
+	unsigned long long bf_used_vars(const BF bf, const int n_vars) noexcept {
 		return details::bf_used_vars(bf, n_vars);
 	}
 
 	// return the used variables. A set bit at position p indicates that the variable p is used.
-	template <size_t S>
-	[[nodiscard]] constexpr unsigned long long bf_used_vars(const std::bitset<S>& bf) noexcept {
+	template <size_t S> constexpr [[nodiscard]]
+	unsigned long long bf_used_vars(const std::bitset<S>& bf) noexcept {
 		return details::bf_used_vars(bf);
 	}
 
-	template <class T1, class T2>
-	[[nodiscard]] std::tuple<std::vector<T1>, std::vector<T2>> remove_redundant_vars(
+	template <class T1, class T2> constexpr [[nodiscard]]
+	std::tuple<std::vector<T1>, std::vector<T2>> remove_redundant_vars(
 		const unsigned long long bf,
 		const std::vector<T1>& content,
 		const std::vector<T2>& descr)

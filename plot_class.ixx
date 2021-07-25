@@ -431,8 +431,7 @@ namespace cube::plot {
 
 	// plot the cube of transformations
 	export template <int N>
-	void plot_transformation_transitions(
-		const std::string& filename)
+	void plot_transformation_transitions(const std::string& filename)
 	{
 		using T1 = std::string;
 		using T2 = std::string;

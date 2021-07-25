@@ -47,7 +47,8 @@ namespace prime {
 	
 	// A O(log n) function returning primefactorization 
 	// by dividing by smallest prime factor at every step 
-	export inline std::vector<int> get_factorization(int x)
+	export inline [[nodiscard]]
+	std::vector<int> get_factorization(int x)
 	{
 		if (!spf_filled) {
 			sieve();
@@ -62,7 +63,8 @@ namespace prime {
 		return ret;
 	}
 
-	export inline std::string vector_to_string(const std::vector<int>& a) {
+	export inline [[nodiscard]]
+	std::string vector_to_string(const std::vector<int>& a) {
 		std::stringstream result;
 		const int size = static_cast<int>(a.size());
 
