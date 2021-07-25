@@ -145,7 +145,7 @@ namespace cube {
 						auto& transformations = std::get<N>(transformations_greedy_cache);
 						transformations.push_back(std::make_pair(cube::details::reflect<N, 0>(), "Ref[" + b + "]"));
 						transformations.push_back(std::make_pair(cube::details::reflect<N, 1>(), "Ref[" + a + "]"));
-						transformations.push_back(std::make_pair(cube::details::rotate<N>::valueX<0, 1>(), "Rot[" + b + "," + a + "]"));
+						transformations.push_back(std::make_pair(cube::details::rotate<N>(0, 1), "Rot[" + b + "," + a + "]"));
 					}
 					return std::get<N>(transformations_greedy_cache);
 				}
@@ -168,9 +168,9 @@ namespace cube {
 							constexpr auto ref_b = cube::details::reflect<N, 1>();
 							constexpr auto ref_c = cube::details::reflect<N, 0>();
 
-							constexpr auto rot_cb = cube::details::rotate<N>::valueX<0, 1>();
-							constexpr auto rot_ca = cube::details::rotate<N>::valueX<0, 2>();
-							constexpr auto rot_ba = cube::details::rotate<N>::valueX<1, 2>();
+							constexpr auto rot_cb = cube::details::rotate<N>(0, 1);
+							constexpr auto rot_ca = cube::details::rotate<N>(0, 2);
+							constexpr auto rot_ba = cube::details::rotate<N>(1, 2);
 
 							auto& transformations = std::get<N>(transformations_greedy_cache);
 							transformations.push_back(std::make_pair(ref_a, "Ref[" + a + "]"));

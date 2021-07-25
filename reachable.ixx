@@ -107,8 +107,8 @@ namespace cube {
 		constexpr CubeI<N> ref1 = details::reflect<N, 1>();
 		constexpr CubeI<N> ref01 = o<N>(ref0, ref1);
 
-		constexpr CubeI<N> rot01 = details::rotate<N>::valueX<0, 1>();
-		constexpr CubeI<N> rot10 = details::rotate<N>::valueX<1, 0>();
+		constexpr CubeI<N> rot01 = details::rotate<N>(0, 1);
+		constexpr CubeI<N> rot10 = details::rotate<N>(1, 0);
 		constexpr auto empty = std::array<CubeI<N>, 0>{};
 
 		constexpr CubeI<N> id = init_cubeI<N>();
@@ -197,12 +197,12 @@ namespace cube {
 		7_6_3_2_5_4_1_0 .Rot[0,1].Rot[0,2].Rot[1,2].Rot[2,0].Rot[2,1]
 		*/
 
-		constexpr CubeI<N> rot01 = details::rotate<N>::valueX<0, 1>();
-		constexpr CubeI<N> rot02 = details::rotate<N>::valueX<0, 2>();
-		constexpr CubeI<N> rot12 = details::rotate<N>::valueX<1, 2>();
-		constexpr CubeI<N> rot10 = details::rotate<N>::valueX<1, 0>();
-		constexpr CubeI<N> rot20 = details::rotate<N>::valueX<2, 0>();
-		constexpr CubeI<N> rot21 = details::rotate<N>::valueX<2, 1>();
+		constexpr CubeI<N> rot01 = details::rotate<N>(0, 1);
+		constexpr CubeI<N> rot02 = details::rotate<N>(0, 2);
+		constexpr CubeI<N> rot12 = details::rotate<N>(1, 2);
+		constexpr CubeI<N> rot10 = details::rotate<N>(1, 0);
+		constexpr CubeI<N> rot20 = details::rotate<N>(2, 0);
+		constexpr CubeI<N> rot21 = details::rotate<N>(2, 1);
 
 		constexpr CubeI<N> rot01_02 = o<N>(rot01, rot02);
 		constexpr CubeI<N> rot01_12 = o<N>(rot01, rot12);

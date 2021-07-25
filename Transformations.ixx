@@ -72,16 +72,16 @@ namespace cube {
 				// 3 basic transformatons is Sterling Number of second kind S(3,2) = 3
 				constexpr auto x1 = reflect<N, 0>();
 				constexpr auto x2 = reflect<N, 1>();
-				constexpr auto x3 = rotate<N>::template valueX<0, 1>();
+				constexpr auto x3 = rotate<N>(0, 1);
 				return std::array<CubeI<N>, P> {x1, x2, x3};
 			}
 			else if constexpr (N == 3) {
 				constexpr auto x1 = reflect<N, 0>();
 				constexpr auto x2 = reflect<N, 1>();
 				constexpr auto x3 = reflect<N, 2>();
-				constexpr auto x4 = rotate<N>::template valueX<0, 1>();
-				constexpr auto x5 = rotate<N>::template valueX<0, 2>();
-				constexpr auto x6 = rotate<N>::template valueX<1, 2>();
+				constexpr auto x4 = rotate<N>(0, 1);
+				constexpr auto x5 = rotate<N>(0, 2);
+				constexpr auto x6 = rotate<N>(1, 2);
 				return std::array<CubeI<N>, P> {x1, x2, x3, x4, x5, x6};
 			}
 			else if constexpr (N == 4) {
@@ -89,12 +89,12 @@ namespace cube {
 				constexpr auto x2 = reflect<N, 1>();
 				constexpr auto x3 = reflect<N, 2>();
 				constexpr auto x4 = reflect<N, 3>();
-				constexpr auto x5 = rotate<N>::template valueX<0, 1>();
-				constexpr auto x6 = rotate<N>::template valueX<0, 2>();
-				constexpr auto x7 = rotate<N>::template valueX<0, 3>();
-				constexpr auto x8 = rotate<N>::template valueX<1, 2>();
-				constexpr auto x9 = rotate<N>::template valueX<1, 3>();
-				constexpr auto x10 = rotate<N>::template valueX<2, 3>();
+				constexpr auto x5 = rotate<N>(0, 1);
+				constexpr auto x6 = rotate<N>(0, 2);
+				constexpr auto x7 = rotate<N>(0, 3);
+				constexpr auto x8 = rotate<N>(1, 2);
+				constexpr auto x9 = rotate<N>(1, 3);
+				constexpr auto x10 = rotate<N>(2, 3);
 				return std::array<CubeI<N>, P> {x1, x2, x3, x4, x5, x6, x7, x8, x9, x10};
 			}
 			else if constexpr (N == 5) {
@@ -103,16 +103,16 @@ namespace cube {
 				constexpr auto x3 = reflect<N, 2>();
 				constexpr auto x4 = reflect<N, 3>();
 				constexpr auto x5 = reflect<N, 4>();
-				constexpr auto x6 = rotate<N>::template valueX<0, 1>();
-				constexpr auto x7 = rotate<N>::template valueX<0, 2>();
-				constexpr auto x8 = rotate<N>::template valueX<0, 3>();
-				constexpr auto x9 = rotate<N>::template valueX<0, 4>();
-				constexpr auto x10 = rotate<N>::template valueX<1, 2>();
-				constexpr auto x11 = rotate<N>::template valueX<1, 3>();
-				constexpr auto x12 = rotate<N>::template valueX<1, 4>();
-				constexpr auto x13 = rotate<N>::template valueX<2, 3>();
-				constexpr auto x14 = rotate<N>::template valueX<2, 4>();
-				constexpr auto x15 = rotate<N>::template valueX<3, 4>();
+				constexpr auto x6 = rotate<N>(0, 1);
+				constexpr auto x7 = rotate<N>(0, 2);
+				constexpr auto x8 = rotate<N>(0, 3);
+				constexpr auto x9 = rotate<N>(0, 4);
+				constexpr auto x10 = rotate<N>(1, 2);
+				constexpr auto x11 = rotate<N>(1, 3);
+				constexpr auto x12 = rotate<N>(1, 4);
+				constexpr auto x13 = rotate<N>(2, 3);
+				constexpr auto x14 = rotate<N>(2, 4);
+				constexpr auto x15 = rotate<N>(3, 4);
 				return std::array<CubeI<N>, P> {x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15};
 			}
 			else if constexpr (N == 6) {
@@ -123,21 +123,21 @@ namespace cube {
 						reflect<N, 3>(),
 						reflect<N, 4>(),
 						reflect<N, 5>(),
-						rotate<N>::template valueX<0, 1>(),
-						rotate<N>::template valueX<0, 2>(),
-						rotate<N>::template valueX<0, 3>(),
-						rotate<N>::template valueX<0, 4>(),
-						rotate<N>::template valueX<0, 5>(),
-						rotate<N>::template valueX<1, 2>(),
-						rotate<N>::template valueX<1, 3>(),
-						rotate<N>::template valueX<1, 4>(),
-						rotate<N>::template valueX<1, 5>(),
-						rotate<N>::template valueX<2, 3>(),
-						rotate<N>::template valueX<2, 4>(),
-						rotate<N>::template valueX<2, 5>(),
-						rotate<N>::template valueX<3, 4>(),
-						rotate<N>::template valueX<3, 5>(),
-						rotate<N>::template valueX<4, 5>()
+						rotate<N>(0, 1),
+						rotate<N>(0, 2),
+						rotate<N>(0, 3),
+						rotate<N>(0, 4),
+						rotate<N>(0, 5),
+						rotate<N>(1, 2),
+						rotate<N>(1, 3),
+						rotate<N>(1, 4),
+						rotate<N>(1, 5),
+						rotate<N>(2, 3),
+						rotate<N>(2, 4),
+						rotate<N>(2, 5),
+						rotate<N>(3, 4),
+						rotate<N>(3, 5),
+						rotate<N>(4, 5)
 				};
 				return results;
 			}
@@ -150,27 +150,27 @@ namespace cube {
 						reflect<N, 4>(),
 						reflect<N, 5>(),
 						reflect<N, 6>(),
-						rotate<N>::template valueX<0, 1>(),
-						rotate<N>::template valueX<0, 2>(),
-						rotate<N>::template valueX<0, 3>(),
-						rotate<N>::template valueX<0, 4>(),
-						rotate<N>::template valueX<0, 5>(),
-						rotate<N>::template valueX<0, 6>(),
-						rotate<N>::template valueX<1, 2>(),
-						rotate<N>::template valueX<1, 3>(),
-						rotate<N>::template valueX<1, 4>(),
-						rotate<N>::template valueX<1, 5>(),
-						rotate<N>::template valueX<1, 6>(),
-						rotate<N>::template valueX<2, 3>(),
-						rotate<N>::template valueX<2, 4>(),
-						rotate<N>::template valueX<2, 5>(),
-						rotate<N>::template valueX<2, 6>(),
-						rotate<N>::template valueX<3, 4>(),
-						rotate<N>::template valueX<3, 5>(),
-						rotate<N>::template valueX<3, 6>(),
-						rotate<N>::template valueX<4, 5>(),
-						rotate<N>::template valueX<4, 6>(),
-						rotate<N>::template valueX<5, 6>()
+						rotate<N>(0, 1),
+						rotate<N>(0, 2),
+						rotate<N>(0, 3),
+						rotate<N>(0, 4),
+						rotate<N>(0, 5),
+						rotate<N>(0, 6),
+						rotate<N>(1, 2),
+						rotate<N>(1, 3),
+						rotate<N>(1, 4),
+						rotate<N>(1, 5),
+						rotate<N>(1, 6),
+						rotate<N>(2, 3),
+						rotate<N>(2, 4),
+						rotate<N>(2, 5),
+						rotate<N>(2, 6),
+						rotate<N>(3, 4),
+						rotate<N>(3, 5),
+						rotate<N>(3, 6),
+						rotate<N>(4, 5),
+						rotate<N>(4, 6),
+						rotate<N>(5, 6)
 				};
 				return results;
 			}
@@ -517,10 +517,10 @@ namespace cube {
 		constexpr int N = 2;
 		constexpr CubeI<N> t1 = details::reflect<N, 0>();
 		constexpr CubeI<N> t2 = details::reflect<N, 1>();
-		constexpr CubeI<N> t3 = details::rotate<N>::valueX<0, 1>();
+		constexpr CubeI<N> t3 = details::rotate<N>(0, 1);
 
 		// rotation r01 is the dual of rotation sr10
-		static_assert(array_tools::equal(transform<N>(t3, details::rotate<N>::valueX<1, 0>()), init_cubeI<N>()));
+		static_assert(array_tools::equal(transform<N>(t3, details::rotate<N>(1, 0)), init_cubeI<N>()));
 
 		// reflections are commutative
 		static_assert(array_tools::equal(transform<N>(t1, t2), transform<N>(t2, t1)));
@@ -551,9 +551,9 @@ namespace cube {
 		constexpr CubeI<N> t1 = details::reflect<N, 0>();
 		constexpr CubeI<N> t2 = details::reflect<N, 1>();
 		constexpr CubeI<N> t3 = details::reflect<N, 2>();
-		constexpr CubeI<N> t4 = details::rotate<N>::valueX<0, 1>();
-		constexpr CubeI<N> t5 = details::rotate<N>::valueX<0, 2>();
-		constexpr CubeI<N> t6 = details::rotate<N>::valueX<1, 2>();
+		constexpr CubeI<N> t4 = details::rotate<N>(0, 1);
+		constexpr CubeI<N> t5 = details::rotate<N>(0, 2);
+		constexpr CubeI<N> t6 = details::rotate<N>(1, 2);
 
 		// reflections are commutative
 		static_assert(array_tools::equal(transform<N>(t1, t2), transform<N>(t2, t1)));
@@ -589,12 +589,12 @@ namespace cube {
 		constexpr CubeI<N> t2 = details::reflect<N, 1>();
 		constexpr CubeI<N> t3 = details::reflect<N, 2>();
 		constexpr CubeI<N> t4 = details::reflect<N, 3>();
-		constexpr CubeI<N> t5 = details::rotate<N>::valueX<0, 1>();
-		constexpr CubeI<N> t6 = details::rotate<N>::valueX<0, 2>();
-		constexpr CubeI<N> t7 = details::rotate<N>::valueX<0, 3>();
-		constexpr CubeI<N> t8 = details::rotate<N>::valueX<1, 2>();
-		constexpr CubeI<N> t9 = details::rotate<N>::valueX<1, 3>();
-		constexpr CubeI<N> t10 = details::rotate<N>::valueX<2, 3>();
+		constexpr CubeI<N> t5 = details::rotate<N>(0, 1);
+		constexpr CubeI<N> t6 = details::rotate<N>(0, 2);
+		constexpr CubeI<N> t7 = details::rotate<N>(0, 3);
+		constexpr CubeI<N> t8 = details::rotate<N>(1, 2);
+		constexpr CubeI<N> t9 = details::rotate<N>(1, 3);
+		constexpr CubeI<N> t10 = details::rotate<N>(2, 3);
 
 		constexpr CubeI<N> r0 = init_cubeI<N>();
 		const CubeI<N> r1 = ((trans_dim >> 0) & 1) ? transform<N>(r0, t1) : r0;
@@ -638,9 +638,9 @@ namespace cube {
 			std::cout << "000-001 = ref 0  = " << to_string<N>(details::reflect<N, 0>()) << std::endl;
 			std::cout << "000-010 = ref 1  = " << to_string<N>(details::reflect<N, 1>()) << std::endl;
 			std::cout << "000-100 = ref 2  = " << to_string<N>(details::reflect<N, 2>()) << std::endl;
-			std::cout << "001-000 = rot 01 = " << to_string<N>(details::rotate<N>::valueX<0, 1>()) << std::endl;
-			std::cout << "010-000 = rot 02 = " << to_string<N>(details::rotate<N>::valueX<0, 2>()) << std::endl;
-			std::cout << "100-000 = rot 12 = " << to_string<N>(details::rotate<N>::valueX<1, 2>()) << std::endl;
+			std::cout << "001-000 = rot 01 = " << to_string<N>(details::rotate<N>(0, 1)) << std::endl;
+			std::cout << "010-000 = rot 02 = " << to_string<N>(details::rotate<N>(0, 2)) << std::endl;
+			std::cout << "100-000 = rot 12 = " << to_string<N>(details::rotate<N>(1, 2)) << std::endl;
 
 			for (int i = 0; i < (1 << 6); ++i) {
 				const CubeI<N> t = create_transformations_N3(i);
@@ -677,19 +677,19 @@ namespace cube {
 			std::cout << "000000-0010 = ref 1  = " << to_string<N>(details::reflect<N, 1>()) << std::endl;
 			std::cout << "000000-0100 = ref 2  = " << to_string<N>(details::reflect<N, 2>()) << std::endl;
 			std::cout << "000000-1000 = ref 3  = " << to_string<N>(details::reflect<N, 3>()) << std::endl;
-			std::cout << "000001-0000 = rot 01 = " << to_string<N>(details::rotate<N>::valueX<0, 1>()) << std::endl;
-			std::cout << "000010-0000 = rot 02 = " << to_string<N>(details::rotate<N>::valueX<0, 2>()) << std::endl;
-			std::cout << "000100-0000 = rot 03 = " << to_string<N>(details::rotate<N>::valueX<0, 3>()) << std::endl;
-			std::cout << "001000-0000 = rot 12 = " << to_string<N>(details::rotate<N>::valueX<1, 2>()) << std::endl;
-			std::cout << "010000-0000 = rot 13 = " << to_string<N>(details::rotate<N>::valueX<1, 3>()) << std::endl;
-			std::cout << "100000-0000 = rot 23 = " << to_string<N>(details::rotate<N>::valueX<2, 3>()) << std::endl;
+			std::cout << "000001-0000 = rot 01 = " << to_string<N>(details::rotate<N>(0, 1)) << std::endl;
+			std::cout << "000010-0000 = rot 02 = " << to_string<N>(details::rotate<N>(0, 2)) << std::endl;
+			std::cout << "000100-0000 = rot 03 = " << to_string<N>(details::rotate<N>(0, 3)) << std::endl;
+			std::cout << "001000-0000 = rot 12 = " << to_string<N>(details::rotate<N>(1, 2)) << std::endl;
+			std::cout << "010000-0000 = rot 13 = " << to_string<N>(details::rotate<N>(1, 3)) << std::endl;
+			std::cout << "100000-0000 = rot 23 = " << to_string<N>(details::rotate<N>(2, 3)) << std::endl;
 
-			constexpr CubeI<N> t5 = details::rotate<N>::valueX<0, 1>();
-			constexpr CubeI<N> t6 = details::rotate<N>::valueX<0, 2>();
-			constexpr CubeI<N> t7 = details::rotate<N>::valueX<0, 3>();
-			constexpr CubeI<N> t8 = details::rotate<N>::valueX<1, 2>();
-			constexpr CubeI<N> t9 = details::rotate<N>::valueX<1, 3>();
-			constexpr CubeI<N> t10 = details::rotate<N>::valueX<2, 3>();
+			constexpr CubeI<N> t5 = details::rotate<N>(0, 1);
+			constexpr CubeI<N> t6 = details::rotate<N>(0, 2);
+			constexpr CubeI<N> t7 = details::rotate<N>(0, 3);
+			constexpr CubeI<N> t8 = details::rotate<N>(1, 2);
+			constexpr CubeI<N> t9 = details::rotate<N>(1, 3);
+			constexpr CubeI<N> t10 = details::rotate<N>(2, 3);
 
 			for (int i = 0; i < (1 << 10); ++i) {
 				const CubeI<N> t = create_transformations_N4(i);

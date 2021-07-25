@@ -16,7 +16,8 @@ namespace cube::details {
 	export template <int N, int D>
 	[[nodiscard]] consteval CubeI<N> reflect();
 
-	template <int N, int D> consteval CubeI<N> lift_reflect() noexcept
+	template <int N, int D> consteval
+	[[nodiscard]] CubeI<N> lift_reflect() noexcept
 	{
 		static_assert(D < N, "");
 		using T = typename CubeI<N>::value_type;
@@ -25,10 +26,8 @@ namespace cube::details {
 		return array_tools::concat<T>(reflect_embedded_cube, array_tools::add(reflect_embedded_cube, static_cast<T>(1 << N2)));
 	}
 	
-	export template <int N, int D> 
-	[[nodiscard]] consteval CubeI<N> reflect() {
-		//static_assert(N < D);
-
+	export template <int N, int D> consteval
+	[[nodiscard]] CubeI<N> reflect() {
 		using T = CubeI<N>::value_type;
 
 		if constexpr (N == 1) {
@@ -121,7 +120,7 @@ namespace cube::details {
 		}
 	}
 	
-	consteval void test()
+	consteval void test_reflect()
 	{
 		{
 			constexpr int N = 3;
