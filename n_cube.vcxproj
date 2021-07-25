@@ -23,9 +23,10 @@
     <ClCompile Include="BF.ixx" />
     <ClCompile Include="bf_tools.ixx" />
     <ClCompile Include="constants.ixx" />
+    <ClCompile Include="cube.ixx" />
     <ClCompile Include="CubeIndex.ixx" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="n_cube.ixx" />
+    <ClCompile Include="equiv.ixx" />
     <ClCompile Include="plot_class.ixx" />
     <ClCompile Include="prime.ixx" />
     <ClCompile Include="reachable.ixx" />

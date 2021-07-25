@@ -1,14 +1,7 @@
 #include <chrono>
 #include <iostream> // for cout
 
-import BF;
-import timing;
-import n_cube;
-import array_tools;
-import rewrite;
-import plot_class;
-import reachable;
-import Transformations;
+import cube;
 
 
 int main(int, char** /*argv[]*/)

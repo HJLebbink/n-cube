@@ -15,7 +15,8 @@ module;
 
 export module bf_tools;
 //import std.core;
-import BF;
+import cube.bf;
+
 
 namespace cube
 {

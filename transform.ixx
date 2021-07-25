@@ -2,10 +2,10 @@ module;
 #include <array>
 #include "CubeDef.h"
 
-export module transform;
+export module cube.transform;
 import cube.index;
+import cube.bf;
 import array_tools;
-import BF;
 
 
 namespace cube {

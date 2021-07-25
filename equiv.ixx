@@ -18,21 +18,47 @@ module;
 #include "CubeDef.h"
 
 
-export module n_cube;
+export module cube.equiv;
 import cube.index;
 import bf_tools;
 import array_tools;
 import constants;
 import prime;
-import BF;
-import transform;
+import cube.bf;
+import cube.transform;
 import cube.reflect;
 import cube.rotate;
-//import rewrite;
-import Transformations;
+import cube.transformations;
 
 namespace cube
 {
+	export template <int N> [[nodiscard]]
+	std::array<std::string, N> create_descriptions()
+	{
+		if constexpr (N == 1) {
+			return { "x0" };
+		}
+		else if constexpr (N == 2) {
+			return { "0", "1" };
+		}
+		else if constexpr (N == 3) {
+			return { "0", "1", "2" };
+		}
+		else if constexpr (N == 4) {
+			return { "d", "c", "b", "a" };
+		}
+		else if constexpr (N == 5) {
+			return { "e", "d", "c", "b", "a" };
+		}
+		else if constexpr (N == 6) {
+			return { "f", "e", "d", "c", "b", "a" };
+		}
+		else if constexpr (N == 7) {
+			return { "g", "f", "e", "d", "c", "b", "a" };
+		}
+		//return std::array<std::string, N>();
+	}
+
 	template <int N>
 	struct Cmp {
 		[[nodiscard]] constexpr bool operator()(const CubeI<N>& left, const CubeI<N>& right) const {
@@ -70,6 +96,7 @@ namespace cube
 		}
 		//return 0;
 	}
+	
 	export template <int N> constexpr [[nodiscard]]
 	BF complement_if_needed(const BF bf) noexcept
 	{

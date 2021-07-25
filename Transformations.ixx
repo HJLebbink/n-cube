@@ -13,11 +13,11 @@ module;
 #include <utility> //pair
 #include "CubeDef.h"
 
-export module Transformations;
+export module cube.transformations;
 
 import cube.reflect;
 import cube.rotate;
-import transform;
+import cube.transform;
 import cube.index;
 import array_tools;
 
@@ -625,6 +625,7 @@ namespace cube {
 		};
 		return result;
 	}
+	
 	export void test_create_transformations()
 	{
 		if (true) {

@@ -7,7 +7,7 @@ module;
 export module cube.rotate;
 import cube.index;
 import array_tools;
-import transform;
+import cube.transform;
 
 
 namespace cube {

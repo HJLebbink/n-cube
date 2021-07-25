@@ -6,7 +6,7 @@ module;
 #include <iomanip>
 #include "CubeDef.h"
 
-export module BF;
+export module cube.bf;
 //import std.core;
 import cube.index;
 

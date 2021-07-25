@@ -6,13 +6,13 @@ module;
 #include <iostream>		// std::cout
 #include "CubeDef.h"
 
-export module reachable;
+export module cube.reachable;
 import cube.index;
-import n_cube;
-import BF;
+import cube.equiv;
+import cube.bf;
 import cube.reflect;
 import cube.rotate;
-import transform;
+import cube.transform;
 
 
 namespace cube {
@@ -46,7 +46,7 @@ namespace cube {
 	}
 
 	template <int N> constexpr [[nodiscard]]
-	bool  reachable(const BF from, const BF to, const CubeI<N>& transformation)
+	bool reachable(const BF from, const BF to, const CubeI<N>& transformation)
 	{
 		return reachable_private_A<N>(from, to, transformation);
 	}

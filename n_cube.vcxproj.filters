@@ -56,7 +56,7 @@
     <ClCompile Include="rotate.ixx">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="n_cube.ixx">
+    <ClCompile Include="equiv.ixx">
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="timing.ixx">
@@ -78,6 +78,9 @@
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="rewrite.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cube.ixx">
       <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>

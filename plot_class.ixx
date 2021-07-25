@@ -11,12 +11,12 @@ module;
 #include <compare>
 #include "CubeDef.h"
 
-export module plot_class;
-import BF;
-import Transformations;
+export module cube.plot;
+import cube.bf;
+import cube.transformations;
 import cube.reflect;
 import cube.rotate;
-import transform;
+import cube.transform;
 import array_tools;
 
 
