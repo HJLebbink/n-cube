@@ -206,6 +206,12 @@ namespace cube {
 					{ x[3], d0 + "" + d1 },
 					{ x[4], d0 + "" + d2 },
 					{ x[5], d1 + "" + d2 },
+					{ gamma<N>(0, 1, 2), "012"},
+					{ gamma<N>(0, 2, 1), "021" },
+					{ gamma<N>(1, 0, 2), "102" },
+					{ gamma<N>(1, 2, 0), "120" },
+					{ gamma<N>(2, 1, 0), "210" },
+					{ gamma<N>(2, 0, 1), "201" },
 				};
 			}
 			else if constexpr (N == 4) {
@@ -411,8 +417,12 @@ namespace cube {
 
 				if (results.contains(cube_new))
 				{
-					if (descr_new.length() < results.at(cube_new).length()) {
-						//std::cout << "descr_new=" << descr_new << "; old=" << results.at(cube_new) << std::endl;
+					const int descr_new_complexity = std::count(descr_new.begin(), descr_new.end(), '.');
+					const std::string descr_existing = results.at(cube_new);
+					const int descr_existing_complexity = std::count(descr_existing.begin(), descr_existing.end(), '.');
+
+					if (descr_new_complexity < descr_existing_complexity) {
+						std::cout << "descr_new=" << descr_new << "; old=" << results.at(cube_new) << std::endl;
 						results[cube_new] = descr_new;
 					}
 				}
