@@ -12,11 +12,10 @@ module;
 #include <utility> //pair
 
 export module cube.transformations;
-
+import cube.type;
 import cube.reflect;
 import cube.rotate;
 import cube.transform;
-import cube.index;
 import array_tools;
 
 

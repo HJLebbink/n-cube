@@ -3,9 +3,9 @@ module;
 
 export module cube.reflect;
 //import std.core;
-import cube.index;
-import array_tools;
+import cube.type;
 import cube.transform;
+import array_tools;
 
 
 namespace cube {

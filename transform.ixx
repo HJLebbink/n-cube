@@ -2,7 +2,7 @@ module;
 #include <array>
 
 export module cube.transform;
-import cube.index;
+import cube.type;
 import cube.bf;
 import array_tools;
 

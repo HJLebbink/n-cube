@@ -4,8 +4,7 @@ module;
 #include <bitset>
 #include <array>
 
-
-export module cube.index;
+export module cube.type;
 //import std.core;
 import array_tools;
 
@@ -70,5 +69,10 @@ export namespace cube {
 	std::string to_string(const std::pair<CubeI<N>, std::string>& c)
 	{
 		return to_string<N>(std::get<0>(c)) + " " + std::get<1>(c);
+	}
+
+	template <int N> constexpr [[nodiscard]]
+	bool cube_equal(const CubeI<N>& c1, const CubeI<N>& c2) noexcept {
+		return array_tools::equal(c1, c2);
 	}
 }

@@ -4,7 +4,7 @@ module;
 #include <iostream>
 
 export module cube.rotate;
-import cube.index;
+import cube.type;
 import array_tools;
 import cube.transform;
 

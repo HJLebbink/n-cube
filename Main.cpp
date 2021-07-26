@@ -8,7 +8,7 @@ int main(int, char** /*argv[]*/)
 {
 	const auto start = std::chrono::system_clock::now();
 
-	array_tools::test();
+	cube::test_gamma();
 
 
 

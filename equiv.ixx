@@ -18,7 +18,7 @@ module;
 
 
 export module cube.equiv;
-import cube.index;
+import cube.type;
 import bf_tools;
 import cube.bf;
 import cube.transform;

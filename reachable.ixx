@@ -6,7 +6,7 @@ module;
 #include <iostream>		// std::cout
 
 export module cube.reachable;
-import cube.index;
+import cube.type;
 import cube.equiv;
 import cube.bf;
 import cube.reflect;

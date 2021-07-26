@@ -7,7 +7,7 @@ module;
 
 export module cube.bf;
 //import std.core;
-import cube.index;
+import cube.type;
 
 
 export namespace cube {

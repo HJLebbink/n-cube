@@ -38,7 +38,7 @@
     <ClCompile Include="reflect.ixx">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="CubeIndex.ixx">
+    <ClCompile Include="cube.type.ixx">
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="bf_tools.ixx">
@@ -81,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="cube.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gamma.ixx">
       <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,8 +1,9 @@
 export module cube;
 
-export import cube.index; 
+export import cube.type;
 export import cube.reflect;
 export import cube.rotate;
+export import cube.gamma;
 export import cube.equiv;
 export import cube.bf;
 export import cube.rewrite;

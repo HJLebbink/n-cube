@@ -24,7 +24,8 @@
     <ClCompile Include="bf_tools.ixx" />
     <ClCompile Include="constants.ixx" />
     <ClCompile Include="cube.ixx" />
-    <ClCompile Include="CubeIndex.ixx" />
+    <ClCompile Include="cube.type.ixx" />
+    <ClCompile Include="gamma.ixx" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="equiv.ixx" />
     <ClCompile Include="plot_class.ixx" />
