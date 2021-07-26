@@ -3,7 +3,6 @@ module;
 #include <utility> // pair
 #include <bitset>
 #include <array>
-#include "CubeDef.h"
 
 
 export module cube.index;
@@ -15,7 +14,7 @@ export namespace cube {
 
 	//using CubeI = std::array<unsigned char, (1 << DIM)>; // unsigned char takes 8 hours for save_all_npn_classes<5>
 	//using CubeI = std::array<char, (1 << DIM)>; // char takes 8 hours for save_all_npn_classes<5>
-	//template <int DIM> using CubeI = std::array<int, (1 << DIM)>; // char takes 9 hours for save_all_npn_classes<5>
+	template <int DIM> using CubeI = std::array<int, (1 << DIM)>; // char takes 9 hours for save_all_npn_classes<5>
 
 	template <int N> consteval [[nodiscard]]
 	CubeI<N> init_cubeI() noexcept

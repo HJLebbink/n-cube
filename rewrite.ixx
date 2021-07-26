@@ -4,7 +4,6 @@ module;
 #include <tuple>
 #include <iostream>		// std::cout
 
-
 export module cube.rewrite;
 import cube.bf;
 import cube.reflect;

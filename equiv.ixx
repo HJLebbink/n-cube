@@ -15,20 +15,20 @@ module;
 #include <filesystem>
 #include <bit>
 #include <map>
-#include "CubeDef.h"
 
 
 export module cube.equiv;
 import cube.index;
 import bf_tools;
-import array_tools;
-import constants;
-import prime;
 import cube.bf;
 import cube.transform;
 import cube.reflect;
 import cube.rotate;
 import cube.transformations;
+
+import array_tools;
+import constants;
+import prime;
 
 namespace cube
 {
@@ -58,13 +58,6 @@ namespace cube
 		}
 		//return std::array<std::string, N>();
 	}
-
-	template <int N>
-	struct Cmp {
-		[[nodiscard]] constexpr bool operator()(const CubeI<N>& left, const CubeI<N>& right) const {
-			return array_tools::lesseq<1 << N>(left, right);
-		}
-	};
 
 	template <int N>
 	void init_n_cube() {
@@ -398,25 +391,6 @@ namespace cube
 		}
 		else {
 			std::cout << "WARNING: NPN class file " << filename << " already exists in " << std::filesystem::current_path() << std::endl;
-		}
-	}
-
-	export template <int N, bool DESCR> 
-	void print_all_transformations()
-	{
-		std::cout << "Transformations obtained by transitive closure N=" << N << ":" << std::endl;
-		const Transf<N>& transformations_from_cache = get_transformations_from_cache<N, DESCR>();
-		std::cout << "number of transformations: " << transformations_from_cache.size() << std::endl;
-
-		// create a map such that the transformations are sorted
-		std::map<CubeI<N>, std::string, Cmp<N>> trans2;
-		for (const auto& pair : transformations_from_cache)
-		{
-			trans2.insert(pair);
-		}
-		for (const auto& pair : trans2)
-		{
-			std::cout << to_string<N>(pair) << std::endl;
 		}
 	}
 

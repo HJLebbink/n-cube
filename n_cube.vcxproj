@@ -37,9 +37,6 @@
     <ClCompile Include="transform.ixx" />
     <ClCompile Include="Transformations.ixx" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="CubeDef.h" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{5EDB122A-4DD6-48D3-8270-76F3FF6E9C0E}</ProjectGuid>

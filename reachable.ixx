@@ -4,7 +4,6 @@ module;
 #include <vector>
 #include <utility> //pair
 #include <iostream>		// std::cout
-#include "CubeDef.h"
 
 export module cube.reachable;
 import cube.index;

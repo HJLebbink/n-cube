@@ -4,7 +4,6 @@ module;
 #include <iostream>		// std::cout
 #include <sstream>
 #include <iomanip>
-#include "CubeDef.h"
 
 export module cube.bf;
 //import std.core;

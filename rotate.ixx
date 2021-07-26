@@ -2,7 +2,6 @@ module;
 #include <array>
 #include <algorithm>
 #include <iostream>
-#include "CubeDef.h"
 
 export module cube.rotate;
 import cube.index;

@@ -1,6 +1,5 @@
 module; 
 #include <array>
-#include "CubeDef.h"
 
 export module cube.transform;
 import cube.index;

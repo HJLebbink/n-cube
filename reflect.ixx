@@ -1,7 +1,5 @@
 module; 
 #include <iostream>
-#include "CubeDef.h"
-
 
 export module cube.reflect;
 //import std.core;

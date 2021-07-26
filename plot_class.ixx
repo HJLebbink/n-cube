@@ -9,7 +9,6 @@ module;
 #include <unordered_map>
 #include <utility> // pair
 #include <compare>
-#include "CubeDef.h"
 
 export module cube.plot;
 import cube.bf;

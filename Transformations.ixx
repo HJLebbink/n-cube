@@ -6,12 +6,10 @@ module;
 #include <compare>
 #include <functional> //less
 
-
 #include <map>
 #include <bitset>
 #include <iostream>		// std::cout
 #include <utility> //pair
-#include "CubeDef.h"
 
 export module cube.transformations;
 
@@ -500,6 +498,13 @@ namespace cube {
 
 	namespace {
 		static std::tuple<Transf<0>, Transf<1>, Transf<2>, Transf<3>, Transf<4>, Transf<5>, Transf<6>> tranformations_cache;
+
+		template <int N>
+		struct Cmp {
+			[[nodiscard]] constexpr bool operator()(const CubeI<N>& left, const CubeI<N>& right) const {
+				return array_tools::lesseq<1 << N>(left, right);
+			}
+		};
 	}
 
 	export template <int N, bool DESCR>
@@ -626,6 +631,25 @@ namespace cube {
 		return result;
 	}
 	
+	export template <int N, bool DESCR>
+	void print_all_transformations()
+	{
+		std::cout << "Transformations obtained by transitive closure N=" << N << ":" << std::endl;
+		const Transf<N>& transformations_from_cache = get_transformations_from_cache<N, DESCR>();
+		std::cout << "number of transformations: " << transformations_from_cache.size() << std::endl;
+
+		// create a map such that the transformations are sorted
+		std::map<CubeI<N>, std::string, Cmp<N>> trans2;
+		for (const auto& pair : transformations_from_cache)
+		{
+			trans2.insert(pair);
+		}
+		for (const auto& pair : trans2)
+		{
+			std::cout << to_string<N>(pair) << std::endl;
+		}
+	}
+
 	export void test_create_transformations()
 	{
 		if (true) {
