@@ -10,6 +10,7 @@ export import cube.rewrite;
 export import cube.plot;
 export import cube.reachable;
 export import cube.transformations;
+export import cube.gamma;
 
 export import timing;
 export import array_tools;

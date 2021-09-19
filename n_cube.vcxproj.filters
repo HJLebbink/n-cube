@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Data">
       <UniqueIdentifier>{67ba4749-7c10-4df9-95a2-2f8f6e8b484e}</UniqueIdentifier>
     </Filter>
@@ -32,59 +28,56 @@
     <Text Include="notes.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="array_tools.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BF.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bf_tools.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="constants.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cube.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cube.type.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="equiv.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gamma.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="plot_class.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="prime.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="reachable.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="reflect.ixx">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cube.type.ixx">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="bf_tools.ixx">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="array_tools.ixx">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="transform.ixx">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BF.ixx">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="rotate.ixx">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="equiv.ixx">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="timing.ixx">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Transformations.ixx">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="constants.ixx">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="prime.ixx">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="reachable.ixx">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="plot_class.ixx">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rewrite.ixx">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cube.ixx">
-      <Filter>Header Files</Filter>
+    <ClCompile Include="rotate.ixx">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gamma.ixx">
-      <Filter>Header Files</Filter>
+    <ClCompile Include="timing.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="transform.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Transformations.ixx">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,7 +1,6 @@
 module;
 #include <iostream>
 
-
 export module cube.gamma;
 import cube.type;
 import cube.reflect;
@@ -25,7 +24,7 @@ namespace cube {
 
 			if ((d0 == 0) && (d1 == 1) && (d2 == 2)) {
 				return g012;
-			} 
+			}
 			else if ((d0 == 1) && (d1 == 0) && (d2 == 2)) {
 				return g102;
 			}
@@ -49,7 +48,7 @@ namespace cube {
 	}
 
 	template <int N, int D0, int D1, int D2> consteval
-	void round_trip() {
+		void round_trip() {
 		constexpr CubeI<N> tr = gamma<N>(D0, D1, D2);
 		constexpr CubeI<N> g0 = init_cubeI<N>();
 		constexpr CubeI<N> g1 = transform<N>(g0, tr);
@@ -60,7 +59,7 @@ namespace cube {
 		constexpr CubeI<N> g6 = transform<N>(g5, tr);
 		constexpr CubeI<N> g7 = transform<N>(g6, tr);
 		constexpr CubeI<N> g8 = transform<N>(g7, tr);
-		static_assert(cube_equal<N>(g0, g8), "round trip error");
+		//		static_assert(array_tools::equal(g0, g8), "round trip error");
 	}
 
 

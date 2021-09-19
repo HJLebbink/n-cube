@@ -1,25 +1,19 @@
 #include <chrono>
 #include <iostream> // for cout
 
-#include "cube/timing.h"
-#include "cube/n_cube.h"
-#include "cube/array_tools.h"
+import cube;
 
-#include "cube/rewrite.h"
-#include "cube/plot_class.h"
-#include "cube/reachable.h"
-#include "cube/gamma.h"
 
 int main(int, char** /*argv[]*/)
 {
 	const auto start = std::chrono::system_clock::now();
 
-	cube::test_gamma();
+	//cube::test_gamma();
 
 	//cube::print_all_transformations<1, true>(); // 2     = 2^1
 	//cube::print_all_transformations<2, true>(); // 8     = 2^3
 	//cube::print_all_transformations<3, true>(); // 48    = 2^4  * 3^1
-	//cube::print_all_transformations<4, true>(); // 384   = 2^7  * 3^1
+	cube::print_all_transformations<4, true>(); // 384   = 2^7  * 3^1
 	//cube::print_all_transformations<5, false>(); // 3840  = 2^8  * 3^1 * 5^1 transformations takes 1 sec
 	//cube::print_all_transformations<6, false>(); // 46080 = 2^10 * 3^2 * 5^1 transformations takes 4 sec
 	//cube::print_all_transformations<7, false>(); //
@@ -44,7 +38,7 @@ int main(int, char** /*argv[]*/)
 			//cube::plot::plot_npn_outgoing_edges<N>(npn_class, cube::equiv_class<N>(npn_class), filename);
 		}
 	}
-		
+
 	if (false) {
 		constexpr int N = 1;
 		cube::plot::plot_transformation_transitions<N>(".\\data\\transitions_" + std::to_string(N) + ".dot");
