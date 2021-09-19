@@ -417,9 +417,9 @@ namespace cube {
 
 				if (results.contains(cube_new))
 				{
-					const int descr_new_complexity = std::count(descr_new.begin(), descr_new.end(), '.');
+					const int descr_new_complexity = static_cast<int>(std::count(descr_new.begin(), descr_new.end(), '.'));
 					const std::string descr_existing = results.at(cube_new);
-					const int descr_existing_complexity = std::count(descr_existing.begin(), descr_existing.end(), '.');
+					const int descr_existing_complexity = static_cast<int>(std::count(descr_existing.begin(), descr_existing.end(), '.'));
 
 					if (descr_new_complexity < descr_existing_complexity) {
 						std::cout << "descr_new=" << descr_new << "; old=" << results.at(cube_new) << std::endl;
